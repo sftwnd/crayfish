@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.sftwnd.crayfish.spring</groupId>
+        <artifactId>crayfish-spring</artifactId>
+        <version>0.0.1-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>com.sftwnd.crayfish.spring.feign</groupId>
+    <artifactId>crayfish-spring-feign</artifactId>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>crayfish-spring-feign-has-token-cloud-starter</module>
+        <module>crayfish-spring-feign-oauth2-cloud-starter</module>
+        <module>crayfish-spring-feign-trusted-channel-cloud-starter</module>
+    </modules>
+
+    <dependencies>
+        <dependency>
+            <groupId>io.github.openfeign</groupId>
+            <artifactId>feign-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-autoconfigure</artifactId>
+        </dependency>
+    </dependencies>
+
+</project>
