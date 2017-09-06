@@ -24,7 +24,7 @@ public final class JsonZoneDateTimeSerializer extends JsonSerializer<ZonedDateTi
         logger.trace("serialize(date:`{}`)", dateTime);
         Date date = null;
         if (dateTime != null) {
-            date = new Date(dateTime.withZoneSameLocal(TimeZone.getDefault().toZoneId()).toInstant().getEpochSecond()*1000L);
+            date = Date.from(dateTime.withZoneSameLocal(TimeZone.getDefault().toZoneId()).toInstant());
         }
         gen.writeString(date == null ? null : DateSerializeUtility.getDateSerializeUtility(TimeZone.getTimeZone(dateTime.getZone()), dateFormatStr).serialize(date));
     }

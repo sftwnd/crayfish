@@ -24,7 +24,7 @@ public final class JsonInstantSerializer extends JsonSerializer<Instant> {
         logger.trace("serialize(date:`{}`)", instant);
         Date date = null;
         if (instant != null) {
-            date = new Date(instant.getEpochSecond());
+            date = Date.from(instant);
         }
         gen.writeString(date == null ? null : DateSerializeUtility.getDateSerializeUtility(TimeZone.getDefault(), dateFormatStr).serialize(date));
     }

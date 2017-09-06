@@ -60,7 +60,7 @@ public final class DateSerializeUtility {
     }
 
     public String serialize(Instant dateTime) {
-        return serialize(new Date(dateTime.getEpochSecond()));
+        return serialize(Date.from(dateTime));
     }
 
     public Date deserialize(String dateTime) throws ParseException {
