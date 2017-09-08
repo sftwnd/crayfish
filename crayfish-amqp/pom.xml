@@ -3,8 +3,8 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <artifactId>crayfish</artifactId>
         <groupId>com.github.sftwnd.crayfish</groupId>
+        <artifactId>crayfish</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -23,8 +23,8 @@
             <artifactId>amqp-client</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.github.sftwnd.crayfish.junit</groupId>
-            <artifactId>crayfish-amqp-junit</artifactId>
+            <groupId>com.github.sftwnd.crayfish.crayfish-junit</groupId>
+            <artifactId>crayfish-junit-amqp</artifactId>
             <version>${project.version}</version>
             <scope>test</scope>
         </dependency>

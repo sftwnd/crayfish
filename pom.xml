@@ -2,26 +2,44 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>crayfish</artifactId>
+    <parent>
+        <groupId>org.sonatype.oss</groupId>
+        <artifactId>oss-parent</artifactId>
+        <version>9</version>
+    </parent>
+
     <groupId>com.github.sftwnd.crayfish</groupId>
+    <artifactId>crayfish</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <packaging>pom</packaging>
-    <url>https://github.com.github.sftwnd/crayfish</url>
 
-    <!--
+    <name>CrayFish</name>
+    <url>https://github.com/sftwnd/crayfish</url>
+
+    <licenses>
+        <license>
+            <name>3-Clause BSD License</name>
+            <url>https://opensource.org/licenses/BSD-3-Clause</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>sftwnd</id>
+            <name>Andrey Shindarev</name>
+            <email>ashindarev@gmail.com</email>
+            <timezone>Europe/Moscow</timezone>
+        </developer>
+    </developers>
+
     <scm>
         <url>https://github.com.github.sftwnd/crayfish</url>
-        <connection>scm:git:git@github.com.github.sftwnd/crayfish.git</connection>
-        <developerConnection>scm:git:git@github.com.github.sftwnd/crayfish.git</developerConnection>
-    </scm>
-    -->
-    <scm>
-        <connection>scm:git:https://github.com.github.sftwnd/crayfish.git</connection>
-        <developerConnection>scm:git:git@github.com.github.sftwnd/crayfish.git</developerConnection>
-        <url>https://github.com.github.sftwnd/crayfish</url>
-        <tag>HEAD</tag>
+        <connection>scm:git:https://github.com/sftwnd/crayfish.git</connection>
+        <developerConnection>scm:git:git@github.com/sftwnd/crayfish.git</developerConnection>
     </scm>
 
     <modules>
@@ -282,7 +300,6 @@
                             </execution>
                         </executions>
                     </plugin>
-                    <!--
                     <plugin>
                         <artifactId>maven-javadoc-plugin</artifactId>
                         <executions>
@@ -294,7 +311,36 @@
                             </execution>
                         </executions>
                     </plugin>
-                    -->
+                </plugins>
+            </build>
+        </profile>
+        <profile>
+            <id>sign-artifacts</id>
+            <activation>
+                <property>
+                    <name>performRelease</name>
+                    <value>true</value>
+                </property>
+            </activation>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
+                        <configuration>
+                            <passphrase>${gpg.passphrase}</passphrase>
+                        </configuration>
+                        <executions>
+                            <execution>
+                                <id>sign-artifacts</id>
+                                <phase>verify</phase>
+                                <goals>
+                                    <goal>sign</goal>
+                                </goals>
+                            </execution>
+                        </executions>
+                    </plugin>
                 </plugins>
             </build>
         </profile>

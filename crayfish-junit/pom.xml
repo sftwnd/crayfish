@@ -9,12 +9,12 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+    <groupId>com.github.sftwnd.crayfish.crayfish-junit</groupId>
     <artifactId>crayfish-junit</artifactId>
-    <groupId>com.github.sftwnd.crayfish.junit</groupId>
     <packaging>pom</packaging>
 
     <modules>
-        <module>crayfish-amqp-junit</module>
+        <module>crayfish-junit-amqp</module>
     </modules>
 
 </project>
