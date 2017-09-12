@@ -252,6 +252,21 @@
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                 </configuration>
             </plugin>
+            <plugin>
+                <artifactId>maven-source-plugin</artifactId>
+                <configuration>
+                    <attach>true</attach>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
             <!--
             <plugin>
                 <groupId>com.devexperts.bintray</groupId>
@@ -314,6 +329,7 @@
                 </plugins>
             </build>
         </profile>
+        <!--
         <profile>
             <id>sign-artifacts</id>
             <activation>
@@ -344,6 +360,7 @@
                 </plugins>
             </build>
         </profile>
+        -->
     </profiles>
 
     <dependencyManagement>
