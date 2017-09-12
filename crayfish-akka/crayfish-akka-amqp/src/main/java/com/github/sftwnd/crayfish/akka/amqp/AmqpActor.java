@@ -28,7 +28,6 @@ import static com.github.sftwnd.crayfish.akka.amqp.AmqpActor.State.Init;
  */
 @Component("crayfish-AmqpActor")
 @Scope("prototype")
-@Profile("crayfish-akka-amqp")
 @DependsOn("crayfish-actorSystem")
 public class AmqpActor extends AbstractFSM<AmqpActor.State, Object> {
 

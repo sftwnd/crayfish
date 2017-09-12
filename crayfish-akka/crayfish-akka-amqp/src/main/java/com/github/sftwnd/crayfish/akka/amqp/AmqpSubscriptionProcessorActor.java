@@ -22,7 +22,6 @@ import java.util.concurrent.atomic.AtomicLong;
  */
 @Component("crayfish-AmqpSubscriptionProcessorActor")
 @Scope("prototype")
-@Profile("crayfish-akka-amqp")
 public class AmqpSubscriptionProcessorActor<Payload> extends AbstractActor {
 
     private final LoggingAdapter log = Logging.getLogger(getContext().getSystem(), this);

@@ -18,7 +18,6 @@ import com.github.sftwnd.crayfish.akka.spring.di.SpringExtension;
  * Данная конфигурация создаёт Actor System как Spring-овый bean
  */
 @Configuration("crayfish-actorSystemConfiguration")
-@Profile("crayfish-akka-appl")
 public class ActorSystemConfiguration {
 
     private static final Logger logger = LoggerFactory.getLogger(ActorSystemConfiguration.class);

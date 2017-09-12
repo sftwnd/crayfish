@@ -26,7 +26,6 @@ import static com.github.sftwnd.crayfish.akka.amqp.AmqpConnectionFactoryActor.St
  */
 @Component("crayfish-AmqpConnectionFactoryActor")
 @Scope("prototype")
-@Profile("crayfish-akka-amqp")
 @DependsOn("crayfish-actorSystem")
 public class AmqpConnectionFactoryActor extends AbstractFSM<AmqpConnectionFactoryActor.State, Pair<ConnectionFactory, Connection>> {
 

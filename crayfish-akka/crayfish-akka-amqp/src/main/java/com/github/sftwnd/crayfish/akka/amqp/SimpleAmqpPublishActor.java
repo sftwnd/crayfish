@@ -29,7 +29,6 @@ import static com.github.sftwnd.crayfish.akka.amqp.SimpleAmqpPublishActor.State.
  */
 @Component("crayfish-SimpleAmqpPublishActor")
 @Scope("prototype")
-@Profile("crayfish-akka-amqp")
 @DependsOn("crayfish-actorSystem")
 public class SimpleAmqpPublishActor extends AbstractFSM<SimpleAmqpPublishActor.State, SimpleAmqpPublishActor.Data> {
 

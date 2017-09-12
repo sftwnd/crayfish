@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
  */
 
 @Component("crayfish-AkkaAmqpRunner")
-@Profile("crayfish-akka-amqp")
 @DependsOn(value = {"crayfish-spring-amqp", "crayfish-actorSystem"})
 public class AkkaAmqpRunner implements CommandLineRunner {
 
