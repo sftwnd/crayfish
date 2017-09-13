@@ -1,5 +1,6 @@
 package com.github.sftwnd.crayfish.spring.datasource.ucp;
 
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -9,7 +10,7 @@ import org.springframework.context.annotation.Profile;
  */
 @Configuration
 @ConfigurationProperties(prefix = "spring.datasource", ignoreNestedProperties=false)
-@Profile(value = "crayfish-spring-datasource-ucp")
+@ConditionalOnProperty(prefix = "spring.datasource.ucp", name = "u-r-l")
 public class UcpSpringDatasourceFactoryConfiguration extends UcpDatasourceFactoryConfiguration {
 
 }

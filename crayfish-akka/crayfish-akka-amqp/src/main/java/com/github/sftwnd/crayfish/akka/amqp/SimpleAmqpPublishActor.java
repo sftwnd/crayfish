@@ -134,9 +134,11 @@ public class SimpleAmqpPublishActor extends AbstractFSM<SimpleAmqpPublishActor.S
                                     );
                                 } catch (IOException ioex) {
                                     logger.warn("Unable to send message `{}` to amqp target: `{}:{}:{}`", String.valueOf(message.getPayload().getBody()), stateData().connectionName, message.getTag().getExchangeName(), message.getTag().getRoutingKey());
-                                    sender().tell(ioex, self());
+                                    if (!sender().path().toStringWithoutAddress().matches(".*?/deadletters")) {
+                                        sender().tell(ioex, self());
+                                    }
                                 }
-                                if (!ActorRef.noSender().equals(sender())) {
+                                if (!sender().path().toStringWithoutAddress().matches(".*?/deadletters")) {
                                     sender().tell(COMPLETE, self());
                                 }
                                 return stay();
@@ -147,7 +149,7 @@ public class SimpleAmqpPublishActor extends AbstractFSM<SimpleAmqpPublishActor.S
         when ( Init
               ,matchEvent ( AMQPPublish.class
                    ,(message, data) -> {
-                        if (!ActorRef.noSender().equals(sender())) {
+                        if (!sender().path().toStringWithoutAddress().matches(".*?/deadletters")) {
                             sender().tell(DISCONNECTED, self());
                         }
                         return stay();
@@ -158,7 +160,7 @@ public class SimpleAmqpPublishActor extends AbstractFSM<SimpleAmqpPublishActor.S
         when ( Consume
               ,matchEvent ( AMQPPublish.class
                   ,(message, data) -> {
-                        if (!ActorRef.noSender().equals(sender())) {
+                        if (!sender().path().toStringWithoutAddress().matches(".*?/deadletters")) {
                             sender().tell(DISCONNECTED, self());
                         }
                         return stay();

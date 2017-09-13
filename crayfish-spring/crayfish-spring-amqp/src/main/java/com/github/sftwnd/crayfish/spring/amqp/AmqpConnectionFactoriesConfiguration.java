@@ -1,6 +1,6 @@
 package com.github.sftwnd.crayfish.spring.amqp;
 
-import com.rabbitmq.client.AMQP.BasicProperties;
+import com.rabbitmq.client.ConnectionFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -11,7 +11,6 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Profile;
 import org.springframework.util.Assert;
 
 import javax.annotation.PostConstruct;
@@ -23,12 +22,10 @@ import java.util.regex.Pattern;
 /**
  * Created by ashindarev on 05.08.16.
  */
-@Configuration(value = "crayfish-spring-amqp-basicprops")
-@ConfigurationProperties(prefix = "com.github.sftwnd.crayfish", ignoreNestedProperties=false)
-public class AmqpBasicProperties implements BeanFactoryAware {
+public class AmqpConnectionFactoriesConfiguration implements BeanFactoryAware {
 
-    private static final Logger logger = LoggerFactory.getLogger(AmqpBasicProperties.class);
-    public static final String AMQP_BEAN_PREFIX = "crayfish-AMQP.BasicProperties";
+    private static final Logger logger = LoggerFactory.getLogger(AmqpConnectionFactoriesConfiguration.class);
+    public static final String AMQP_BEAN_PREFIX = "crayfish-amqp";
     private static final Pattern AMQP_BEAN_PATTERN = Pattern.compile(new StringBuilder(AMQP_BEAN_PREFIX).append("\\.(.+)").toString());
 
     @Autowired
@@ -36,30 +33,31 @@ public class AmqpBasicProperties implements BeanFactoryAware {
 
     private BeanFactory beanFactory;
 
-    public Map<String, BasicProperties> basicPropertiesMap = new HashMap<>();
+    public Map<String, ConnectionFactory> connectionFactories = new HashMap<>();
 
-    public Map<String, BasicProperties> getBasicProperties() {
-        return this.basicPropertiesMap;
+    public Map<String, ConnectionFactory> getAmqp() {
+        return this.connectionFactories;
     }
 
     @PostConstruct
     public void configure() {
-        if (basicPropertiesMap.keySet().size() > 0) {
+        if (connectionFactories.entrySet().size() > 0) {
+            logger.info("Amqp connection factories has been registered: {}", String.valueOf(connectionFactories.keySet()));
             Assert.state(beanFactory instanceof ConfigurableBeanFactory, "wrong bean factory type");
-            logger.info("Amqp connection factories has been registered: {}", String.valueOf(basicPropertiesMap.keySet()));
             ConfigurableBeanFactory configurableBeanFactory = (ConfigurableBeanFactory) beanFactory;
-            for (Map.Entry<String, BasicProperties> entry : basicPropertiesMap.entrySet()) {
+            for (Map.Entry<String, ConnectionFactory> entry : connectionFactories.entrySet()) {
                 if (logger.isTraceEnabled()) {
-                    logger.trace("Register named AMQP.BasicProperties: {}[{}], clientProperties: {}", AMQP_BEAN_PREFIX, entry.getKey(), entry.getValue().toString());
+                    logger.trace("Register named amqp connection: {}[{}], clientProperties: {}", AMQP_BEAN_PREFIX, entry.getKey(), entry.getValue().getClientProperties());
                 } else {
-                    logger.debug("Register named AMQP.BasicProperties: {}[{}]", AMQP_BEAN_PREFIX, entry.getKey());
+                    logger.debug("Register named amqp connection: {}[{}]", AMQP_BEAN_PREFIX, entry.getKey());
                 }
+                entry.getValue().setTopologyRecoveryEnabled(true);
+                entry.getValue().setAutomaticRecoveryEnabled(true);
                 if (applicationContext.containsBean(getBeanName(entry.getKey()))) {
-                    logger.trace("AMQP.BasicProperties bean `{}` already exists.", getBeanName(entry.getKey()));
+                    logger.trace("AMQP connection description bean `{}` already exists.", getBeanName(entry.getKey()));
                 } else {
-                    configurableBeanFactory.registerSingleton(getBeanName(entry.getKey()), entry.getValue().builder().build()
-                    );
-                    logger.trace("AMQP.BasicProperties bean `{}` has been created.", getBeanName(entry.getKey()));
+                    configurableBeanFactory.registerSingleton(getBeanName(entry.getKey()), entry.getValue());
+                    logger.trace("AMQP connection description bean `{}` has been created.", getBeanName(entry.getKey()));
 
                 }
             }
