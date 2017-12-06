@@ -9,7 +9,7 @@ import org.springframework.context.annotation.Profile;
  * Created by ashindarev on 21.02.17.
  */
 @Configuration
-@ConfigurationProperties(prefix = "spring.datasource", ignoreNestedProperties=false)
+@ConfigurationProperties(prefix = "spring.datasource")
 @ConditionalOnProperty(prefix = "spring.datasource.ucp", name = "u-r-l")
 public class UcpSpringDatasourceFactoryConfiguration extends UcpDatasourceFactoryConfiguration {
 

@@ -24,7 +24,7 @@ import java.util.regex.Pattern;
  * Created by ashindarev on 05.08.16.
  */
 @Configuration(value = "crayfish-spring-amqp-basicprops")
-@ConfigurationProperties(prefix = "com.github.sftwnd.crayfish", ignoreNestedProperties=false)
+@ConfigurationProperties(prefix = "com.github.sftwnd.crayfish")
 public class AmqpBasicProperties implements BeanFactoryAware {
 
     private static final Logger logger = LoggerFactory.getLogger(AmqpBasicProperties.class);

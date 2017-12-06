@@ -8,7 +8,7 @@ import org.springframework.context.annotation.Configuration;
  * Created by ashindarev on 21.02.17.
  */
 @Configuration
-@ConfigurationProperties(prefix = "crayfish.datasource", ignoreNestedProperties=false)
+@ConfigurationProperties(prefix = "crayfish.datasource")
 @ConditionalOnProperty(prefix = "crayfish.datasource.ucp", name = "u-r-l")
 public class UcpCrayDatasourceFactoryConfiguration extends UcpDatasourceFactoryConfiguration {
 

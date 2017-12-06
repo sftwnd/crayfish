@@ -2,16 +2,16 @@ package com.github.sftwnd.crayfish.akka.amqp;
 
 import akka.actor.AbstractFSM;
 import akka.actor.ActorRef;
-import com.github.sftwnd.crayfish.amqp.consume.AmqpOnEventListener;
-import com.github.sftwnd.crayfish.amqp.message.AMQPMessage;
 import com.github.sftwnd.crayfish.akka.spring.di.SpringExtension;
 import com.github.sftwnd.crayfish.amqp.consume.AMQPMessageConverter;
 import com.github.sftwnd.crayfish.amqp.consume.AmqpOnAckListener;
 import com.github.sftwnd.crayfish.amqp.consume.AmqpOnArriveListener;
 import com.github.sftwnd.crayfish.amqp.consume.AmqpOnCompleteListener;
+import com.github.sftwnd.crayfish.amqp.consume.AmqpOnEventListener;
 import com.github.sftwnd.crayfish.amqp.consume.AmqpOnShutdownListener;
 import com.github.sftwnd.crayfish.amqp.consume.ConvertableAmqpConsumer;
 import com.github.sftwnd.crayfish.amqp.consume.DefaultAmqpConsumer;
+import com.github.sftwnd.crayfish.amqp.message.AMQPMessage;
 import com.github.sftwnd.crayfish.amqp.message.AMQPMessageTag;
 import com.rabbitmq.client.Channel;
 import com.rabbitmq.client.Connection;
@@ -23,7 +23,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.DependsOn;
-import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 import scala.concurrent.duration.FiniteDuration;
@@ -34,7 +33,9 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicLong;
 
-import static com.github.sftwnd.crayfish.akka.amqp.AmqpConsumeActor.State.*;
+import static com.github.sftwnd.crayfish.akka.amqp.AmqpConsumeActor.State.Init;
+import static com.github.sftwnd.crayfish.akka.amqp.AmqpConsumeActor.State.Consume;
+import static com.github.sftwnd.crayfish.akka.amqp.AmqpConsumeActor.State.Connected;
 
 /**
  * Created by ashindarev on 04.08.16.
