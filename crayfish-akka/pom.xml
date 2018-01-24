@@ -19,6 +19,7 @@
         <module>crayfish-akka-amqp</module>
         <module>crayfish-akka-utils</module>
         <module>crayfish-akka-pattern</module>
+        <module>crayfish-akka-jdbc</module>
     </modules>
 
     <dependencies>

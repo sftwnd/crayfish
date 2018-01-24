@@ -7,7 +7,6 @@ import akka.event.Logging;
 import akka.event.LoggingAdapter;
 import com.github.sftwnd.crayfish.amqp.message.AMQPMessage;
 import javafx.util.Pair;
-import org.springframework.context.annotation.Profile;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
