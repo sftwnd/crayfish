@@ -3,6 +3,8 @@ package com.github.sftwnd.crayfish.akka.pattern.worker;
 import akka.actor.AbstractActor;
 import akka.pattern.CircuitBreaker;
 import akka.pattern.PatternsCS;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import scala.concurrent.duration.Duration;
 
 import java.util.Optional;
@@ -11,6 +13,8 @@ import java.util.function.BiFunction;
 import java.util.function.Supplier;
 
 public class SupplyWorker<X> extends AbstractActor {
+
+    private static final Logger logger = LoggerFactory.getLogger(SupplyWorker.class);
 
     private static final int DEFAULT_MAX_FAILURES          = 10;
     private static final int DEFAULT_RESET_TIMEOUT_SEC     = 10;
@@ -38,6 +42,7 @@ public class SupplyWorker<X> extends AbstractActor {
                                       ,Duration.create(DEFAULT_MAX_RESET_TIMEOUT_SEC, "s")
                                   );
         this.evenNoAsFailure = evenNoAsFailure;
+        logger.trace("{} has been created with CircuitBreaker: [{}], evenNoAsFailure: [{}].", this.toString().replaceAll(".*\\.", ""), circuitBreaker, evenNoAsFailure);
     }
 
     @Override
@@ -47,6 +52,9 @@ public class SupplyWorker<X> extends AbstractActor {
               .match(
                       Supplier.class
                      ,msg -> {
+                          if (logger.isTraceEnabled()) {
+                              logger.trace("Message: [{}] has been received by {}", msg == null ? "null" : msg.toString().replaceAll(".*\\.", ""), this.toString().replaceAll(".*\\.", ""));
+                          }
                           PatternsCS.pipe(
                                   circuitBreaker.callWithCircuitBreakerCS( () -> CompletableFuture.supplyAsync(((Supplier<X>)msg)::get) )
                                   //ToDo: Определиться с выбором контекста getContext().system().dispatcher() или getContext().dispatcher()
