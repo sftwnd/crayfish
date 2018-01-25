@@ -114,12 +114,6 @@
         <apache-commons-text.version>1.2</apache-commons-text.version>
         <!-- Commos -->
         <commons-codec.version>1.11</commons-codec.version>
-        <!-- com.netflix -->
-        <!--
-        <netflix-hystrix.version>1.5.13</netflix-hystrix.version>
-        <netflix-commons.version>0.3.0</netflix-commons.version>
-        <netflix-feign-gson.version>8.18.0</netflix-feign-gson.version>
-        -->
         <!-- Разное -->
         <io-reactivex-rxjava.version>2.1.8</io-reactivex-rxjava.version>
         <google-guava.version>23.6-jre</google-guava.version>
@@ -432,39 +426,6 @@
                 <artifactId>feign-httpclient</artifactId>
                 <version>${openfeign.version}</version>
             </dependency>
-            <!-- Netflix -->
-            <!--
-            <dependency>
-                <groupId>com.netflix.hystrix</groupId>
-                <artifactId>hystrix-core</artifactId>
-                <version>${netflix-hystrix.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.netflix.hystrix</groupId>
-                <artifactId>hystrix-javanica</artifactId>
-                <version>${netflix-hystrix.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.netflix.hystrix</groupId>
-                <artifactId>hystrix-metrics-event-stream</artifactId>
-                <version>${netflix-hystrix.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.netflix.netflix-commons</groupId>
-                <artifactId>netflix-commons-util</artifactId>
-                <version>${netflix-commons.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.netflix.netflix-commons</groupId>
-                <artifactId>netflix-statistics</artifactId>
-                <version>${netflix-commons.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.netflix.feign</groupId>
-                <artifactId>feign-gson</artifactId>
-                <version>${netflix-feign-gson.version}</version>
-            </dependency>
-            -->
             <!-- Oracle -->
             <dependency>
                 <groupId>com.oracle.jdbc</groupId>

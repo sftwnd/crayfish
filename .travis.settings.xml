@@ -41,6 +41,7 @@
                         <enabled>false</enabled>
                     </snapshots>
                 </repository>
+                <!--
                 <repository>
                     <id>netflixoss-releases</id>
                     <name>NetflixOSS Releases</name>
@@ -50,6 +51,7 @@
                         <updatePolicy>never</updatePolicy>
                     </releases>
                 </repository>
+                -->
                 <repository>
                     <id>maven.oracle.com</id>
                     <name>oracle-maven-repo</name>

@@ -56,12 +56,14 @@ public class SupplyWorker<X> extends AbstractActor {
                               logger.trace("Message: [{}] has been received by {}", msg == null ? "null" : msg.toString().replaceAll(".*\\.", ""), this.toString().replaceAll(".*\\.", ""));
                           }
                           PatternsCS.pipe(
-                                  circuitBreaker.callWithCircuitBreakerCS( () -> CompletableFuture.supplyAsync(((Supplier<X>)msg)::get) )
+                                  circuitBreaker.callWithCircuitBreakerCS(
+                                          () -> CompletableFuture.supplyAsync(((Supplier<X>)msg)::get)
+                                  )
                                   //ToDo: Определиться с выбором контекста getContext().system().dispatcher() или getContext().dispatcher()
                                   //Выбрал системный, чтобы доставлять незанятым 
                                   ,getContext().system().dispatcher()
                           ).to(sender());
-                      }
+                     }
                )
 
               .build();
