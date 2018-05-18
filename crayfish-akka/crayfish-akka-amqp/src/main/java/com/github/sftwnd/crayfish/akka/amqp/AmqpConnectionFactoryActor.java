@@ -15,6 +15,7 @@ import org.springframework.stereotype.Component;
 import scala.concurrent.duration.FiniteDuration;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.concurrent.TimeUnit;
 
 import static com.github.sftwnd.crayfish.akka.amqp.AmqpConnectionFactoryActor.State.Connected;
@@ -45,8 +46,8 @@ public class AmqpConnectionFactoryActor extends AbstractFSM<AmqpConnectionFactor
     public AmqpConnectionFactoryActor(ConnectionFactory connectionFactory)
     {
         breaker = new CircuitBreaker(context().dispatcher(), context().system().scheduler(),
-                                     3, FiniteDuration.create(7, TimeUnit.SECONDS), FiniteDuration.create(2, TimeUnit.SECONDS))
-                     .withExponentialBackoff(FiniteDuration.create(10, TimeUnit.SECONDS));
+                                     3, Duration.ofSeconds(7), Duration.ofSeconds(2))
+                     .withExponentialBackoff(Duration.ofSeconds(10));
 
         startWith( Init, new Pair<>(connectionFactory, null) );
 

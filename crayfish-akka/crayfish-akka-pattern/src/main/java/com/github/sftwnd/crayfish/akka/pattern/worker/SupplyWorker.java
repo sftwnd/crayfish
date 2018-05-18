@@ -5,8 +5,8 @@ import akka.pattern.CircuitBreaker;
 import akka.pattern.PatternsCS;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import scala.concurrent.duration.Duration;
 
+import java.time.Duration;
 import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.BiFunction;
@@ -38,14 +38,15 @@ public class SupplyWorker<X> extends AbstractActor {
                                        getContext().dispatcher()
                                       ,getContext().system().scheduler()
                                       ,DEFAULT_MAX_FAILURES
-                                      ,Duration.create(DEFAULT_RESET_TIMEOUT_SEC, "s")
-                                      ,Duration.create(DEFAULT_MAX_RESET_TIMEOUT_SEC, "s")
+                                      ,Duration.ofSeconds(DEFAULT_RESET_TIMEOUT_SEC)
+                                      ,Duration.ofSeconds(DEFAULT_MAX_RESET_TIMEOUT_SEC)
                                   );
         this.evenNoAsFailure = evenNoAsFailure;
         logger.trace("{} has been created with CircuitBreaker: [{}], evenNoAsFailure: [{}].", this.toString().replaceAll(".*\\.", ""), circuitBreaker, evenNoAsFailure);
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public Receive createReceive() {
         return receiveBuilder()
 

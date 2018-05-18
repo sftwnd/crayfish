@@ -28,6 +28,7 @@ import org.springframework.stereotype.Component;
 import scala.concurrent.duration.FiniteDuration;
 
 import java.io.IOException;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -266,7 +267,7 @@ public class AmqpConsumeActor<Payload> extends AbstractFSM<AmqpConsumeActor.Stat
                         if (tag.getValue().longValue() <= consumer.getLastTag() && consumer.getLastTag() > lastForceAckTag.get()) {
                             lastForceAckTag.set(consumer.getLastTag());
                             context().system().scheduler().scheduleOnce(
-                                    FiniteDuration.create(1, TimeUnit.SECONDS), self(), new ForceACK(lastForceAckTag.get()), context().system().dispatcher(), self()
+                                    Duration.ofSeconds(1), self(), new ForceACK(lastForceAckTag.get()), context().system().dispatcher(), self()
                             );
                         }
                     }

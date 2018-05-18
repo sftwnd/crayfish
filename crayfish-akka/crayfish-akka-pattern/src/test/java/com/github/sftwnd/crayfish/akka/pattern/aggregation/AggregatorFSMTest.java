@@ -74,7 +74,7 @@ public class AggregatorFSMTest {
                 for (Integer element : elements) {
                     aggregateActor.tell(AggregatorFSM.constructEvent(element), ActorRef.noSender());
                 }
-                Object[] results = fooActor.receiveN(2, FiniteDuration.apply(1, TimeUnit.SECONDS)).toArray();
+                Object[] results = fooActor.receiveN(2, Duration.ofSeconds(1)).toArray();
                 assertEquals(elements, results[1]);
             } finally {
                 actorSystem.stop(fooActor.getRef());

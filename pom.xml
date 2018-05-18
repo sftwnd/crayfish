@@ -69,67 +69,67 @@
         <!-- <javax-inject.version>1</javax-inject.version> -->
 
         <!-- Spring -->
-        <spring.version>5.0.4.RELEASE</spring.version>
-        <spring-boot.version>2.0.0.RC1</spring-boot.version>
-        <spring-security.version>5.0.3.RELEASE</spring-security.version>
-        <spring-cloud-starter-openfeign.version>2.0.0.M6</spring-cloud-starter-openfeign.version>
+        <spring.version>5.0.6.RELEASE</spring.version>
+        <spring-boot.version>2.0.2.RELEASE</spring-boot.version>
+        <spring-security.version>5.0.5.RELEASE</spring-security.version>
+        <spring-cloud-starter-openfeign.version>2.0.0.RC1</spring-cloud-starter-openfeign.version>
         <spring-cloud-starter-hystrix.version>2.0.0.M2</spring-cloud-starter-hystrix.version>
-        <spring-cloud-security.version>2.0.0.M1</spring-cloud-security.version>
+        <spring-cloud-security.version>2.0.0.RC1</spring-cloud-security.version>
         <!-- -->
-        <spring-security-oauth2.version>2.2.1.RELEASE</spring-security-oauth2.version>
+        <spring-security-oauth2.version>2.3.3.RELEASE</spring-security-oauth2.version>
 
         <!-- -->
-        <amqp-client.version>5.1.2</amqp-client.version>
-        <qpid.version>6.1.5</qpid.version>
-        <!-- <qpid.version>7.0.1</qpid.version> -->
+        <amqp-client.version>5.2.0</amqp-client.version>
+        <qpid.version>6.1.6</qpid.version>
+        <!-- <qpid.version>7.0.3</qpid.version> -->
 
-        <fasterxml-jackson.version>2.9.4</fasterxml-jackson.version>
-        <fasterxml-classmate.version>1.3.4</fasterxml-classmate.version>
+        <fasterxml-jackson.version>2.9.5</fasterxml-jackson.version>
+        <fasterxml-classmate.version>1.4.0</fasterxml-classmate.version>
 
         <!-- Data access -->
-        <derby.version>10.13.1.1</derby.version>
+        <derby.version>10.14.2.0</derby.version>
         <!-- <derby.version>10.14.1.0</derby.version> -->
         <oracle.jdbc.version>12.2.0.1</oracle.jdbc.version>
         <oracle.ucp.version>12.2.0.1</oracle.ucp.version>
-        <hikaricp.version>2.7.8</hikaricp.version>
+        <hikaricp.version>3.1.0</hikaricp.version>
 
         <!-- Scala/Akka libraries -->
         <scala.binary.version>2.12</scala.binary.version>
         <scala.version>${scala.binary.version}.4</scala.version>
-        <scala-java8-compat.version>0.8.0</scala-java8-compat.version>
+        <scala-java8-compat.version>0.9.0</scala-java8-compat.version>
         <scala-parser-combinators.version>1.1.0</scala-parser-combinators.version>
         <scala-xml.version>1.1.0</scala-xml.version>
-        <akka-actor.version>2.5.11</akka-actor.version>
+        <akka-actor.version>2.5.12</akka-actor.version>
         <akka-cluster.version>${akka-actor.version}</akka-cluster.version>
-        <akka-http.version>10.0.11</akka-http.version>
+        <akka-http.version>10.1.1</akka-http.version>
         <!-- Cache -->
         <!-- <caffeine.version>2.5.5</caffeine.version> -->
 
         <!-- HTTP/Web -->
-        <openfeign.version>9.5.1</openfeign.version>
+        <openfeign.version>9.7.0</openfeign.version>
         <apache-httpcomponents-httpcore.version>4.4.9</apache-httpcomponents-httpcore.version>
         <apache-httpcomponents-httpclient.version>4.5.5</apache-httpcomponents-httpclient.version>
 
         <!-- Apache -->
-        <apache-commons-dbcp2.version>2.2.0</apache-commons-dbcp2.version>
+        <apache-commons-dbcp2.version>2.3.0</apache-commons-dbcp2.version>
         <apache-commons-lang3.version>3.7</apache-commons-lang3.version>
-        <apache-commons-text.version>1.2</apache-commons-text.version>
+        <apache-commons-text.version>1.3</apache-commons-text.version>
         <!-- Commos -->
         <commons-codec.version>1.11</commons-codec.version>
         <!-- Разное -->
-        <io-reactivex-rxjava.version>2.1.10</io-reactivex-rxjava.version>
-        <google-guava.version>24.0-jre</google-guava.version>
+        <io-reactivex-rxjava.version>2.1.13</io-reactivex-rxjava.version>
+        <google-guava.version>25.0-jre</google-guava.version>
         <!-- Тестирование -->
         <junit.version>4.12</junit.version>
 
         <!-- Maven -->
         <maven-compiler-plugin.version>3.7.0</maven-compiler-plugin.version>
-        <maven-resources-plugin.version>3.0.2</maven-resources-plugin.version>
-        <maven-clean-plugin.version>3.0.0</maven-clean-plugin.version>
+        <maven-resources-plugin.version>3.1.0</maven-resources-plugin.version>
+        <maven-clean-plugin.version>3.1.0</maven-clean-plugin.version>
         <maven-release-plugin.version>2.5.3</maven-release-plugin.version>
         <maven-source-plugin.version>3.0.1</maven-source-plugin.version>
         <maven-project-info-reports-plugin.version>2.9</maven-project-info-reports-plugin.version>
-        <maven-surefire-plugin.version>2.20.1</maven-surefire-plugin.version>
+        <maven-surefire-plugin.version>2.21.0</maven-surefire-plugin.version>
         <!-- Mockito -->
         <!-- <mockito.version>2.13.0</mockito.version> -->
     </properties>
