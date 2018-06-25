@@ -72,7 +72,7 @@
         <spring.version>5.0.6.RELEASE</spring.version>
         <spring-boot.version>2.0.2.RELEASE</spring-boot.version>
         <spring-security.version>5.0.5.RELEASE</spring-security.version>
-        <spring-cloud-starter-openfeign.version>2.0.0.RC1</spring-cloud-starter-openfeign.version>
+        <spring-cloud-starter-openfeign.version>2.0.0.RC2</spring-cloud-starter-openfeign.version>
         <spring-cloud-starter-hystrix.version>2.0.0.M2</spring-cloud-starter-hystrix.version>
         <spring-cloud-security.version>2.0.0.RC1</spring-cloud-security.version>
         <!-- -->
@@ -95,11 +95,11 @@
 
         <!-- Scala/Akka libraries -->
         <scala.binary.version>2.12</scala.binary.version>
-        <scala.version>${scala.binary.version}.4</scala.version>
+        <scala.version>${scala.binary.version}.6</scala.version>
         <scala-java8-compat.version>0.9.0</scala-java8-compat.version>
         <scala-parser-combinators.version>1.1.0</scala-parser-combinators.version>
         <scala-xml.version>1.1.0</scala-xml.version>
-        <akka-actor.version>2.5.12</akka-actor.version>
+        <akka-actor.version>2.5.13</akka-actor.version>
         <akka-cluster.version>${akka-actor.version}</akka-cluster.version>
         <akka-http.version>10.1.1</akka-http.version>
         <!-- Cache -->
@@ -117,8 +117,8 @@
         <!-- Commos -->
         <commons-codec.version>1.11</commons-codec.version>
         <!-- Разное -->
-        <io-reactivex-rxjava.version>2.1.13</io-reactivex-rxjava.version>
-        <google-guava.version>25.0-jre</google-guava.version>
+        <io-reactivex-rxjava.version>2.1.14</io-reactivex-rxjava.version>
+        <google-guava.version>25.1-jre</google-guava.version>
         <!-- Тестирование -->
         <junit.version>4.12</junit.version>
 
