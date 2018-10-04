@@ -72,7 +72,7 @@ public class DefaultAmqpConsumerTest {
 
         final List<TransportAMQPMessage> messages = new ArrayList<>();
 
-        DefaultAmqpConsumer consumer = new DefaultAmqpConsumer<AMQPMessagePayload>(connection, queueName, prefetchSize, ackSize) {
+        DefaultAmqpConsumer<AMQPMessagePayload> consumer = new DefaultAmqpConsumer<AMQPMessagePayload>(connection, queueName, prefetchSize, ackSize) {
 
             @Override
             public AMQPMessagePayload payload(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) throws IOException {
@@ -117,7 +117,7 @@ public class DefaultAmqpConsumerTest {
         int sum = 0;
         int received = 0;
         final List<Message<AMQPMessageTag, Integer>> messages = new ArrayList<>();
-        DefaultAmqpConsumer consumer = new DefaultAmqpConsumer<Integer>(connection, queueName, prefetchSize, ackSize) {
+        DefaultAmqpConsumer<?> consumer = new DefaultAmqpConsumer<Integer>(connection, queueName, prefetchSize, ackSize) {
 
             @Override
             public Integer payload(String consumerTag, Envelope envelope, AMQP.BasicProperties properties, byte[] body) {

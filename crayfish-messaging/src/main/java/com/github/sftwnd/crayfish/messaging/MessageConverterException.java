@@ -7,6 +7,8 @@ import java.io.IOException;
  */
 public class MessageConverterException extends IOException {
 
+    private static final long serialVersionUID = 4529485004166356183L;
+
     public MessageConverterException(String message, Throwable cause) {
         super(message, cause);
     }

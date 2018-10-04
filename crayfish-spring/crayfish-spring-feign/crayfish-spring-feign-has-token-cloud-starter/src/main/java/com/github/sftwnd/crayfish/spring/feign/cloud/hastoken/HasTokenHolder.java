@@ -48,7 +48,7 @@ public class HasTokenHolder implements ErrorDecoder, Retryer, RequestInterceptor
                                 response.request().headers() != null && response.request().headers().containsKey("authToken")) {
                             invalidate(String.valueOf(response.request().headers().get("authToken")));
                         }
-                        return new RetryableException(response.toString(), new Date());
+                        return new RetryableException(response.toString(), Request.HttpMethod.GET,  new Date());
                     } else {
                         return super.decode(methodKey, response);
                     }
