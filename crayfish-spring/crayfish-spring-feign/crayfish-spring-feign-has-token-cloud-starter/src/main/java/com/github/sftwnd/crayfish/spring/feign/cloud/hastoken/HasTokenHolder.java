@@ -1,6 +1,12 @@
 package com.github.sftwnd.crayfish.spring.feign.cloud.hastoken;
 
-import feign.*;
+import feign.Feign;
+import feign.Request;
+import feign.RequestInterceptor;
+import feign.RequestTemplate;
+import feign.Response;
+import feign.RetryableException;
+import feign.Retryer;
 import feign.codec.ErrorDecoder;
 import feign.httpclient.ApacheHttpClient;
 import feign.sax.SAXDecoder;
@@ -48,7 +54,8 @@ public class HasTokenHolder implements ErrorDecoder, Retryer, RequestInterceptor
                                 response.request().headers() != null && response.request().headers().containsKey("authToken")) {
                             invalidate(String.valueOf(response.request().headers().get("authToken")));
                         }
-                        return new RetryableException(response.toString(), Request.HttpMethod.GET,  new Date());
+                        return new //RetryableException(response.toString(), Request.HttpMethod.GET,  new Date());
+                                     RetryableException(response.toString(), new Date());
                     } else {
                         return super.decode(methodKey, response);
                     }

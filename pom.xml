@@ -106,7 +106,15 @@
         <!-- <caffeine.version>2.5.5</caffeine.version> -->
 
         <!-- HTTP/Web -->
-        <openfeign.version>10.0.1</openfeign.version>
+        <!-- openfeign 10.0.1 исключил deprecated api, которое используется в spring openfeign и уппс... В общем - пока не поддерживается
+             ====
+              An attempt was made to call the method
+              org.springframework.cloud.openfeign.support.SpringMvcContract.addTemplatedParam(Ljava/util/Collection;Ljava/lang/String;)Ljava/util/Collection;
+              but it does not exist.
+             ===
+             /org/springframework/cloud/spring-cloud-openfeign-core/2.1.0.M1/spring-cloud-openfeign-core-2.1.0.M1.jar
+          -->
+        <openfeign.version>9.7.0</openfeign.version>
         <apache-httpcomponents-httpcore.version>4.4.10</apache-httpcomponents-httpcore.version>
         <apache-httpcomponents-httpclient.version>4.5.6</apache-httpcomponents-httpclient.version>
 
@@ -118,7 +126,7 @@
         <commons-codec.version>1.11</commons-codec.version>
         <!-- Разное -->
         <io-reactivex-rxjava.version>2.2.2</io-reactivex-rxjava.version>
-        <google-guava.version>26.0-jre</google-guava.version>
+        <google-guava.version>24.0-jre</google-guava.version> <!-- Не поднимать пока - с одним из брокеров проблема, вроде AMQP -->
         <!-- Тестирование -->
         <junit.version>4.12</junit.version>
 
@@ -693,6 +701,11 @@
                 <version>${logback.version}</version>
             </dependency>
             <!-- Разное -->
+            <dependency>
+                <groupId>com.google.guava</groupId>
+                <artifactId>guava</artifactId>
+                <version>${google-guava.version}</version>
+            </dependency>
             <dependency>
                 <groupId>commons-codec</groupId>
                 <artifactId>commons-codec</artifactId>
