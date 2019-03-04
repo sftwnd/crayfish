@@ -1,6 +1,5 @@
 package com.github.sftwnd.crayfish.amqp.publish;
 
-import javafx.beans.NamedArg;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -17,14 +16,14 @@ public class AMQPPublishTag implements Comparable<AMQPPublishTag> {
      * @param exchangeName Имя exchange для отправки сообщения
      * @param routingKey Ключ маршрутизации
      */
-    public AMQPPublishTag(@NamedArg("exchangeName") String exchangeName, @NamedArg("routingKey") String routingKey) {
+    public AMQPPublishTag(String exchangeName, String routingKey) {
         assert exchangeName != null;
         assert routingKey != null;
         this.exchangeName = exchangeName;
         this.routingKey = routingKey;
     }
 
-    public AMQPPublishTag(@NamedArg("tag") AMQPPublishTag tag) {
+    public AMQPPublishTag(AMQPPublishTag tag) {
         this(tag.getExchangeName(), tag.getRoutingKey());
     }
 

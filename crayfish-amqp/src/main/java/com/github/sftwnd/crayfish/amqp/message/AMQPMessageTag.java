@@ -1,7 +1,6 @@
 package com.github.sftwnd.crayfish.amqp.message;
 
-import javafx.beans.NamedArg;
-import javafx.util.Pair;
+import com.github.sftwnd.crayfish.utils.Pair;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -18,13 +17,13 @@ public class AMQPMessageTag extends Pair<String, Long> implements Comparable<AMQ
      * @param key   Тэг канала
      * @param value Идентификатор сообщения
      */
-    public AMQPMessageTag(@NamedArg("key") String key, @NamedArg("value") Long value) {
+    public AMQPMessageTag(String key, Long value) {
         super(key, value);
         assert key != null;
         assert value != null;
     }
 
-    public AMQPMessageTag(@NamedArg("tag") AMQPMessageTag tag) {
+    public AMQPMessageTag(AMQPMessageTag tag) {
         this(tag.getKey(), tag.getValue());
     }
 

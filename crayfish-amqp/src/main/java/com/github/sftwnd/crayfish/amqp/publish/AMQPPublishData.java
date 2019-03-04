@@ -1,7 +1,6 @@
 package com.github.sftwnd.crayfish.amqp.publish;
 
 import com.rabbitmq.client.AMQP;
-import javafx.beans.NamedArg;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 import org.apache.commons.lang3.builder.ToStringStyle;
 
@@ -17,13 +16,13 @@ public class AMQPPublishData {
      * @param props Properties отправляемого сообщения
      * @param body  Тело отправляемого сообщения
      */
-    public AMQPPublishData(@NamedArg("props") AMQP.BasicProperties props, @NamedArg("body") byte[] body) {
+    public AMQPPublishData(AMQP.BasicProperties props, byte[] body) {
         assert props != null;
         this.props = props;
         this.body = body;
     }
 
-    public AMQPPublishData(@NamedArg("tag") AMQPPublishData tag) {
+    public AMQPPublishData(AMQPPublishData tag) {
         this(tag.getProps(), tag.getBody());
     }
 
