@@ -24,11 +24,6 @@ public class DefaultZookeeperService implements ZookeeperService {
     }
 
     @Override
-    public CuratorFramework getCuratorFramework() {
-        return this.curatorFramework;
-    }
-
-    @Override
     public  CuratorFramework createCuratorFramework() {
         return CuratorFrameworkFactory.builder()
                                       .connectString(zookeeperConfig.getConnectString())

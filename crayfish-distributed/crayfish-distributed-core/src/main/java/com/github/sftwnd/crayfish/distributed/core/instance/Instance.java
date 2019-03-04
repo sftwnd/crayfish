@@ -1,13 +1,13 @@
 package com.github.sftwnd.crayfish.distributed.core.instance;
 
 
-import com.github.sftwnd.crayfish.common.info.NamedInfo;
+import com.github.sftwnd.crayfish.common.info.BaseNamedInfo;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.UUID;
 
-public class Instance<I extends InstanceInfo> extends NamedInfo<I> {
+public class Instance<I extends InstanceInfo> extends BaseNamedInfo<I> {
 
     public Instance(@Nonnull String name) {
         this(name, null);
