@@ -11,8 +11,7 @@ import java.util.function.Supplier;
 public class ZookeeperReentantLock extends RevocableReentantLockHelper {
 
     public ZookeeperReentantLock(@Nonnull InterProcessMutex interProcessMutex, @Nonnull Supplier<Instant> statusMonitor) {
-        super(new ZookeeperLockHelper(interProcessMutex), statusMonitor);
-        Objects.requireNonNull(statusMonitor);
+        super(new ZookeeperLockHelper(interProcessMutex), Objects.requireNonNull(statusMonitor));
     }
 
 }

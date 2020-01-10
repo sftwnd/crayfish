@@ -9,10 +9,10 @@ import java.util.zip.CRC32;
 public class HashCode {
 
     private static final byte[] splitter = new byte[] {(byte)':'};
-    private static final int ByteBufferSize = Math.max(Integer.BYTES, Math.max(Double.BYTES, Float.BYTES));
+    private static final int BYTE_BUFFER_SIZE = Math.max(Integer.BYTES, Math.max(Double.BYTES, Float.BYTES));
 
     private CRC32 crc32;
-    private ByteBuffer buffer = ByteBuffer.allocate(ByteBufferSize);
+    private ByteBuffer buffer = ByteBuffer.allocate(BYTE_BUFFER_SIZE);
 
     @SuppressWarnings({"unchecked"})
     public HashCode(Class<?> clazz) {
@@ -149,7 +149,7 @@ public class HashCode {
 
     @SuppressWarnings({"unchecked"})
     public static int hashCode(Class<?> clazz, Object[] attributes) {
-        return hashCode(clazz != null ? clazz.getSimpleName() : (String)null, attributes);
+        return hashCode(clazz != null ? clazz.getSimpleName() : null, attributes);
     }
 
 }

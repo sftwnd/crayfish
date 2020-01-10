@@ -21,7 +21,8 @@ public class Resource<I extends ResourceInfo> extends BaseNamedInfo<I> implement
     }
 
     @Override
-    public Object clone() {
+    @SuppressWarnings("squid:S2975")
+    public Resource<I> clone() {
         return new Resource<>(this);
     }
 

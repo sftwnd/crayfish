@@ -27,7 +27,8 @@ public class Instance<I extends InstanceInfo> extends BaseNamedInfo<I> {
     }
 
     @Override
-    public Object clone() {
+    @SuppressWarnings("squid:S2975")
+    public Instance<I> clone() {
         return new Instance<>(this);
     }
 

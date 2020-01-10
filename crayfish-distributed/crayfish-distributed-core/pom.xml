@@ -10,7 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>crayfish-distributed-core</artifactId>
-    <name>CrayFish :: COMMON :: DISTRIBUTED :: Core</name>
+    <name>CrayFish :: DISTRIBUTED :: Core</name>
 
     <dependencies>
         <dependency>

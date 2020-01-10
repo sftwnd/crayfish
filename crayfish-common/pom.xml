@@ -23,12 +23,9 @@
         <module>crayfish-common-json</module>
         <module>crayfish-common-utl</module>
         <module>crayfish-common-info</module>
+        <module>crayfish-common-resource</module>
     </modules>
 
     <packaging>pom</packaging>
-
-    <dependencies>
-
-    </dependencies>
 
 </project>

@@ -15,7 +15,7 @@
     <dependencies>
         <dependency>
             <groupId>com.github.sftwnd.crayfish.common</groupId>
-            <artifactId>crayfish-common-utl</artifactId>
+            <artifactId>crayfish-common-base</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>

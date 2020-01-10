@@ -19,7 +19,7 @@ public class DefaultZookeeperConfig implements ZookeeperConfig {
     private int maxRetryCount;
 
     public DefaultZookeeperConfig(String connectString) {
-        this(connectString = connectString, 1000, 5000, 5, 750, 10);
+        this(connectString, 1000, 5000, 5, 750, 10);
     }
 
 }

@@ -48,7 +48,7 @@ public final class JsonMapper {
         return objectMapper.get().writeValueAsString(object);
     }
 
-    public static <T>T snakyParseObject(String json, Class<T> clazz) throws IOException {
+    public static <T>T snakyParseObject(String json, Class<T> clazz) {
         try {
             return objectMapper.get().readerFor(clazz).readValue(json);
         } catch (IOException ioex) {
@@ -56,7 +56,7 @@ public final class JsonMapper {
         }
     }
 
-    public static <T>T snakyParseObject(byte[] json, Class<T> clazz) throws IOException {
+    public static <T>T snakyParseObject(byte[] json, Class<T> clazz) {
         try {
             return objectMapper.get().readerFor(clazz).readValue(json);
         } catch (IOException ioex) {

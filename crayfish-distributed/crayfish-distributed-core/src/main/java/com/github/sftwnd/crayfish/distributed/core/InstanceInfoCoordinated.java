@@ -22,8 +22,8 @@ import java.util.List;
 public class InstanceInfoCoordinated extends JsonToStringProcessed implements InstanceInfo {
 
     private static final MessageSource messageSource = I18n.getMessageSource();
-    private static final String unsupportedOperation = "crayfish-distributed-core.unsupportedOperation";
-    private static final String unsupportedOperationMsg = "Операция {} не поддерживается для объекта {}";
+    private static final String UNSUPPORTED_OPERATION = "crayfish-distributed-core.unsupportedOperation";
+    private static final String UNSUPPORTED_OPERATION_MSG = "Операция {} не поддерживается для объекта {}";
 
     private       Instant      activationTime;
     private final List<String> supportedResourceTypes = new ArrayList<>();
@@ -48,11 +48,12 @@ public class InstanceInfoCoordinated extends JsonToStringProcessed implements In
     }
 
     @Override
+    @SuppressWarnings("squid:S2975")
     public Object clone() {
         return InstanceInfoCoordinated.class.equals(this.getClass())
                ? new InstanceInfoCoordinated(this)
                : ExceptionUtils.uncheckExceptions(
-                       new UnsupportedOperationException(messageSource.messageDef(unsupportedOperation, unsupportedOperationMsg, this.getClass().getCanonicalName()+"::close", this))
+                       new UnsupportedOperationException(messageSource.messageDef(UNSUPPORTED_OPERATION, UNSUPPORTED_OPERATION_MSG, this.getClass().getCanonicalName()+"::close", this))
                  );
     }
 

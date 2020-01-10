@@ -4,11 +4,9 @@ import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.github.sftwnd.crayfish.common.i18n.MessageSource;
-import com.github.sftwnd.crayfish.distributed.core.instance.InstanceInfo;
 import lombok.Getter;
 import lombok.Setter;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -19,14 +17,14 @@ import java.time.Instant;
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonIgnoreProperties(ignoreUnknown = true)
 @Getter @Setter
+@Slf4j
 public class InstanceInfoAddressed extends InstanceInfoCoordinated {
 
-    private static final Logger logger = LoggerFactory.getLogger(InstanceInfo.class);
-    private static final MessageSource messageSource         = I18n.getMessageSource();
-    private static final String invalidJmxPort               = "crayfish-distributed-core.invalidJmxPort";
-    private static final String invalidJmxPortMsg            = "Не удаётся определить порт JMX сервиса. com.sun.management.jmxremote.port={}";
-    private static final String unableToIdentifyIPAddress    = "crayfish-distributed-core.unableToIdentifyIPAddress";
-    private static final String unableToIdentifyIPAddressMsg = "Не удаётся определить IP-адрес хоста";
+    private static final MessageSource messageSource = I18n.getMessageSource();
+    private static final String INVALID_JMX_PORT = "crayfish-distributed-core.invalidJmxPort";
+    private static final String INVALID_JMX_PORT_MSG = "Не удаётся определить порт JMX сервиса. com.sun.management.jmxremote.port={}";
+    private static final String UNABLE_TO_IDENTIFY_IP_ADDRESS = "crayfish-distributed-core.unableToIdentifyIPAddress";
+    private static final String UNABLE_TO_IDENTIFY_IP_ADDRESS_MSG = "Не удаётся определить IP-адрес хоста";
 
     private String address;
 
@@ -58,7 +56,7 @@ public class InstanceInfoAddressed extends InstanceInfoCoordinated {
             sb.append(InetAddress.getLocalHost());
         } catch (UnknownHostException uhex) {
             if (logger.isDebugEnabled()) {
-                logger.warn(messageSource.messageDef(unableToIdentifyIPAddress, unableToIdentifyIPAddressMsg));
+                logger.warn(messageSource.messageDef(UNABLE_TO_IDENTIFY_IP_ADDRESS, UNABLE_TO_IDENTIFY_IP_ADDRESS_MSG));
             }
         }
         try {
@@ -66,13 +64,14 @@ public class InstanceInfoAddressed extends InstanceInfoCoordinated {
             sb.append(':').append(port);
         } catch (NumberFormatException nfex) {
             if (logger.isDebugEnabled() && nfex.getLocalizedMessage() != null) {
-                logger.warn(messageSource.messageDef(invalidJmxPort, invalidJmxPortMsg, System.getProperty("com.sun.management.jmxremote.port")));
+                logger.warn(messageSource.messageDef(INVALID_JMX_PORT, INVALID_JMX_PORT_MSG, System.getProperty("com.sun.management.jmxremote.port")));
             }
         }
         return sb.toString();
     }
 
     @Override
+    @SuppressWarnings("squid:S2975")
     public Object clone() {
         return InstanceInfoAddressed.class.equals(this.getClass()) ? new InstanceInfoAddressed(this) : super.clone();
     }

@@ -1,46 +1,24 @@
 package com.github.sftwnd.crayfish.common.base;
 
-import java.io.Serializable;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+import javax.annotation.Nonnull;
 import java.util.Objects;
 
-/**
- * <p>A convenience class to represent name-value pairs.</p>
- *
- */
-@SuppressWarnings("serial")
-public class Pair<K,V> implements Serializable {
+@AllArgsConstructor
+public class Pair<K,V> {
 
     /**
      * Key of this <code>Pair</code>.
      */
-    private K key;
-
-    /**
-     * Gets the key for this pair.
-     * @return key for this pair
-     */
-    public K getKey() { return key; }
+    @Getter
+    @Nonnull private K key;
 
     /**
      * Value of this this <code>Pair</code>.
      */
-    private V value;
-
-    /**
-     * Gets the value for this pair.
-     * @return value for this pair
-     */
-    public V getValue() { return value; }
-
-    /**
-     * Creates a new pair
-     * @param key The key for this pair
-     * @param value The value to use for this pair
-     */
-    public Pair(K key, V value) {
-        this.key = key;
-        this.value = value;
-    }
+    @Getter private V value;
 
     /**
      * <p><code>String</code> representation of this

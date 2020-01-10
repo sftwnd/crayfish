@@ -3,7 +3,6 @@ package com.github.sftwnd.crayfish.common.time;
 import com.github.sftwnd.crayfish.common.base.Pair;
 import com.github.sftwnd.crayfish.common.i18n.I18n;
 import com.github.sftwnd.crayfish.common.i18n.MessageSource;
-import com.github.sftwnd.crayfish.common.utl.StringUtl;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nonnull;
@@ -40,8 +39,8 @@ import static java.time.temporal.ChronoUnit.YEARS;
 @Slf4j
 public class TimeUnitUtl {
 
-    private static final String invalidParameterException = "crayfish-common-time.invalidParameterException";
-    private static final String valueWillBeRounded = "crayfish-common-time.log.valueWillBeRounded";
+    private static final String INVALID_PARAMETER_EXCEPTION = "crayfish-common-time.invalidParameterException";
+    private static final String VALUE_WILL_BE_ROUNDED = "crayfish-common-time.log.valueWillBeRounded";
     private static final MessageSource timeUnits = I18n.getMessageSource(TimeUnitUtl.class, "timeunits");
     private static final MessageSource messageSource = I18n.getMessageSource(TimeUnitUtl.class, "messages");
 
@@ -82,6 +81,7 @@ public class TimeUnitUtl {
         return chronoUnit == null ? defaultUnit : TimeUnit.of(chronoUnit);
     }
 
+    @SuppressWarnings("squid:S4784")
     private static final Pattern pattern = Pattern.compile("^(\\d+)?\\s*(.*)$");
 
     public static final Period getPeriod(@Nonnull String str) throws InvalidParameterException {
@@ -91,7 +91,7 @@ public class TimeUnitUtl {
     public static final Period getPeriod(@Nonnull String str, ChronoUnit defaultChronoUnit) throws InvalidParameterException {
         Pair<Long, ChronoUnit> pair = parse(str, defaultChronoUnit);
         if (Objects.requireNonNullElse(pair.getKey(), 0L).intValue() < 1) {
-            throw new InvalidParameterException(messageSource.message(invalidParameterException, str, pair.getKey()));
+            throw new InvalidParameterException(messageSource.message(INVALID_PARAMETER_EXCEPTION, str, pair.getKey()));
         }
         Duration duration;
         switch (pair.getValue()) {
@@ -103,11 +103,11 @@ public class TimeUnitUtl {
             default: duration = Duration.of(pair.getKey(), pair.getValue());
         }
         if (duration.toDays() < 1) {
-            throw new InvalidParameterException(messageSource.message(invalidParameterException, str, duration));
+            throw new InvalidParameterException(messageSource.message(INVALID_PARAMETER_EXCEPTION, str, duration));
         } else {
             BigDecimal[] divided = BigDecimal.valueOf(duration.toMillis()).divideAndRemainder(BigDecimal.valueOf(Duration.ofDays(1).toMillis()));
             if (divided[1].intValue() > 0) {
-                logger.warn(messageSource.message(valueWillBeRounded));
+                logger.warn(messageSource.message(VALUE_WILL_BE_ROUNDED));
             }
             return Period.ofDays(divided[0].intValue());
         }
@@ -119,10 +119,10 @@ public class TimeUnitUtl {
         Matcher matcher = pattern.matcher(str);
         Pair<Long, ChronoUnit> result = matcher.matches()
                 ? Pair.of(
-                      Long.valueOf(StringUtl.toString(matcher.group(1), "1"))
+                      Long.valueOf(Objects.toString(matcher.group(1), "1"))
                      ,getChronoUnit(matcher.group(2), defaultChronoUnit)
                   )
-                : Pair.of(Long.valueOf(StringUtl.toString(str, "1")), defaultChronoUnit);
+                : Pair.of(Long.valueOf(Objects.toString(str, "1")), defaultChronoUnit);
         Objects.requireNonNull(result.getKey());
         Objects.requireNonNull(result.getValue());
         return result;

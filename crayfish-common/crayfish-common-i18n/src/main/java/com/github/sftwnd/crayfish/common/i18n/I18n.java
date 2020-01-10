@@ -6,8 +6,8 @@ package com.github.sftwnd.crayfish.common.i18n;
 
 public final class I18n {
 
-    private final static String defaultBundleName = "messages";
-    private final static MessageSource messageSource = getMessageSource(defaultBundleName);
+    private final static String DEFAULT_BUNDLE_NAME = "messages";
+    private final static MessageSource messageSource = getMessageSource(DEFAULT_BUNDLE_NAME);
 
     private final Package pack;
 
@@ -24,11 +24,11 @@ public final class I18n {
     }
 
     public static MessageSource getMessageSource(Package pack) {
-        return getMessageSource(pack, defaultBundleName);
+        return getMessageSource(pack, DEFAULT_BUNDLE_NAME);
     }
 
     public static MessageSource getMessageSource(Class<?> clazz) {
-        return getMessageSource(clazz, defaultBundleName);
+        return getMessageSource(clazz, DEFAULT_BUNDLE_NAME);
     }
 
     public static MessageSource getMessageSource(Package pack, String boundleName) {

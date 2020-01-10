@@ -34,8 +34,8 @@ public class ZookeeperLockService implements LockService, Closeable {
     private ConcurrentHashMap<String, WeakReference<ZookeeperReentantLock>> locks = new ConcurrentHashMap<>();
     private ConnectionStateListener connectionStateListener;
     private volatile boolean closed = false;
-    private volatile Instant checkWeakInstant = Instant.MIN;
-    private volatile Instant stateInstant = Instant.MIN;
+    private Instant checkWeakInstant = Instant.MIN;
+    private Instant stateInstant = Instant.MIN;
 
     public ZookeeperLockService(@Nonnull ZookeeperService zookeeperService) {
         this(zookeeperService, null);
@@ -62,7 +62,7 @@ public class ZookeeperLockService implements LockService, Closeable {
             }
             final List<ZookeeperReentantLock> revokedLocks = this.locks.entrySet().stream()
                     .map(e -> e.getValue().get())
-                    .filter(lock -> lock != null)
+                    .filter(Objects::nonNull)
                     .peek(lock -> lock.revokeUntil(stateInstant))
                     .collect(Collectors.toList());
             if (revokedLocks.size() > 0) {
@@ -105,7 +105,7 @@ public class ZookeeperLockService implements LockService, Closeable {
                     locks.remove(name);
                     return getNamedLock(name);
                 } else {
-                    // Ну. типа, если между get(name) и get() GC почистил weak ссылку...
+                    // Ну, типа, если между get(name) и get() GC почистил weak ссылку...
                     if (ref.get() == null) {
                         locks.put(name, new WeakReference<>(lock));
                     }

@@ -20,8 +20,8 @@ import java.time.Instant;
 public class ResourceInfoCoordinated extends JsonToStringProcessed implements ResourceInfo {
 
     private static final MessageSource messageSource = I18n.getMessageSource();
-    private static final String unsupportedOperation = "crayfish-distributed-core.unsupportedOperation";
-    private static final String unsupportedOperationMsg = "Операция {} не поддерживается для объекта {}";
+    private static final String UNSUPPORTED_OPERATION = "crayfish-distributed-core.unsupportedOperation";
+    private static final String UNSUPPORTED_OPERATION_MSG = "Операция {} не поддерживается для объекта {}";
 
     private String  owner;
     private Instant ownTime;
@@ -52,11 +52,12 @@ public class ResourceInfoCoordinated extends JsonToStringProcessed implements Re
 
 
     @Override
+    @SuppressWarnings("squid:S2975")
     public Object clone() {
         if (ResourceInfoCoordinated.class.equals(this.getClass())) {
             return new ResourceInfoCoordinated(this);
         } else {
-            return ExceptionUtils.uncheckExceptions(new UnsupportedOperationException(messageSource.messageDef(unsupportedOperation, unsupportedOperationMsg, this.getClass().getCanonicalName()+"::clone", this)));
+            return ExceptionUtils.uncheckExceptions(new UnsupportedOperationException(messageSource.messageDef(UNSUPPORTED_OPERATION, UNSUPPORTED_OPERATION_MSG, this.getClass().getCanonicalName()+"::clone", this)));
         }
     }
 

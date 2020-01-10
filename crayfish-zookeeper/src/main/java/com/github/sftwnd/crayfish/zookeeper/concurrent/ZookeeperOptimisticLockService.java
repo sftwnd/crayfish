@@ -28,8 +28,8 @@ public class ZookeeperOptimisticLockService extends ZookeeperLockService {
     private ConcurrentHashMap<String, WeakReference<ZookeeperReentantLock>> locks = new ConcurrentHashMap<>();
     private ConnectionStateListener connectionStateListener;
     private volatile boolean closed = false;
-    private volatile Instant checkWeakInstant = Instant.MIN;
-    private volatile Instant stateInstant = Instant.MIN;
+    private Instant checkWeakInstant = Instant.MIN;
+    private Instant stateInstant = Instant.MIN;
 
     public ZookeeperOptimisticLockService(@Nonnull ZookeeperService zookeeperService) {
         this(zookeeperService, null);
@@ -40,7 +40,7 @@ public class ZookeeperOptimisticLockService extends ZookeeperLockService {
     }
 
     @Override
-    @SuppressWarnings("Duplicates")
+    @SuppressWarnings({"Duplicates", "fallthrough", "squid:S128"})
     protected void stateChanged(final CuratorFramework curatorFramework, final ConnectionState newState) {
         try {
             synchronized (this.locks) {

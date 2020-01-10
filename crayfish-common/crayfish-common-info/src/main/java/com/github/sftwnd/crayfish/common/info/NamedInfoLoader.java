@@ -1,16 +1,9 @@
 package com.github.sftwnd.crayfish.common.info;
 
-import java.util.function.Function;
 import java.util.stream.Stream;
 
-@FunctionalInterface
-public interface NamedInfoLoader<I extends Cloneable> extends Function<NamedInfoLoader.OnThrow, Stream<NamedInfo<I>>> {
+public interface NamedInfoLoader<I>  {
 
-    enum OnThrow {
-        THROW
-        ,SKIP
-        ,CLEAN
-        ,EMPTY
-    }
+    Stream<NamedInfo<I>> load() throws Exception;
 
 }
