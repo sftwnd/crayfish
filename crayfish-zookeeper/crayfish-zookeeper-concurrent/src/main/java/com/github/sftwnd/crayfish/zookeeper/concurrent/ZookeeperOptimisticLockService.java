@@ -11,6 +11,7 @@ import java.lang.ref.WeakReference;
 import java.time.Duration;
 import java.time.Instant;
 import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
@@ -56,7 +57,7 @@ public class ZookeeperOptimisticLockService extends ZookeeperLockService {
                 }
                 final List<ZookeeperReentantLock> revokedLocks = this.locks.entrySet().stream()
                         .map(e -> e.getValue().get())
-                        .filter(lock -> lock != null)
+                        .filter(Objects::nonNull)
                         .peek(lock -> lock.revokeUntil(stateInstant))
                         .collect(Collectors.toList());
                 if (revokedLocks.size() > 0) {

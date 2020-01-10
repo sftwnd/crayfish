@@ -1,4 +1,4 @@
-package com.github.sftwnd.crayfish.zookeeper;
+package com.github.sftwnd.crayfish.zookeeper.info;
 
 import com.github.sftwnd.crayfish.common.info.NamedInfo;
 

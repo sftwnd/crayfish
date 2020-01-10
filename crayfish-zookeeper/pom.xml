@@ -10,31 +10,15 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>crayfish-zookeeper</artifactId>
     <groupId>com.github.sftwnd.crayfish.zookeeper</groupId>
-    <packaging>jar</packaging>
-    <name>CrayFish :: Zookeeper</name>
+    <artifactId>crayfish-zookeeper</artifactId>
+    <name>CrayFish :: ZOOKEEPER</name>
+    <packaging>pom</packaging>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.github.sftwnd.crayfish.common</groupId>
-            <artifactId>crayfish-common-concurrent</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.sftwnd.crayfish.common</groupId>
-            <artifactId>crayfish-common-info</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>com.github.sftwnd.crayfish.common</groupId>
-            <artifactId>crayfish-common-i18n</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.curator</groupId>
-            <artifactId>curator-recipes</artifactId>
-        </dependency>
-    </dependencies>
+    <modules>
+        <module>crayfish-zookeeper-common</module>
+        <module>crayfish-zookeeper-concurrent</module>
+        <module>crayfish-zookeeper-info</module>
+    </modules>
 
 </project>

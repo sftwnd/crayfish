@@ -63,8 +63,8 @@
         <module>crayfish-core</module>
         <module>crayfish-common</module>
         <module>crayfish-distributed</module>
-        <module>crayfish-zookeeper</module>
         <module>crayfish-libs</module>
+        <module>crayfish-zookeeper</module>
     </modules>
 
     <build>
