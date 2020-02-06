@@ -144,6 +144,67 @@
                 <artifactId>jackson-datatype-jdk8</artifactId>
                 <version>${fasterxml-jackson.version}</version>
             </dependency>
+            <!-- -== CRAYFISH ==- -->
+            <dependency>
+                <groupId>com.github.sftwnd.crayfish.common</groupId>
+                <artifactId>crayfish-common-base</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.sftwnd.crayfish.common</groupId>
+                <artifactId>crayfish-common-concurrent</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.sftwnd.crayfish.common</groupId>
+                <artifactId>crayfish-common-exception</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.sftwnd.crayfish.common</groupId>
+                <artifactId>crayfish-common-format</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.sftwnd.crayfish.common</groupId>
+                <artifactId>crayfish-common-i18n</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.sftwnd.crayfish.common</groupId>
+                <artifactId>crayfish-common-info</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.sftwnd.crayfish.common</groupId>
+                <artifactId>crayfish-common-json</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.sftwnd.crayfish.common</groupId>
+                <artifactId>crayfish-common-resource</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.sftwnd.crayfish.common</groupId>
+                <artifactId>crayfish-common-time</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.sftwnd.crayfish.common</groupId>
+                <artifactId>crayfish-common-utl</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.sftwnd.crayfish.zookeeper</groupId>
+                <artifactId>crayfish-zookeeper-common</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.sftwnd.crayfish.distributed</groupId>
+                <artifactId>crayfish-distributed-core</artifactId>
+                <version>${project.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 

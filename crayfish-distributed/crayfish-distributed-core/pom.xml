@@ -16,17 +16,14 @@
         <dependency>
             <groupId>com.github.sftwnd.crayfish.common</groupId>
             <artifactId>crayfish-common-json</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.sftwnd.crayfish.common</groupId>
             <artifactId>crayfish-common-info</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.sftwnd.crayfish.common</groupId>
             <artifactId>crayfish-common-i18n</artifactId>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
 </project>

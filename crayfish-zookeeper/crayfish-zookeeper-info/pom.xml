@@ -17,12 +17,10 @@
         <dependency>
             <groupId>com.github.sftwnd.crayfish.common</groupId>
             <artifactId>crayfish-common-info</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>com.github.sftwnd.crayfish.zookeeper</groupId>
             <artifactId>crayfish-zookeeper-common</artifactId>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
 
