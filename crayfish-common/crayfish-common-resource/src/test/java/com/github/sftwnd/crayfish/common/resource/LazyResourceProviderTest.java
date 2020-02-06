@@ -1,6 +1,5 @@
 package com.github.sftwnd.crayfish.common.resource;
 
-import com.github.sftwnd.crayfish.common.exception.ExceptionUtils;
 import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 
@@ -8,7 +7,6 @@ import java.io.IOException;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.BiConsumer;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -133,7 +131,9 @@ class LazyResourceProviderTest {
     }
 
     private static final Object obj = Long.valueOf(Math.round(Math.random()*100000L));
+    @SuppressWarnings({"unchecked", "rawtypes"})
     Class<? extends Throwable>[] throwables = new Class[]{IOException.class, NumberFormatException.class};
+    @SuppressWarnings({"unchecked", "rawtypes"})
     Class<? extends Throwable>[] throwable  = new Class[]{throwables[0]};
 
     private LazyResourceProvider<Object, Object> getProvider() {
