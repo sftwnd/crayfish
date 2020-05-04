@@ -12,7 +12,7 @@
 
     <groupId>com.github.sftwnd.crayfish.distributed</groupId>
     <artifactId>crayfish-distributed</artifactId>
-    <name>CrayFish :: COMMON :: DISTRIBUTED</name>
+    <name>CrayFish :: DISTRIBUTED</name>
     <modules>
         <module>crayfish-distributed-core</module>
     </modules>

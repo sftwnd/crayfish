@@ -4,8 +4,7 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.github.sftwnd.crayfish.common.format.DateSerializeUtility;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.time.Instant;
@@ -15,10 +14,10 @@ import java.util.TimeZone;
 /**
  * Created by ashindarev on 08.02.16.
  */
+@Slf4j
 public final class JsonInstantSerializer extends JsonSerializer<Instant> {
 
-    public static final Logger logger = LoggerFactory.getLogger(JsonInstantSerializer.class);
-    public static final String dateFormatStr = "yyyy-MM-dd'T'HH:mm:ssXXX";
+    public static final String DATE_FORMAT_STR = "yyyy-MM-dd'T'HH:mm:ssXXX";
 
     @Override
     public void serialize(Instant instant, JsonGenerator gen, SerializerProvider provider) throws IOException {
@@ -27,7 +26,7 @@ public final class JsonInstantSerializer extends JsonSerializer<Instant> {
         if (instant != null) {
             date = Date.from(instant);
         }
-        gen.writeString(date == null ? null : DateSerializeUtility.getDateSerializeUtility(TimeZone.getDefault(), dateFormatStr).serialize(date));
+        gen.writeString(date == null ? null : DateSerializeUtility.getDateSerializeUtility(TimeZone.getDefault(), DATE_FORMAT_STR).serialize(date));
     }
 
 }

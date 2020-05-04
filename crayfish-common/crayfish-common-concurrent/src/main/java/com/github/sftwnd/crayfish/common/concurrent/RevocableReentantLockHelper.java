@@ -8,6 +8,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.time.Instant;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -18,15 +19,15 @@ import java.util.function.Supplier;
 @Slf4j
 public class RevocableReentantLockHelper implements Lock, Revocable {
 
-    private static ThreadLocal<AtomicInteger> acquires   = ThreadLocal.withInitial(() -> new AtomicInteger(0));
+    private static ThreadLocal<AtomicInteger> acquires = ThreadLocal.withInitial(() -> new AtomicInteger(0));
 
     private final String logName;
     private final Lock lockHelper;
     @Getter
-    private final Supplier<Instant>           statusMonitor;
-    private volatile ThreadLocal<Instant>     initAt    = ThreadLocal.withInitial(() -> Instant.MIN);
-    private volatile AtomicReference<Instant> revokedAt = new AtomicReference<>(Instant.MIN);
-    private volatile ThreadLocal<Long>                 checkedAt = ThreadLocal.withInitial(() -> 0L);
+    private final Supplier<Instant>        statusMonitor;
+    private final ThreadLocal<Instant>     initAt    = ThreadLocal.withInitial(() -> Instant.MIN);
+    private final AtomicReference<Instant> revokedAt = new AtomicReference<>(Instant.MIN);
+    private final ThreadLocal<Long>        checkedAt = ThreadLocal.withInitial(() -> 0L);
 
     public RevocableReentantLockHelper(@Nonnull Lock lockHelper) {
         this(lockHelper, null);
@@ -59,7 +60,8 @@ public class RevocableReentantLockHelper implements Lock, Revocable {
             // Подразумевается, что есть маааленький slice временя между первым успешным взятием блокировки и очисткой флага revoked,
             // когда флаг может быть установлен триггером, и после этого без проверки опять сброшен. Посредством определения метода в
             // clearFlag можно задать правильное значение
-            final int acquires = this.acquires.get().incrementAndGet();
+            @SuppressWarnings("squid:HiddenFieldCheck")
+            final int acquires = RevocableReentantLockHelper.acquires.get().incrementAndGet();
             logger.trace("{} acquires: {}", logName, acquires);
         }
     }
@@ -67,7 +69,8 @@ public class RevocableReentantLockHelper implements Lock, Revocable {
     private void released() {
         synchronized (revokedAt) {
             if (acquires.get().intValue() > 0) {
-                final int acquires = this.acquires.get().decrementAndGet();
+                @SuppressWarnings("squid:HiddenFieldCheck")
+                final int acquires = RevocableReentantLockHelper.acquires.get().decrementAndGet();
                 try {
                     logger.trace("{} has been released {} to: {} acquires", logName, acquires == 0 ? "completely" : "", acquires);
                     checkRevoked("::released", false);
@@ -105,6 +108,7 @@ public class RevocableReentantLockHelper implements Lock, Revocable {
         }
     }
 
+    @SuppressWarnings("squid:S1181")
     private void checkRevoked(final String callerName, final boolean acquired) {
         synchronized (revokedAt) {
             try {
@@ -127,6 +131,7 @@ public class RevocableReentantLockHelper implements Lock, Revocable {
     }
 
     @Override
+    @SuppressWarnings("squid:S1181")
     public void lock() {
         try {
             preacquire();
@@ -138,6 +143,7 @@ public class RevocableReentantLockHelper implements Lock, Revocable {
     }
 
     @Override
+    @SuppressWarnings("squid:S1181")
     public void lockInterruptibly() throws InterruptedException {
         try {
             preacquire();
@@ -152,6 +158,7 @@ public class RevocableReentantLockHelper implements Lock, Revocable {
     }
 
     @Override
+    @SuppressWarnings("squid:S1181")
     public boolean tryLock() {
         try {
             preacquire();
@@ -166,6 +173,7 @@ public class RevocableReentantLockHelper implements Lock, Revocable {
     }
 
     @Override
+    @SuppressWarnings("squid:S1181")
     public boolean tryLock(long time, TimeUnit unit) throws InterruptedException {
         try {
             preacquire();

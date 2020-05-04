@@ -133,16 +133,7 @@ public final class LockUtils {
         if (timeUnit == null) {
             lock.lock();
         } else {
-            /*
             if (!(timeout == TRY_LOCK_WITHOUT_TIMEOUT_TIMEOUT ? lock.tryLock() : lock.tryLock(timeout, timeUnit)))
-            */
-            boolean flag;
-            if (timeout == TRY_LOCK_WITHOUT_TIMEOUT_TIMEOUT) {
-                flag = lock.tryLock();
-            } else {
-                flag = lock.tryLock(timeout, timeUnit);
-            }
-            if (!flag)
             {
                 throw timeoutError == null ? new LockAquireTimeoutException() : timeoutError;
             }

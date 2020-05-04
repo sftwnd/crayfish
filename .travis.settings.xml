@@ -33,7 +33,7 @@
             <repositories>
                 <repository>
                     <id>central</id>
-                    <url>http://central.maven.org/maven2/</url>
+                    <url>https://repo.maven.apache.org/maven2/</url>
                     <releases>
                         <enabled>true</enabled>
                     </releases>
@@ -93,7 +93,7 @@
             <pluginRepositories>
                 <pluginRepository>
                     <id>central</id>
-                    <url>http://central.maven.org/maven2/</url>
+                    <url>https://repo.maven.apache.org/maven2/</url>
                     <releases>
                         <enabled>true</enabled>
                     </releases>

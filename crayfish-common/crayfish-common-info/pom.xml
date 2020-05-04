@@ -15,13 +15,15 @@
     <dependencies>
         <dependency>
             <groupId>com.github.sftwnd.crayfish.common</groupId>
-            <artifactId>crayfish-common-utl</artifactId>
-            <version>${project.version}</version>
+            <artifactId>crayfish-common-base</artifactId>
         </dependency>
         <dependency>
             <groupId>com.github.sftwnd.crayfish.common</groupId>
             <artifactId>crayfish-common-json</artifactId>
-            <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.github.sftwnd.crayfish.common</groupId>
+            <artifactId>crayfish-common-crc</artifactId>
         </dependency>
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

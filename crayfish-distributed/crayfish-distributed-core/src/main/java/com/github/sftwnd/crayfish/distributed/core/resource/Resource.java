@@ -1,11 +1,12 @@
 package com.github.sftwnd.crayfish.distributed.core.resource;
 
+import com.github.sftwnd.crayfish.common.info.BaseNamedInfo;
 import com.github.sftwnd.crayfish.common.info.NamedInfo;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class Resource<I extends ResourceInfo> extends NamedInfo<I> implements Cloneable {
+public class Resource<I extends ResourceInfo> extends BaseNamedInfo<I> implements Cloneable {
 
     public Resource(@Nonnull String name) {
         this(name, null);
@@ -20,7 +21,8 @@ public class Resource<I extends ResourceInfo> extends NamedInfo<I> implements Cl
     }
 
     @Override
-    public Object clone() {
+    @SuppressWarnings("squid:S2975")
+    public Resource<I> clone() {
         return new Resource<>(this);
     }
 

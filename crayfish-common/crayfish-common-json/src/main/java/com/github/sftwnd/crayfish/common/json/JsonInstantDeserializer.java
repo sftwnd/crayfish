@@ -3,33 +3,34 @@ package com.github.sftwnd.crayfish.common.json;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Date;
+import java.util.Optional;
 
 /**
  * Created by ashindarev on 08.02.16.
  */
+@Slf4j
 public final class JsonInstantDeserializer extends JsonDeserializer<Instant> {
-
-    private static final Logger logger = LoggerFactory.getLogger(JsonInstantDeserializer.class);
 
     private JsonDateDeserializer jsonDateDeserializer = null;
 
     @Override
     public Instant deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-        if (jsonDateDeserializer == null) {
+        JsonDateDeserializer checkForInit = this.jsonDateDeserializer;
+        if (checkForInit == null) {
             synchronized (this) {
-                if (jsonDateDeserializer == null) {
-                    jsonDateDeserializer = new JsonDateDeserializer();
+                checkForInit = this.jsonDateDeserializer;
+                if (checkForInit == null) {
+                    this.jsonDateDeserializer = new JsonDateDeserializer();
                 }
             }
         }
-        Date date = jsonDateDeserializer.deserialize(jsonParser, deserializationContext);
-        return date == null ? null : date.toInstant();
+        return Optional.ofNullable(this.jsonDateDeserializer.deserialize(jsonParser, deserializationContext))
+                       .map(date -> date.toInstant())
+                       .orElse(null);
     }
 
 }

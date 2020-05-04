@@ -1,18 +1,8 @@
 package com.github.sftwnd.crayfish.distributed.core.resource;
 
-import java.io.Closeable;
-import java.util.stream.Stream;
+import com.github.sftwnd.crayfish.common.info.NamedInfoLoader;
 
-public interface ResourceManager<R extends ResourceInfo> extends Closeable {
+public interface ResourceManager<R extends ResourceInfo> extends NamedInfoLoader<R> {
 
-    String getResourceTypeName();
-
-    /**
-     *
-     * Получение списка имеющихся в наличии ресурсов
-     *
-     * @return Поток имеющихся ресурсов
-     */
-    Stream<Resource<R>> resources();
 
 }
