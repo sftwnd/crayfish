@@ -44,13 +44,17 @@ public class TimeUnitUtl {
     private static final MessageSource timeUnits = I18n.getMessageSource(TimeUnitUtl.class, "timeunits");
     private static final MessageSource messageSource = I18n.getMessageSource(TimeUnitUtl.class, "messages");
 
+    private TimeUnitUtl() {
+        throw new IllegalStateException("TimeUnitUtl is utility class");
+    }
+
     private static final Map<String, ChronoUnit> unitNamesMap = Stream.of(
-               new ChronoUnit[]{ MICROS, MILLIS, SECONDS, MINUTES, HOURS, HALF_DAYS, DAYS, WEEKS, MONTHS, YEARS, DECADES, CENTURIES, MILLENNIA, ERAS, FOREVER}
+               MICROS, MILLIS, SECONDS, MINUTES, HOURS, HALF_DAYS, DAYS, WEEKS, MONTHS, YEARS, DECADES, CENTURIES, MILLENNIA, ERAS, FOREVER
              )
             .flatMap(
                     cu -> {
                         String nm = cu.name().toLowerCase().replace("_","");
-                        return Stream.of(new Locale[] {Locale.getDefault(), Locale.forLanguageTag(""), null})
+                        return Stream.of(Locale.getDefault(), Locale.forLanguageTag(""), null)
                                 .flatMap(
                                         l -> Stream.of(
                                                 ( l == null ? cu.name().toLowerCase().replace("_","")
@@ -84,11 +88,11 @@ public class TimeUnitUtl {
     @SuppressWarnings("squid:S4784")
     private static final Pattern pattern = Pattern.compile("^(\\d+)?\\s*(.*)$");
 
-    public static final Period getPeriod(@Nonnull String str) throws InvalidParameterException {
+    public static final Period getPeriod(@Nonnull String str) {
         return getPeriod(str, ChronoUnit.DAYS);
     }
 
-    public static final Period getPeriod(@Nonnull String str, ChronoUnit defaultChronoUnit) throws InvalidParameterException {
+    public static final Period getPeriod(@Nonnull String str, ChronoUnit defaultChronoUnit) {
         Pair<Long, ChronoUnit> pair = parse(str, defaultChronoUnit);
         if (Objects.requireNonNullElse(pair.getKey(), 0L).intValue() < 1) {
             throw new InvalidParameterException(messageSource.message(INVALID_PARAMETER_EXCEPTION, str, pair.getKey()));

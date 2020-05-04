@@ -16,7 +16,7 @@ public interface MessageSource {
      * @return найденное сообщение
      * @throws NoSuchMessageException
      */
-    String message(@Nonnull String code, Object... args) throws NoSuchMessageException;
+    String message(@Nonnull String code, Object... args);
 
     /**
      * Возвращает сообщение по указанному идентификационному коду для указанной локали.
@@ -26,7 +26,7 @@ public interface MessageSource {
      * @return найденное сообщение
      * @throws NoSuchMessageException
      */
-    String message(Locale locale, @Nonnull String code, Object... args) throws NoSuchMessageException;
+    String message(Locale locale, @Nonnull String code, Object... args);
 
     /**
      * Возвращает сообщение по указанному идентификационному коду.

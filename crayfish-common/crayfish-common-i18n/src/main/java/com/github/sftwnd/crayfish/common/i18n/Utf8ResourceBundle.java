@@ -73,6 +73,9 @@ public final class Utf8ResourceBundle {
     }
 
     public static class EncodingNotSupportedException extends RuntimeException {
+
+        private static final long serialVersionUID = 2901431584438331351L;
+
         public EncodingNotSupportedException(String text, Exception ex) {
             super(text, ex);
         }

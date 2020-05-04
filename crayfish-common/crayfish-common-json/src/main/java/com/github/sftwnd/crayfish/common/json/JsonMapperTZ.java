@@ -22,12 +22,7 @@ public final class JsonMapperTZ {
         throw new IllegalStateException("JsonMapperTZ is utility class");
     }
 
-    private static ThreadLocal<Map<String, ObjectMapper>> objectMappers = new ThreadLocal<Map<String, ObjectMapper>>() {
-        @Override
-        protected Map<String, ObjectMapper> initialValue() {
-             return new HashMap<>();
-        }
-    };
+    private static ThreadLocal<Map<String, ObjectMapper>> objectMappers = ThreadLocal.withInitial(() -> new HashMap<>());
 
     public static ObjectMapper getObjectMapper(TimeZone timeZone) {
         Map<String, ObjectMapper> mappers = objectMappers.get();
