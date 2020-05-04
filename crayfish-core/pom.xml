@@ -36,32 +36,32 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>[${slf4j.version},)</version>
+                <version>${slf4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>jcl-over-slf4j</artifactId>
-                <version>[${jcl-over-slf4j.version},)</version>
+                <version>${jcl-over-slf4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-core</artifactId>
-                <version>[${logback.version},)</version>
+                <version>${logback.version}</version>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>[${logback.version},)</version>
+                <version>${logback.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-log4j12</artifactId>
-                <version>[${slf4j.version},)</version>
+                <version>${slf4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>uk.org.lidalia</groupId>
                 <artifactId>slf4j-test</artifactId>
-                <version>[${lidalia-slf4j-test.version},)</version>
+                <version>${lidalia-slf4j-test.version}</version>
             </dependency>
             <!-- Lombok -->
             <dependency>
@@ -89,7 +89,7 @@
             <dependency>
                 <groupId>javax.annotation</groupId>
                 <artifactId>javax.annotation-api</artifactId>
-                <version>[${javax-annotation.version},)</version>
+                <version>${javax-annotation.version}</version>
             </dependency>
             <!-- JUnit -->
             <dependency>
@@ -106,43 +106,43 @@
             <dependency>
                 <groupId>org.apache.curator</groupId>
                 <artifactId>curator-framework</artifactId>
-                <version>[${apache-curator.version},)</version>
+                <version>${apache-curator.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.curator</groupId>
                 <artifactId>curator-recipes</artifactId>
-                <version>[${apache-curator.version},)</version>
+                <version>${apache-curator.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.zookeeper</groupId>
                 <artifactId>zookeeper</artifactId>
-                <version>[${zookeeper.version},)</version>
+                <version>${zookeeper.version}</version>
             </dependency>
             <!-- Faster XML -->
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
-                <version>[${fasterxml-jackson.version},)</version>
+                <version>${fasterxml-jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>[${fasterxml-jackson-databind.version},)</version>
+                <version>${fasterxml-jackson-databind.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
-                <version>[${fasterxml-jackson.version},)</version>
+                <version>${fasterxml-jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-jsr310</artifactId>
-                <version>[${fasterxml-jackson.version},)</version>
+                <version>${fasterxml-jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-jdk8</artifactId>
-                <version>[${fasterxml-jackson.version},)</version>
+                <version>${fasterxml-jackson.version}</version>
             </dependency>
             <!-- -== CRAYFISH ==- -->
             <dependency>
