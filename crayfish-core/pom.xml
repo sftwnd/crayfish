@@ -152,6 +152,11 @@
             </dependency>
             <dependency>
                 <groupId>com.github.sftwnd.crayfish.common</groupId>
+                <artifactId>crayfish-common-crc</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.github.sftwnd.crayfish.common</groupId>
                 <artifactId>crayfish-common-concurrent</artifactId>
                 <version>${project.version}</version>
             </dependency>

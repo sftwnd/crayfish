@@ -22,6 +22,10 @@
             <artifactId>crayfish-common-json</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.github.sftwnd.crayfish.common</groupId>
+            <artifactId>crayfish-common-crc</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-annotations</artifactId>
         </dependency>

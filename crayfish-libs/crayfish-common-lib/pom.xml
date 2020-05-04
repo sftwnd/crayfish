@@ -92,18 +92,17 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <filters>
+                                <filter>
+                                    <artifact>*:*</artifact>
+                                    <excludes>
+                                        <exclude>META-INF/MANIFEST.MF</exclude>
+                                    </excludes>
+                                </filter>
+                            </filters>
                             <artifactSet>
                                 <includes>
                                     <include>com.github.sftwnd.crayfish.common:crayfish-common-*</include>
-                                    <!--  <include>com.github.sftwnd.crayfish.common:crayfish-common-base</include>
-                                    <include>com.github.sftwnd.crayfish.common:crayfish-common-concurrent</include>
-                                    <include>com.github.sftwnd.crayfish.common:crayfish-common-exception</include>
-                                    <include>com.github.sftwnd.crayfish.common:crayfish-common-format</include>
-                                    <include>com.github.sftwnd.crayfish.common:crayfish-common-i18n</include>
-                                    <include>com.github.sftwnd.crayfish.common:crayfish-common-info</include>
-                                    <include>com.github.sftwnd.crayfish.common:crayfish-common-json</include>
-                                    <include>com.github.sftwnd.crayfish.common:crayfish-common-time</include>
-                                    <include>com.github.sftwnd.crayfish.common:crayfish-common-utl</include> -->
                                 </includes>
                             </artifactSet>
                         </configuration>

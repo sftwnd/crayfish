@@ -14,17 +14,18 @@
     <artifactId>crayfish-common</artifactId>
     <name>CrayFish :: COMMON</name>
     <modules>
-        <module>crayfish-common-concurrent</module>
-        <module>crayfish-common-exception</module>
-        <module>crayfish-common-i18n</module>
-        <module>crayfish-common-time</module>
         <module>crayfish-common-base</module>
+        <module>crayfish-common-concurrent</module>
+        <module>crayfish-common-crc</module>
+        <module>crayfish-common-exception</module>
         <module>crayfish-common-format</module>
-        <module>crayfish-common-json</module>
-        <module>crayfish-common-utl</module>
+        <module>crayfish-common-i18n</module>
         <module>crayfish-common-info</module>
+        <module>crayfish-common-json</module>
         <module>crayfish-common-resource</module>
-    </modules>
+        <module>crayfish-common-time</module>
+        <module>crayfish-common-utl</module>
+   </modules>
 
     <packaging>pom</packaging>
 

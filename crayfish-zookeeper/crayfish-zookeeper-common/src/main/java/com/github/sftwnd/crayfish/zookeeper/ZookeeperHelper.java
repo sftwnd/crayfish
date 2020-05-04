@@ -5,6 +5,7 @@ import lombok.Getter;
 import org.apache.curator.framework.CuratorFramework;
 
 import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.util.Objects;
 
 public class ZookeeperHelper {
@@ -27,6 +28,14 @@ public class ZookeeperHelper {
         return getAbsolutePath(getPath(), name);
     }
 
+    public final void setData(@Nonnull String name, @Nullable byte[] buff) throws Exception {
+        if (buff == null) {
+            curatorFramework.setData().forPath(name);
+        } else {
+            curatorFramework.setData().forPath(name, buff);
+        }
+    }
+
     public static final String getAbsolutePath(String path, String name) {
         if (path == null || path.length() == 0) {
             return name;
@@ -39,7 +48,5 @@ public class ZookeeperHelper {
         } else {
             return new StringBuilder(path).append(PATH_SEPARATOR).append(name).toString();
         }
-
     }
-
 }

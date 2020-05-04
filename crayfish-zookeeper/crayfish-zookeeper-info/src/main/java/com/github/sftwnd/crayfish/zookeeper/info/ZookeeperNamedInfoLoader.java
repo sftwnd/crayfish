@@ -23,13 +23,13 @@ public class ZookeeperNamedInfoLoader<I> extends ZookeeperHelper implements Name
   //private static final MessageSource messageSource = I18n.getMessageSource();
 
     @Getter private final Class<I> clazz;
-    @Getter private final NamedInfoOnThrowListener<I, byte[], Exception> onThrow;
+    @Getter private final NamedInfoOnThrowListener<I, byte[], Throwable> onThrow;
 
-    public ZookeeperNamedInfoLoader(@Nonnull final ZookeeperService zookeeperService, @Nonnull  Class<I> clazz, @Nonnull String path, @Nullable NamedInfoOnThrowListener<I, byte[], Exception> onThrow) {
+    public ZookeeperNamedInfoLoader(@Nonnull final ZookeeperService zookeeperService, @Nonnull  Class<I> clazz, @Nonnull String path, @Nullable NamedInfoOnThrowListener<I, byte[], Throwable> onThrow) {
         this(Objects.requireNonNull(zookeeperService).getCuratorFramework(), clazz, path, onThrow);
     }
 
-    public ZookeeperNamedInfoLoader(@Nonnull final CuratorFramework curatorFramework, @Nonnull  Class<I> clazz, @Nonnull String path, @Nullable NamedInfoOnThrowListener<I, byte[], Exception> onThrow) {
+    public ZookeeperNamedInfoLoader(@Nonnull final CuratorFramework curatorFramework, @Nonnull  Class<I> clazz, @Nonnull String path, @Nullable NamedInfoOnThrowListener<I, byte[], Throwable> onThrow) {
         super(curatorFramework, path);
         this.clazz = Objects.requireNonNull(clazz);
         this.onThrow = onThrow;
@@ -42,8 +42,9 @@ public class ZookeeperNamedInfoLoader<I> extends ZookeeperHelper implements Name
             return getCuratorFramework().getChildren().forPath(getPath()).stream()
                       .map( nodeName -> {
                                   NamedInfo<I> result = null;
+                                  byte[] nodeData = null;
                                   try {
-                                      byte[] nodeData = getCuratorFramework().getData().forPath(getAbsolutePath(nodeName));
+                                      nodeData = getCuratorFramework().getData().forPath(getAbsolutePath(nodeName));
                                       if (nodeData == null || nodeData.length == 0) {
                                           result = new BaseNamedInfo<>(nodeName, null);
                                       } else if (String.class.equals(clazz)) {
@@ -51,8 +52,8 @@ public class ZookeeperNamedInfoLoader<I> extends ZookeeperHelper implements Name
                                       } else {
                                           result = new BaseNamedInfo<>(nodeName, JsonMapper.parseObject(nodeData, clazz));
                                       }
-                                  } catch (Exception ex) {
-                                      result = onThrow == null ? (NamedInfo<I>)ExceptionUtils.uncheckExceptions(ex) : onThrow.get(new BaseNamedInfo<>(nodeName, null), ex);
+                                  } catch (Throwable throwable) {
+                                      result = onThrow == null ? (NamedInfo<I>)ExceptionUtils.uncheckExceptions(throwable) : onThrow.get(new BaseNamedInfo<>(nodeName, nodeData), throwable);
                                   }
                                   return result;
                               }
@@ -63,7 +64,6 @@ public class ZookeeperNamedInfoLoader<I> extends ZookeeperHelper implements Name
     }
 
     public NamedInfoLoader<I> getSaver(final String additionalPath) {
-        final NamedInfoLoader<I> baseLoadre = this;
         return new ZookeeperNamedInfoLoader<>(getCuratorFramework(), clazz, getAbsolutePath(additionalPath), onThrow);
     }
 

@@ -1,7 +1,9 @@
 package com.github.sftwnd.crayfish.common.base;
 
+import com.github.sftwnd.crayfish.common.crc.CRC;
+import com.github.sftwnd.crayfish.common.crc.CrcModel;
+
 import java.nio.ByteBuffer;
-import java.util.zip.CRC32;
 
 /**
  * Created by ashindarev on 28.01.16.
@@ -11,7 +13,7 @@ public class HashCode {
     private static final byte[] splitter = new byte[] {(byte)':'};
     private static final int BYTE_BUFFER_SIZE = Math.max(Integer.BYTES, Math.max(Double.BYTES, Float.BYTES));
 
-    private CRC32 crc32;
+    private CRC crc;
     private ByteBuffer buffer = ByteBuffer.allocate(BYTE_BUFFER_SIZE);
 
     @SuppressWarnings({"unchecked"})
@@ -20,14 +22,14 @@ public class HashCode {
     }
 
     public HashCode(String name) {
-        crc32 = new CRC32();
+        crc = CrcModel.CRC32.getCRC();
         if (name != null) {
-            crc32.update(name.getBytes());
+            crc.update(name.getBytes());
         }
     }
 
     private void split() {
-        crc32.update(splitter);
+        crc.update(splitter);
     }
 
     public HashCode update(Byte val) {
@@ -35,7 +37,7 @@ public class HashCode {
         if (val != null) {
             buffer.clear();
             buffer.put(val);
-            crc32.update(buffer.array(), 0, Byte.BYTES);
+            crc.update(buffer.array(), 0, Byte.BYTES);
         }
         return this;
     }
@@ -46,7 +48,7 @@ public class HashCode {
         if (val != null) {
             buffer.clear();
             buffer.putInt(val);
-            crc32.update(buffer.array(), 0, Integer.BYTES);
+            crc.update(buffer.array(), 0, Integer.BYTES);
         }
         return this;
     }
@@ -57,7 +59,7 @@ public class HashCode {
         if (val != null) {
             buffer.clear();
             buffer.putLong(val);
-            crc32.update(buffer.array(), 0, Long.BYTES);
+            crc.update(buffer.array(), 0, Long.BYTES);
         }
         return this;
     }
@@ -67,7 +69,7 @@ public class HashCode {
         if (val != null) {
             buffer.clear();
             buffer.putFloat(val);
-            crc32.update(buffer.array(), 0, Float.BYTES);
+            crc.update(buffer.array(), 0, Float.BYTES);
         }
         return this;
     }
@@ -77,7 +79,7 @@ public class HashCode {
         if (val != null) {
             buffer.clear();
             buffer.putDouble(val);
-            crc32.update(buffer.array(), 0, Double.BYTES);
+            crc.update(buffer.array(), 0, Double.BYTES);
         }
         return this;
     }
@@ -85,7 +87,7 @@ public class HashCode {
     public HashCode update(String val) {
         split();
         if (val != null) {
-            crc32.update(val.getBytes());
+            crc.update(val.getBytes());
         }
         return this;
     }
@@ -118,10 +120,7 @@ public class HashCode {
 
     @Override
     public int hashCode() {
-        buffer.clear();
-        buffer.putLong(crc32.getValue());
-        buffer.position(Long.BYTES- Integer.BYTES);
-        return buffer.getInt();
+        return (int) (crc.getCrc() & 0xFFFFFFFF);
     }
 
     @Override

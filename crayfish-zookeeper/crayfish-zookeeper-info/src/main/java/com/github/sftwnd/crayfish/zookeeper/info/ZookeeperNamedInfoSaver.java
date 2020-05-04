@@ -1,7 +1,5 @@
 package com.github.sftwnd.crayfish.zookeeper.info;
 
-import com.github.sftwnd.crayfish.common.exception.ExceptionUtils;
-import com.github.sftwnd.crayfish.common.info.BaseNamedInfo;
 import com.github.sftwnd.crayfish.common.info.NamedInfo;
 import com.github.sftwnd.crayfish.common.info.NamedInfoSaver;
 import com.github.sftwnd.crayfish.common.json.JsonMapper;
@@ -14,11 +12,12 @@ import javax.annotation.Nonnull;
 import java.util.Objects;
 import java.util.Optional;
 
+import static com.github.sftwnd.crayfish.common.exception.ExceptionUtils.wrapUncheckedExceptions;
+
 @Slf4j
 public class ZookeeperNamedInfoSaver<I> extends ZookeeperHelper implements NamedInfoSaver<I> {
 
   //private static final MessageSource messageSource = I18n.getMessageSource();
-
     private final Class<I> clazz;
 
     public ZookeeperNamedInfoSaver(@Nonnull final ZookeeperService zookeeperService, @Nonnull Class<I> clazz, @Nonnull String path) {
@@ -31,22 +30,18 @@ public class ZookeeperNamedInfoSaver<I> extends ZookeeperHelper implements Named
     }
 
     @Override
-    @SuppressWarnings("unchecked")
     public void save(@Nonnull NamedInfo<I> data) throws Exception {
-        byte[] buff = Optional.ofNullable(Objects.requireNonNull(data).getInfo())
-                     .map(i -> String.class.equals(clazz) ? i.toString() : ExceptionUtils.wrapUncheckedExceptions(() -> JsonMapper.serializeObject(i)))
-                     .map(String::getBytes)
-                     .orElse(null);
-        if (buff == null) {
-            getCuratorFramework().setData().forPath(getAbsolutePath(data.getName()));
-        } else {
-            getCuratorFramework().setData().forPath(getAbsolutePath(data.getName()), buff);
-        }
+        Objects.requireNonNull(data, "ZookeeperNamedInfoSaver::save - data is null");
+        setData( Objects.requireNonNull(data.getName(), "ZookeeperNamedInfoSaver::save - data.name is null")
+                ,Optional.of(Objects.requireNonNull(data).getInfo())
+                        .map(i -> String.class.equals(clazz) ? i.toString() : wrapUncheckedExceptions(() -> JsonMapper.serializeObject(i)))
+                        .map(String::getBytes)
+                        .orElse(null)
+                );
     }
 
-    public NamedInfoSaver<I> getSaver(final String additionalPath) {
-        final NamedInfoSaver<I> baseSaver = this;
-        return data -> baseSaver.save(new BaseNamedInfo<>(getAbsolutePath(additionalPath, data.getName()), data.getInfo()));
+    public <T>NamedInfoSaver<T> constructSaver(final String additionalPath, Class<T> clazz) {
+        return new ZookeeperNamedInfoSaver<>(this.getCuratorFramework(), clazz, getAbsolutePath(additionalPath))::save;
     }
 
 }

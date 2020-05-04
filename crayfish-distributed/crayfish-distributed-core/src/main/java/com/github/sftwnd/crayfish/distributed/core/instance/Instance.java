@@ -1,6 +1,5 @@
 package com.github.sftwnd.crayfish.distributed.core.instance;
 
-
 import com.github.sftwnd.crayfish.common.info.BaseNamedInfo;
 
 import javax.annotation.Nonnull;
