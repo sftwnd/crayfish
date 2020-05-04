@@ -139,7 +139,7 @@ public final class LockUtils {
             }
         }
 
-        try (AutoCloseable x = () -> lock.unlock()) {
+        try (AutoCloseable x = lock::unlock) {
             return callable.call();
         }
     }

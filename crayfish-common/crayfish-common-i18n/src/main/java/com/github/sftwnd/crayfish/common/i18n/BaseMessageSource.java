@@ -22,12 +22,9 @@ public abstract class BaseMessageSource implements MessageSource {
     }
 
     @Override
-    public String message(String code, Object... args) throws NoSuchMessageException {
+    public String message(String code, Object... args) {
         return message(Locale.getDefault(), code, args);
     }
-
-    @Override
-    abstract public String message(Locale locale, String code, Object... args) throws NoSuchMessageException;
 
     @Override
     public String messageDef(String code, String defaultMessage, Object... args) {
@@ -38,12 +35,7 @@ public abstract class BaseMessageSource implements MessageSource {
     public String messageDef(Locale locale, String code, String defaultMessage, Object... args) {
         try {
             return message(locale, code, args);
-        } catch (NoSuchMessageException e) {
-            if (defaultMessage == null) {
-                throw e;
-            }
-            return format(locale, defaultMessage, args);
-        } catch (MissingResourceException e) {
+        } catch (NoSuchMessageException|MissingResourceException e) {
             if (defaultMessage == null) {
                 throw e;
             }

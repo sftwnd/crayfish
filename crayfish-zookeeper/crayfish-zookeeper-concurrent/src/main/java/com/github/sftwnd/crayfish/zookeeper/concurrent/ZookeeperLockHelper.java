@@ -1,6 +1,7 @@
 package com.github.sftwnd.crayfish.zookeeper.concurrent;
 
 import com.github.sftwnd.crayfish.common.exception.ExceptionUtils;
+import com.github.sftwnd.crayfish.common.exception.Process;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.curator.framework.recipes.locks.InterProcessMutex;
 
@@ -38,7 +39,7 @@ public class ZookeeperLockHelper implements Lock {
             logger.trace("::lock() acquired");
         } catch (Throwable throwable) {
             logger.trace("::lock() unable to acquire with Exception: {}", throwable.getLocalizedMessage());
-            ExceptionUtils.wrapUncheckedExceptions(() -> interProcessMutex.acquire());
+            ExceptionUtils.wrapUncheckedExceptions((Process<Exception>) interProcessMutex::acquire);
         }
     }
 

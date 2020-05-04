@@ -44,14 +44,11 @@ public final class DateSerializeUtility {
 
     @SuppressWarnings("squid:HiddenFieldCheck")
     public DateSerializeUtility(TimeZone timeZone, String dateFormatStr) {
-        dateFormat = new ThreadLocal<DateFormat>() {
-            @Override
-            protected DateFormat initialValue() {
-                DateFormat dateFormat = new SimpleDateFormat(dateFormatStr == null ? DEFAULT_DATE_FORMAT_STR : dateFormatStr);
-                dateFormat.setTimeZone(timeZone == null ? DEFAULT_TIME_ZONE : timeZone);
-                return dateFormat;
-            }
-        };
+        dateFormat = ThreadLocal.withInitial(() -> {
+            DateFormat dateFormat = new SimpleDateFormat(dateFormatStr == null ? DEFAULT_DATE_FORMAT_STR : dateFormatStr);
+            dateFormat.setTimeZone(timeZone == null ? DEFAULT_TIME_ZONE : timeZone);
+            return dateFormat;
+        });
     }
 
     public String serialize(Date dateTime) {
@@ -85,11 +82,11 @@ public final class DateSerializeUtility {
     }
 
     public static DateSerializeUtility getDateSerializeUtility(String timeZoneId, String dateFormat) {
-        return getDateSerializeUtility(timeZoneId == null ? (TimeZone) null : TimeZone.getTimeZone(timeZoneId), dateFormat);
+        return getDateSerializeUtility(timeZoneId == null ? null : TimeZone.getTimeZone(timeZoneId), dateFormat);
     }
 
     public static DateSerializeUtility getDateSerializeUtility(ZoneId zoneId, String dateFormat) {
-        return getDateSerializeUtility(zoneId == null ? (TimeZone) null : TimeZone.getTimeZone(zoneId), dateFormat);
+        return getDateSerializeUtility(zoneId == null ? null : TimeZone.getTimeZone(zoneId), dateFormat);
     }
 
     public static DateSerializeUtility getDateSerializeUtility(TimeZone timeZone, String dateFormat) {

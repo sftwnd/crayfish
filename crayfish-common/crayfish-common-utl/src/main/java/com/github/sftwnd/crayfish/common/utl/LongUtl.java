@@ -2,6 +2,10 @@ package com.github.sftwnd.crayfish.common.utl;
 
 public class LongUtl {
 
+    private LongUtl() {
+        throw new IllegalStateException("LongUtl is utility class");
+    }
+
     public static byte[] longToBytes(long l) {
         byte[] result = new byte[8];
         for (int i = 7; i >= 0; i--) {

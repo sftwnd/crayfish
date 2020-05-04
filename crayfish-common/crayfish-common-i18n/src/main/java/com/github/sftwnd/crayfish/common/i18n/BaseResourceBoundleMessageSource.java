@@ -21,7 +21,7 @@ public abstract class BaseResourceBoundleMessageSource extends BaseMessageSource
     }
 
     @Override
-    public String message(@Nonnull Locale locale, @Nonnull String code, Object... args) throws NoSuchMessageException {
+    public String message(@Nonnull Locale locale, @Nonnull String code, Object... args) {
         ResourceBundle resourceBundle;
         if (byLocaleMap.containsKey(locale)) {
             resourceBundle = byLocaleMap.get(locale);

@@ -6,13 +6,11 @@ package com.github.sftwnd.crayfish.common.i18n;
 
 public final class I18n {
 
-    private final static String DEFAULT_BUNDLE_NAME = "messages";
-    private final static MessageSource messageSource = getMessageSource(DEFAULT_BUNDLE_NAME);
+    private static final String DEFAULT_BUNDLE_NAME = "messages";
+    private static final MessageSource messageSource = getMessageSource(DEFAULT_BUNDLE_NAME);
 
-    private final Package pack;
-
-    private I18n(Package pack) {
-        this.pack = pack;
+    private I18n() {
+        throw new IllegalStateException("I18n is utility class");
     }
 
     public static MessageSource getMessageSource() {

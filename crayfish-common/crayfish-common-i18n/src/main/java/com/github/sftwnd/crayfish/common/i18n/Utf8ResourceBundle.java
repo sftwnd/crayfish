@@ -1,8 +1,10 @@
 package com.github.sftwnd.crayfish.common.i18n;
 
 import java.io.UnsupportedEncodingException;
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.Locale;
+import java.util.Optional;
 import java.util.PropertyResourceBundle;
 import java.util.ResourceBundle;
 
@@ -61,12 +63,19 @@ public final class Utf8ResourceBundle {
      * @return Unicode friendly property resource bundle
      */
     @SuppressWarnings("unchecked")
-    private static ResourceBundle createUtf8PropertyResourceBundle(
-            final ResourceBundle bundle) {
-        return bundle == null ||
-               !(bundle instanceof PropertyResourceBundle)
-             ? bundle
-             : new Utf8PropertyResourceBundle((PropertyResourceBundle) bundle);
+    private static ResourceBundle createUtf8PropertyResourceBundle(final ResourceBundle bundle) {
+        return Optional.ofNullable(bundle)
+                .filter(PropertyResourceBundle.class::isInstance)
+                .map(PropertyResourceBundle.class::cast)
+                .map(Utf8PropertyResourceBundle::new)
+                .map(ResourceBundle.class::cast)
+                .orElse(bundle);
+    }
+
+    public static class EncodingNotSupportedException extends RuntimeException {
+        public EncodingNotSupportedException(String text, Exception ex) {
+            super(text, ex);
+        }
     }
 
     /**
@@ -86,22 +95,16 @@ public final class Utf8ResourceBundle {
          */
         private Utf8PropertyResourceBundle(final PropertyResourceBundle bundle) {
             this.bundle = bundle;
-            final String charsetName = System.getProperty("java.util.PropertyResourceBundle.encoding");
             final String vmSpecificationVersion = System.getProperty("java.vm.specification.version");
-            this.charsetName = // Если charset не задан
-                             charsetName == null
-                             // Если не определили версию или она 1.* (т.е. до 9)
-                             ? vmSpecificationVersion == null || vmSpecificationVersion.matches("1\\..*")
-                               // Задаём как iso 8859.1
-                               ? "ISO-8859-1"
-                               // Иначе не определяем
-                               : null
-                             // Если задан как UTF-8
-                             : charsetName.toUpperCase().matches("UTF[-]?8")
-                               // Считаем, что не определён
-                               ? null
-                               // Указываем заданный
-                               : charsetName;
+            this.charsetName = Optional.ofNullable(System.getProperty("java.util.PropertyResourceBundle.encoding"))
+                                  .map( cs -> cs.toUpperCase().matches("UTF[-]?8") ? null : cs)
+                                  .orElseGet( () ->
+                                      vmSpecificationVersion == null || vmSpecificationVersion.matches("1\\..*")
+                                      // Задаём как iso 8859.1
+                                      ? "ISO-8859-1"
+                                      // Иначе не определяем
+                                      : null
+                                   );
             }
 
         @Override
@@ -116,9 +119,9 @@ public final class Utf8ResourceBundle {
             try {
                 return value == null || this.charsetName == null
                      ? value
-                     : new String(value.getBytes(this.charsetName), "UTF-8");
+                     : new String(value.getBytes(this.charsetName), StandardCharsets.UTF_8);
             } catch (final UnsupportedEncodingException ex) {
-                throw new RuntimeException("Encoding not supported", ex);
+                throw new EncodingNotSupportedException("Encoding not supported", ex);
             }
         }
 

@@ -18,6 +18,10 @@ public final class JsonMapperTZ {
 
     public static final TimeZone currentTimeZone = Calendar.getInstance().getTimeZone();
 
+    private JsonMapperTZ() {
+        throw new IllegalStateException("JsonMapperTZ is utility class");
+    }
+
     private static ThreadLocal<Map<String, ObjectMapper>> objectMappers = new ThreadLocal<Map<String, ObjectMapper>>() {
         @Override
         protected Map<String, ObjectMapper> initialValue() {
