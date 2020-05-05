@@ -5,8 +5,12 @@ import org.junit.jupiter.api.Test;
 
 import java.util.Optional;
 
-import static com.github.sftwnd.crayfish.common.crc.CrcModel.*;
-import static  com.github.sftwnd.crayfish.common.crc.CrcModel.getModels;
+import static com.github.sftwnd.crayfish.common.crc.CrcModel.CRC64_XZ;
+import static com.github.sftwnd.crayfish.common.crc.CrcModel.construct;
+import static com.github.sftwnd.crayfish.common.crc.CrcModel.crc_general_combine;
+import static com.github.sftwnd.crayfish.common.crc.CrcModel.find;
+import static com.github.sftwnd.crayfish.common.crc.CrcModel.getModels;
+import static com.github.sftwnd.crayfish.common.crc.CrcModel.reflect;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;

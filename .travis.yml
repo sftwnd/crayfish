@@ -2,6 +2,13 @@ language: java
 before_install:
   - echo "<settingsSecurity><master>$MAVEN_MASTER_PASSWORD</master></settingsSecurity>">$HOME/.m2/settings-security.xml
   - cp .travis.settings.xml $HOME/.m2/settings.xml
-script: mvn clean compile package -X
+addon:
+  sonarcloud:
+    organization: sftwnd-github
+    token:
+      secure: "EC/bBzJ+1tlAhS/liGeeiVsmsbc/ihYECtkHxvtb4ktttlXitrGLGy6ZlqnW0LXaspL/k//q64wUEROSFiX7OAIX0BnJw3QUCKTsMpKZdjGFkjI/FcTEVzPHi6WNmhv1xvxEnCh+8tnHY6mFKsZzijquuIUflc2Kx/TPLZ2vPazyP8Tg9BrkYv2hvCfYZIkW967CNujUGTLr7KmY4cAdTcwdxp5d+fGL9AbZCl165YypHvg+Nuk/9UlHkTbHAWcgOHbkP8fVokS/blPTGG0syIL1wBiS7+xm3ZitJTPlBLwvzYhKg77p1NB4MCXh8x7Lcv8k21Kwr9uNZeGUOSxoYbZJgZ6MUWJgxzWKkjE9+HarTNyts2lmEH9/MHTH3u8FFOeCQkMXLUjsH7NmIPNvUzmpMnEZ9BkQjeaRZrylCW2l7pm3dkxJ0PNFApcTufRIg2wx8RyDKHcjwrckuxHC2ody+4NBIkErSq4sX8crsjQ77nIGhqEx/Hgj0DyPPckoRjPTgpWTu9ZF51bTq22veDTT9RPrzKB4KUKKPkmqVkcFGZsAmlt/av/KbbH33qSP6ZFd63JTGOeGfxUXyImKPNoHT67Rt3L6jhqmfw7WZb1JH3Pmg7XHiJnDpEP1BZg+kBc8F4VUDa6taN2ZyGYhNP6fwPVhY8+XyS1QcxHRSjQ="
+script:
+  - mvn clean verify sonar:sonar -Pcoverage -Dsonar.projectKey=crayfish
+  - mvn compile package -X
 jdk: openjdk11
 os: linux
