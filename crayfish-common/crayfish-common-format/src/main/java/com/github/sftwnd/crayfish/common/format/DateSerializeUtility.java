@@ -95,17 +95,9 @@ public final class DateSerializeUtility {
         synchronized (utilities) {
             dateFormatMap = utilities.computeIfAbsent(timeZone, tz -> new HashMap<>());
         }
-        DateSerializeUtility dateSerializeUtility = dateFormatMap.get(dateFormat);
-        if (dateSerializeUtility == null) {
-            synchronized (dateFormatMap) {
-                dateSerializeUtility = dateFormatMap.get(dateFormat);
-                if (dateSerializeUtility == null) {
-                    dateSerializeUtility = new DateSerializeUtility(timeZone, dateFormat);
-                    dateFormatMap.put(dateFormat, dateSerializeUtility);
-                }
-            }
+        synchronized (dateFormatMap) {
+            return dateFormatMap.computeIfAbsent(dateFormat, df -> new DateSerializeUtility(timeZone, df));
         }
-        return dateSerializeUtility;
     }
 
     public static void clear() {

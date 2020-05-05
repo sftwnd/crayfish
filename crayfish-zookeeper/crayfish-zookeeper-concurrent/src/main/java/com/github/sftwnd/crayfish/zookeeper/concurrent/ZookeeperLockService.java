@@ -119,7 +119,10 @@ public class ZookeeperLockService implements LockService, Closeable {
 
     private final void clearWeak() {
         // Должно вызываться в синхронизационной секции по locks
-
+        if (checkWeakInstant.plus(CHECK_WEAK_DURATION).isBefore(Instant.now())) {
+            locks.entrySet().removeIf(e -> e.getValue().get() == null);
+            checkWeakInstant = Instant.now();
+        }
     }
 
     private String constructPath(String name) {
