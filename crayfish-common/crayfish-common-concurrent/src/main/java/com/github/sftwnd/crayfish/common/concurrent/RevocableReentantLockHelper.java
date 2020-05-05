@@ -18,14 +18,17 @@ import java.util.function.Supplier;
 @Slf4j
 public class RevocableReentantLockHelper implements Lock, Revocable {
 
+    @SuppressWarnings("squid:S5164")
     private final ThreadLocal<AtomicInteger> acquires = ThreadLocal.withInitial(() -> new AtomicInteger(0));
 
     private final String logName;
     private final Lock lockHelper;
     @Getter
     private final Supplier<Instant>        statusMonitor;
+    @SuppressWarnings("squid:S5164")
     private final ThreadLocal<Instant>     initAt    = ThreadLocal.withInitial(() -> Instant.MIN);
     private final AtomicReference<Instant> revokedAt = new AtomicReference<>(Instant.MIN);
+    @SuppressWarnings("squid:S5164")
     private final ThreadLocal<Long>        checkedAt = ThreadLocal.withInitial(() -> 0L);
 
     public RevocableReentantLockHelper(@Nonnull Lock lockHelper) {

@@ -24,6 +24,7 @@ public final class DateSerializeUtility {
     public static final String DEFAULT_DATE_FORMAT_STR = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
     public static final TimeZone DEFAULT_TIME_ZONE = TimeZone.getTimeZone(Calendar.getInstance().getTimeZone().getID());
 
+    @SuppressWarnings("squid:S5164")
     private ThreadLocal<DateFormat> dateFormat;
 
     public DateSerializeUtility() {
