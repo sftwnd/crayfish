@@ -3,6 +3,7 @@ package com.github.sftwnd.crayfish.zookeeper.info;
 import com.github.sftwnd.crayfish.common.exception.ExceptionUtils;
 import com.github.sftwnd.crayfish.common.info.BaseNamedInfo;
 import com.github.sftwnd.crayfish.common.info.NamedInfo;
+import com.github.sftwnd.crayfish.common.info.NamedInfoLoadEception;
 import com.github.sftwnd.crayfish.common.info.NamedInfoLoader;
 import com.github.sftwnd.crayfish.common.json.JsonMapper;
 import com.github.sftwnd.crayfish.zookeeper.ZookeeperHelper;
@@ -35,7 +36,7 @@ public class ZookeeperNamedInfoLoader<I> extends ZookeeperHelper implements Name
 
     @Override
     @SuppressWarnings("unchecked")
-    public Stream<NamedInfo<I>> load() throws Exception {
+    public Stream<NamedInfo<I>> load() throws NamedInfoLoadEception {
         try {
             return getCuratorFramework().getChildren().forPath(getPath()).stream()
                       .map( nodeName -> {
@@ -57,7 +58,7 @@ public class ZookeeperNamedInfoLoader<I> extends ZookeeperHelper implements Name
                               }
                       ).filter(Objects::nonNull);
         } catch (Exception ex) {
-            return ExceptionUtils.uncheckExceptions(ex);
+            throw new NamedInfoLoadEception("Unable to load NamedInfo", ex);
         }
     }
 

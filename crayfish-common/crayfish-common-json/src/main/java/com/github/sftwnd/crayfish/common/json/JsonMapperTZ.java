@@ -24,7 +24,7 @@ public final class JsonMapperTZ {
 
     // Подразумевается, что mapper дйствует на проект и пересоздание, как и стирание mapper-конфигурации не требуется
     @SuppressWarnings("squid:S5164")
-    private static ThreadLocal<Map<String, ObjectMapper>> objectMappers = ThreadLocal.withInitial(() -> new HashMap<>());
+    private static ThreadLocal<Map<String, ObjectMapper>> objectMappers = ThreadLocal.withInitial(HashMap::new);
 
     public static ObjectMapper getObjectMapper(TimeZone timeZone) {
         Map<String, ObjectMapper> mappers = objectMappers.get();

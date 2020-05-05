@@ -1,6 +1,7 @@
 package com.github.sftwnd.crayfish.zookeeper.info;
 
 import com.github.sftwnd.crayfish.common.info.NamedInfo;
+import com.github.sftwnd.crayfish.common.info.NamedInfoSaveEception;
 import com.github.sftwnd.crayfish.common.info.NamedInfoSaver;
 import com.github.sftwnd.crayfish.common.json.JsonMapper;
 import com.github.sftwnd.crayfish.zookeeper.ZookeeperHelper;
@@ -29,14 +30,18 @@ public class ZookeeperNamedInfoSaver<I> extends ZookeeperHelper implements Named
     }
 
     @Override
-    public void save(@Nonnull NamedInfo<I> data) throws Exception {
+    public void save(@Nonnull NamedInfo<I> data) throws NamedInfoSaveEception {
         Objects.requireNonNull(data, "ZookeeperNamedInfoSaver::save - data is null");
-        setData( Objects.requireNonNull(data.getName(), "ZookeeperNamedInfoSaver::save - data.name is null")
-                ,Optional.of(Objects.requireNonNull(data).getInfo())
-                        .map(i -> String.class.equals(clazz) ? i.toString() : wrapUncheckedExceptions(() -> JsonMapper.serializeObject(i)))
-                        .map(String::getBytes)
-                        .orElse(null)
-                );
+        try {
+            setData(Objects.requireNonNull(data.getName(), "ZookeeperNamedInfoSaver::save - data.name is null")
+                    , Optional.of(Objects.requireNonNull(data).getInfo())
+                            .map(i -> String.class.equals(clazz) ? i.toString() : wrapUncheckedExceptions(() -> JsonMapper.serializeObject(i)))
+                            .map(String::getBytes)
+                            .orElse(null)
+            );
+        } catch (Exception ex) {
+            throw new NamedInfoSaveEception("Unable to save NamedInfo: "+data, ex);
+        }
     }
 
     public <T>NamedInfoSaver<T> constructSaver(final String additionalPath, Class<T> clazz) {

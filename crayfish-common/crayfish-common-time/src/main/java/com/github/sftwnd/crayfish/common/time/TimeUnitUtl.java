@@ -64,7 +64,7 @@ public class TimeUnitUtl {
                                 ).distinct()
                                 .collect(Collectors.toMap(n -> n, n -> cu)).entrySet().stream();
                     }
-            ).collect(Collectors.toMap(e -> e.getKey(), e -> e.getValue()));
+            ).collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
     public static final ChronoUnit getChronoUnit(@Nonnull String unitName) {
         return getChronoUnit(unitName, null);

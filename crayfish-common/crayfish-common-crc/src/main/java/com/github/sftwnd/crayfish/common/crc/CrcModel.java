@@ -8,9 +8,11 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
+@SuppressWarnings({"squid:S100", "squid:S107"})
 @EqualsAndHashCode(callSuper = true)
 public final class CrcModel extends CrcDescriprion {
 
@@ -30,14 +32,17 @@ public final class CrcModel extends CrcDescriprion {
         this.crcDescriprion = model;
     }
 
+    @Override
     public long getPoly() {
         return crcDescriprion.getPoly();
     }
 
+    @Override
     public long getInit() {
         return crcDescriprion.getInit();
     }
 
+    @Override
     public boolean isRefot() {
         return crcDescriprion.isRefot();
     }
@@ -71,7 +76,7 @@ public final class CrcModel extends CrcDescriprion {
         return name;
     }
 
-    @SuppressWarnings("squid:S2168")
+    @SuppressWarnings({"squid:S2168"})
     protected void _init() {
         if (table_byte == null) {
             synchronized (this) {
@@ -86,6 +91,7 @@ public final class CrcModel extends CrcDescriprion {
      * Process the model data for th calculation.
      * constants will be eguals of originl values, but variables - changed
      */
+    @SuppressWarnings("squid:S3358")
     private static CrcDescriprion _config(@Nullable final CrcDescriprion model) {
         return model == null ? null
              : new CrcDescriprion(
@@ -98,7 +104,7 @@ public final class CrcModel extends CrcDescriprion {
                    );
     }
 
-    @SuppressWarnings("squid:S3077")
+    @SuppressWarnings({"squid:S3077", "squid:S116"})
     private volatile long[] table_byte = null;
 
     private long[] _createBytewiseTable() {
@@ -117,8 +123,8 @@ public final class CrcModel extends CrcDescriprion {
         return table;
     }
 
-    // Sonar-у не нравится количество if, но они тут смысленно поставлены
-    @SuppressWarnings("squid:S3776")
+    // Sonar-у не нравится количество if, но они тут осмысленно поставлены
+    @SuppressWarnings({"squid:S3776", "squid:S125"})
     private long createBitwiseValue(int k) {
         /* if requested, return the initial CRC: if (k < 0) return init; */
         long poly = this.poly;
@@ -130,33 +136,26 @@ public final class CrcModel extends CrcDescriprion {
         /* process the input data a bit at a time */
         if (refin) {
             crc &= widmask(width);
-            {
-                crc ^= k;
-                for (int i = 0; i < 8; i++) {
-                    crc = ((crc & 1) != 0) ? (crc >>> 1) ^ poly : crc >>> 1;
-                }
-
+            crc ^= k;
+            for (int i = 0; i < 8; i++) {
+                crc = ((crc & 1) != 0) ? (crc >>> 1) ^ poly : crc >>> 1;
             }
         } else if (width <= 8) {
             int shift = 8 - width;           /* 0..7 */
             poly <<= shift;
             crc <<= shift;
-            {
-                crc ^= k;
-                for (int i = 0; i < 8; i++) {
-                    crc = (crc & 0x80) != 0 ? (crc << 1) ^ poly : crc << 1;
-                }
+            crc ^= k;
+            for (int i = 0; i < 8; i++) {
+                crc = (crc & 0x80) != 0 ? (crc << 1) ^ poly : crc << 1;
             }
             crc >>= shift;
             crc &= widmask(width);
         } else {
             long mask = 1L << (width - 1);
             int shift = width - 8;           /* 1..WORDBITS-8 */
-            {
-                crc ^= ((long) k) << shift;
-                for (int i = 0; i < 8; i++) {
-                    crc = ((crc & mask) != 0) ? (crc << 1) ^ poly : crc << 1;
-                }
+            crc ^= ((long) k) << shift;
+            for (int i = 0; i < 8; i++) {
+                crc = ((crc & mask) != 0) ? (crc << 1) ^ poly : crc << 1;
             }
             crc &= widmask(width);
         }
@@ -240,10 +239,11 @@ public final class CrcModel extends CrcDescriprion {
 
     public static @Nullable CrcModel construct(@Nullable final String name, @Nullable final CrcDescriprion crcDescriprion, @Nullable final Long value) {
         return crcDescriprion == null ? null
-             : getModels(m -> (crcDescriprion instanceof CrcModel
-                               ? CrcModel.class.cast(crcDescriprion).getCrcDescriprion()
-                               : crcDescriprion
-                              ).equals(m.getCrcDescriprion()))
+             : getModels(m -> Optional.of(crcDescriprion)
+                                      .filter(CrcModel.class::isInstance).map(CrcModel.class::cast)
+                                      .map(CrcModel::getCrcDescriprion)
+                                      .orElse(crcDescriprion)
+                                      .equals(m.getCrcDescriprion()))
                 .findFirst()
                 .orElseGet(() -> {
                     CrcModel model = new CrcModel(name, crcDescriprion, value);
@@ -264,17 +264,6 @@ public final class CrcModel extends CrcDescriprion {
         return construct(crcDescriprion, null);
     }
 
-    /*
-       Deprecated: you have to use .getCRC()
-       In this case you have unable to use crc = init if init & getInit is not equals.
-    */
-
-    // public long combine(long crc1, long crc2, int len2) {
-    //     return crc_general_combine(
-    //             crc1 == getInit() ? init : crc1, crc2, len2, getWidth(), getInit(), getPoly(), getXorot(), isRefot()
-    //     );
-    // }
-
     protected final long reflect(long value) {
         return reflect(value, getWidth());
     }
@@ -291,7 +280,7 @@ public final class CrcModel extends CrcDescriprion {
         return (((1L << (width-1)) - 1L) << 1) | 1L;
     }
 
-    private static long gf2_matrix_times(long mat[], long vec) {
+    private static long gf2_matrix_times(long[] mat, long vec) {
         long sum = 0L;
         for (int i=0; vec != 0; vec >>>= 1, i++) {
             if ((vec & 1) != 0) {
@@ -301,7 +290,7 @@ public final class CrcModel extends CrcDescriprion {
         return sum;
     }
 
-    private static void gf2_matrix_square(long square[], long mat[], int width) {
+    private static void gf2_matrix_square(long[] square, long[] mat, int width) {
         for (int n = 0; n < width; n++) {
             square[n] = gf2_matrix_times(mat, mat[n]);
         }

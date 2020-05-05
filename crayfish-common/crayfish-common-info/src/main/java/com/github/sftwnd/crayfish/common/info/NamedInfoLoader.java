@@ -4,6 +4,6 @@ import java.util.stream.Stream;
 
 public interface NamedInfoLoader<I>  {
 
-    Stream<NamedInfo<I>> load() throws Exception;
+    Stream<NamedInfo<I>> load() throws NamedInfoLoadEception;
 
 }
