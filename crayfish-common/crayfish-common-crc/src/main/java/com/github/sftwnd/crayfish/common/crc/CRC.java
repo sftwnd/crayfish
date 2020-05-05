@@ -37,6 +37,7 @@ public final class CRC implements Cloneable {
     }
 
     @Override
+    @SuppressWarnings("squid:S2975")
     public Object clone() {
         return new CRC(this);
     }

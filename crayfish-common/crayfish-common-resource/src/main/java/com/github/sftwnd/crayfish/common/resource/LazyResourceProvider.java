@@ -167,8 +167,8 @@ public class LazyResourceProvider<P,R> implements IResourceProvider<R>, Closeabl
         rethrow();
     }
 
-    private void processError(String text, Throwable throwable) {
-        logger.error(text, throwable == null || throwable.getLocalizedMessage() == null || throwable.getLocalizedMessage().isEmpty() ? throwable.toString() : throwable.getLocalizedMessage(), logger.isDebugEnabled() ? throwable : null);
+    private void processError(String text, @Nullable Throwable throwable) {
+        logger.error(text, Optional.ofNullable(throwable).map(Throwable::getLocalizedMessage).filter(s -> !s.isBlank()).orElse(""), logger.isDebugEnabled() ? throwable : null);
         this.error = throwable;
     }
 
@@ -183,7 +183,7 @@ public class LazyResourceProvider<P,R> implements IResourceProvider<R>, Closeabl
     }
 
     // Вызов идёт в synchronized секции и на момент вызова provided = false
-    private R provide(@Nullable P provider) {
+    private synchronized R provide(@Nullable P provider) {
         try {
             this.resource = Optional.ofNullable( Optional.ofNullable(provider).orElse(doConstruct()) )
                                .map(this::doProvide)
@@ -198,7 +198,7 @@ public class LazyResourceProvider<P,R> implements IResourceProvider<R>, Closeabl
         return this.resource;
     }
 
-    private final R doProvide(@Nonnull P provider) {
+    private final synchronized R doProvide(@Nonnull P provider) {
         try {
             this.resource = this.provided || provider == null ? this.resource : resourceProvider.provide(provider);
         } catch (Throwable throwable) {
@@ -209,7 +209,7 @@ public class LazyResourceProvider<P,R> implements IResourceProvider<R>, Closeabl
         return this.resource;
     }
 
-    private final P doConstruct() {
+    private final synchronized P doConstruct() {
         try {
             this.provider = providerConstructor.construct();
         } catch (Throwable throwable) {

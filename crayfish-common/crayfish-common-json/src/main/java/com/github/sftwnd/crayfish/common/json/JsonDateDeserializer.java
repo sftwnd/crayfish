@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
@@ -23,12 +24,7 @@ public final class JsonDateDeserializer extends JsonDeserializer<Date> {
     private static final Pattern pattern = Pattern.compile("^\\d{4}-\\d{2}-\\d{2}(T\\d{1,2}(\\:\\d{1,2}(\\:\\d{1,2}(\\.\\d+)?)?)?)?(Z|z|(?:[\\+|-]\\d{1,2}\\:\\d{1,2}))?.*$");
     private static String defaultTimeZoneId = "UTC";
 
-    private static ThreadLocal<String> timeZone = new ThreadLocal<String>() {
-        @Override
-        protected String initialValue() {
-            return defaultTimeZoneId;
-        }
-    };
+    private static ThreadLocal<String> timeZone = new ThreadLocal<>();
 
     private static final String[] DATE_DESERIALIZE_FORMAT_ELEMENTS = new String[] { "yyyy-MM-dd", "'T'HH", ":mm", ":ss", ".SSS", "XXX" };
 
@@ -60,7 +56,7 @@ public final class JsonDateDeserializer extends JsonDeserializer<Date> {
     }
 
     public static String getTimeZoneId() {
-        return timeZone.get();
+        return Optional.ofNullable(timeZone.get()).orElse(defaultTimeZoneId);
     }
 
     public static void setTimeZoneId(String timeZoneId) {
@@ -73,12 +69,13 @@ public final class JsonDateDeserializer extends JsonDeserializer<Date> {
             // То ничего не меняем
             return;
         }
-        timeZone.set( timeZoneId == null
-                      ? defaultTimeZoneId
-                     // UTC зону не используем со смещением. Вместо неё берём GMT плюс смещение
-                      : timeZoneId.matches("(?i)UTC.+")
+        if (timeZoneId == null) {
+            timeZone.remove();
+        } else {
+            timeZone.set( timeZoneId.matches("(?i)UTC.+")
                         ? String.valueOf(new StringBuilder("GMT").append(timeZoneId.substring(3)))
-                        : timeZoneId );
+                        : timeZoneId);
+        }
     }
 
     public static void setLocalTimeZone() {

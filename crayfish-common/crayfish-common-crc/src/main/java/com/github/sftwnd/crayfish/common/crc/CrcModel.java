@@ -14,6 +14,7 @@ import java.util.stream.Stream;
 @EqualsAndHashCode(callSuper = true)
 public final class CrcModel extends CrcDescriprion {
 
+    @Nonnull
     @Getter public  final String name;
     @Getter public  final Long check;
     @Getter private final CrcDescriprion crcDescriprion;
@@ -22,7 +23,7 @@ public final class CrcModel extends CrcDescriprion {
         this(name, new CrcDescriprion(width, poly, init, refin, refot, xorot), check);
     }
 
-    private CrcModel(@Nonnull final String name, @Nonnull final CrcDescriprion model, @Nullable final Long check) {
+    private CrcModel(@Nullable final String name, @Nonnull final CrcDescriprion model, @Nullable final Long check) {
         super(Objects.requireNonNull(_config(model), "CRC_model_t::new - model is null"));
         this.name = name == null ? super.toString() : name;
         this.check = check;
@@ -70,6 +71,7 @@ public final class CrcModel extends CrcDescriprion {
         return name;
     }
 
+    @SuppressWarnings("squid:S2168")
     protected void _init() {
         if (table_byte == null) {
             synchronized (this) {
@@ -114,6 +116,8 @@ public final class CrcModel extends CrcDescriprion {
         return table;
     }
 
+    // Sonar-у не нравится количество if, но они тут смысленно поставлены
+    @SuppressWarnings("squid:S3776")
     private long createBitwiseValue(int k) {
         /* if requested, return the initial CRC: if (k < 0) return init; */
         long poly = this.poly;
@@ -146,7 +150,7 @@ public final class CrcModel extends CrcDescriprion {
             crc &= widmask(width);
         } else {
             long mask = 1L << (width - 1);
-            long shift = width - 8;           /* 1..WORDBITS-8 */
+            int shift = width - 8;           /* 1..WORDBITS-8 */
             {
                 crc ^= ((long) k) << shift;
                 for (int i = 0; i < 8; i++) {
@@ -189,7 +193,7 @@ public final class CrcModel extends CrcDescriprion {
             int shift = width - 8;           /* 1..WORDBITS-8 */
             while (len-- > 0) {
                 crc = (crc << 8) ^
-                        table_byte[(int) (((crc >>> shift) ^ buf[offset++]) & 0xff)];
+                      table_byte[(int) (((crc >>> shift) ^ (buf[offset++] & 0xff)) & 0xff)];
             }
             crc &= widmask(width);
         }

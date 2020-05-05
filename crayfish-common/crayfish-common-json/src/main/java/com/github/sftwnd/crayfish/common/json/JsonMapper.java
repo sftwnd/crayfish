@@ -15,18 +15,15 @@ import java.util.Calendar;
  */
 public final class JsonMapper {
 
-    private static ThreadLocal<ObjectMapper> objectMapper = new ThreadLocal<ObjectMapper>() {
-        @Override
-        protected ObjectMapper initialValue() {
-            return new ObjectMapper()
-                      .registerModule(new JavaTimeModule())
-                      .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-                      .configure(SerializationFeature.WRITE_DATES_WITH_ZONE_ID, true)
-                      .setTimeZone(Calendar.getInstance().getTimeZone())
-                      .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-                      .findAndRegisterModules();
-        }
-    };
+    // Подразумевается, что mapper дйствует на проект и пересоздание, как и стирание mapper-конфигурации не требуется
+    @SuppressWarnings("squid:S5164")
+    private static ThreadLocal<ObjectMapper> objectMapper = ThreadLocal.withInitial(() -> new ObjectMapper()
+              .registerModule(new JavaTimeModule())
+              .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+              .configure(SerializationFeature.WRITE_DATES_WITH_ZONE_ID, true)
+              .setTimeZone(Calendar.getInstance().getTimeZone())
+              .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+              .findAndRegisterModules());
 
     public static <T>T parseObject(String json, Class<T> clazz) throws IOException {
         return objectMapper.get().readerFor(clazz).readValue(json);

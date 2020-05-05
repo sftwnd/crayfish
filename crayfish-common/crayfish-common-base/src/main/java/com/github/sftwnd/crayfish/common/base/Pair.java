@@ -72,7 +72,7 @@ public class Pair<K,V> {
         if (this == o) return true;
         if (o instanceof Pair) {
             @SuppressWarnings("rawtypes")
-            Pair pair = (Pair) o;
+            Pair<?,?> pair = (Pair<?,?>) o;
             return Objects.equals(key, pair.key)
                 && Objects.equals(value, pair.value);
         }
