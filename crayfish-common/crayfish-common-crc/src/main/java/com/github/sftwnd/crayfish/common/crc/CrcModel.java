@@ -98,7 +98,7 @@ public final class CrcModel extends CrcDescriprion {
                    );
     }
 
-    private long[] table_byte = null;
+    private volatile long[] table_byte = null;
 
     private long[] _createBytewiseTable() {
         long[] table = new long[256];

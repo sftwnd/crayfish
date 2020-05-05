@@ -18,7 +18,7 @@ import java.util.function.Supplier;
 @Slf4j
 public class RevocableReentantLockHelper implements Lock, Revocable {
 
-    private static ThreadLocal<AtomicInteger> acquires = ThreadLocal.withInitial(() -> new AtomicInteger(0));
+    private final ThreadLocal<AtomicInteger> acquires = ThreadLocal.withInitial(() -> new AtomicInteger(0));
 
     private final String logName;
     private final Lock lockHelper;
@@ -59,9 +59,7 @@ public class RevocableReentantLockHelper implements Lock, Revocable {
             // Подразумевается, что есть маааленький slice временя между первым успешным взятием блокировки и очисткой флага revoked,
             // когда флаг может быть установлен триггером, и после этого без проверки опять сброшен. Посредством определения метода в
             // clearFlag можно задать правильное значение
-            @SuppressWarnings("squid:HiddenFieldCheck")
-            final int acquires = RevocableReentantLockHelper.acquires.get().incrementAndGet();
-            logger.trace("{} acquires: {}", logName, acquires);
+            logger.trace("{} acquires: {}", logName, acquires.get().incrementAndGet());
         }
     }
 
@@ -69,12 +67,12 @@ public class RevocableReentantLockHelper implements Lock, Revocable {
         synchronized (revokedAt) {
             if (acquires.get().intValue() > 0) {
                 @SuppressWarnings("squid:HiddenFieldCheck")
-                final int acquires = RevocableReentantLockHelper.acquires.get().decrementAndGet();
+                final int _acquires = acquires.get().decrementAndGet();
                 try {
-                    logger.trace("{} has been released {} to: {} acquires", logName, acquires == 0 ? "completely" : "", acquires);
+                    logger.trace("{} has been released {} to: {} acquires", logName, _acquires == 0 ? "completely" : "", _acquires);
                     checkRevoked("::released", false);
                 } finally {
-                    if (acquires == 0) {
+                    if (_acquires == 0) {
                         this.initAt.set(Instant.MIN);
                     }
                 }
