@@ -29,3 +29,6 @@ hs_err_pid*
 # derbydb folder
 **/derbydb/
 **/dependency-reduced-pom.xml
+
+#
+.scannerwork
