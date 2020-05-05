@@ -5,10 +5,11 @@ before_install:
 addons:
   sonarcloud:
     organization: "sftwnd-github"
+    sourceEncoding: "UTF-8"
+    projectKey: "crayfish"
     token:
-      secure: "EC/bBzJ+1tlAhS/liGeeiVsmsbc/ihYECtkHxvtb4ktttlXitrGLGy6ZlqnW0LXaspL/k//q64wUEROSFiX7OAIX0BnJw3QUCKTsMpKZdjGFkjI/FcTEVzPHi6WNmhv1xvxEnCh+8tnHY6mFKsZzijquuIUflc2Kx/TPLZ2vPazyP8Tg9BrkYv2hvCfYZIkW967CNujUGTLr7KmY4cAdTcwdxp5d+fGL9AbZCl165YypHvg+Nuk/9UlHkTbHAWcgOHbkP8fVokS/blPTGG0syIL1wBiS7+xm3ZitJTPlBLwvzYhKg77p1NB4MCXh8x7Lcv8k21Kwr9uNZeGUOSxoYbZJgZ6MUWJgxzWKkjE9+HarTNyts2lmEH9/MHTH3u8FFOeCQkMXLUjsH7NmIPNvUzmpMnEZ9BkQjeaRZrylCW2l7pm3dkxJ0PNFApcTufRIg2wx8RyDKHcjwrckuxHC2ody+4NBIkErSq4sX8crsjQ77nIGhqEx/Hgj0DyPPckoRjPTgpWTu9ZF51bTq22veDTT9RPrzKB4KUKKPkmqVkcFGZsAmlt/av/KbbH33qSP6ZFd63JTGOeGfxUXyImKPNoHT67Rt3L6jhqmfw7WZb1JH3Pmg7XHiJnDpEP1BZg+kBc8F4VUDa6taN2ZyGYhNP6fwPVhY8+XyS1QcxHRSjQ="
+      secure: "YOeJAOpFzl5uPQmoSXnxgMhB1JX/YBmOabfV+uBaeOwpUuhYa6NhFMf4bXyAI7j6NsMRv2J7KSXaW53afz3Nq//k78+NFG71ipALe7uMOQBsJ3xflAInSug5LgpRkDZcsWMkcDnC7lBYphFXnI7ULI2Utj9Ioe1MYIM8gtr9tDz0uW26BZD7BrLN8M1WLPSMzX9UDqVZ+7ZTEnZxhyTZbQEWu67cXpOLR+QN+P5SVnytthZFwGC38EeuVktRDNfaxuBeyiYqEWbbNvKWnGFKw4q7DmhqGhsStG+4UImVoqGyYoTjJcLrpQPzWNa7+qZHdkfRC4J6A5fkfURz9zDMbshDN+96I1rMoWLmF7ZJrwq/+cs7XAFW5o620t+a5jbVT/zfaitUnIqDI3R66p60+KA8zD9meCxQYrBYoN9R27v8ZJB6V18zRQbaTih44xlZdVNIolXsW3WSnfqsPoFDXsDS7xr4GXxbvQqFGedYNhjAcuCq5lxPvMbkv2/kENwvGSNEAsvmNpJefd2UlUMjzQ4V8T5ytBdkAgTAJrKbegbvqeV6qmniVk7CCeBJOPXSBYJ7UumXDUKnWJrzySW/P3piPO0Y3zjig3338vgIsN4k1iuwi2E8tA/2Pa66/ySCKbDR9T0FS2Hr/dxGXOiBBaTSb4FngFQlR7vSHgZg/V0="
 script:
-  - mvn clean verify sonar:sonar -Pcoverage -Dsonar.projectKey=crayfish -Dsonar.sourceEncoding=UTF-8
-  - mvn compile package -X
+  - mvn clean org.jacoco:jacoco-maven-plugin:prepare-agent install sonar:sonar -Dsonar.projectKey=sftwnd_crayfish
 jdk: openjdk11
 os: linux

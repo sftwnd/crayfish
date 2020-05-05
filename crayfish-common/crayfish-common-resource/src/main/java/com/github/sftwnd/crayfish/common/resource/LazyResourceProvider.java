@@ -1,9 +1,7 @@
 package com.github.sftwnd.crayfish.common.resource;
 
 import com.github.sftwnd.crayfish.common.exception.ExceptionUtils;
-import lombok.AccessLevel;
 import lombok.Getter;
-import lombok.Setter;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 
@@ -44,17 +42,20 @@ public class LazyResourceProvider<P,R> implements IResourceProvider<R>, Closeabl
     private boolean                               provided = false;
     private final Set<Class<? extends Throwable>> defaultAbsorbedThrows;
     private Set<Class<? extends Throwable>> absorbedThrows = new LinkedHashSet<>();
-    @Setter(AccessLevel.PROTECTED)
+    @SuppressWarnings("squid:S3077")
     @Nullable
     private volatile P               provider;
+    @SuppressWarnings("squid:S3077")
     @Nullable
     private volatile R               resource;
     @Nonnull
     private          Constructor<P>  providerConstructor;
     @Nonnull
     private          Provider<P,R>   resourceProvider;
+    @SuppressWarnings("squid:S3077")
     @Nullable
     private volatile BiConsumer<P,R> onClose = null;
+    @SuppressWarnings("squid:S3077")
     @Getter
     @Nullable
     volatile private Throwable error;
@@ -75,6 +76,10 @@ public class LazyResourceProvider<P,R> implements IResourceProvider<R>, Closeabl
         return !this.provided && this.provider == null
              ? doConstruct()
              : this.provider;
+    }
+
+    protected synchronized void setProvided(P provider) {
+        this.provider = provider;
     }
 
     @Override

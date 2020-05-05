@@ -98,6 +98,7 @@ public final class CrcModel extends CrcDescriprion {
                    );
     }
 
+    @SuppressWarnings("squid:S3077")
     private volatile long[] table_byte = null;
 
     private long[] _createBytewiseTable() {
