@@ -60,12 +60,14 @@ public class ZookeeperLockService implements LockService, Closeable {
                 default:
                     stateInstant = Instant.now();
             }
+            // Поскольку мы имеем финальный шаг в stream, то peek сработает успешно
+            @SuppressWarnings("squid:S3864")
             final List<ZookeeperReentantLock> revokedLocks = this.locks.entrySet().stream()
                     .map(e -> e.getValue().get())
                     .filter(Objects::nonNull)
                     .peek(lock -> lock.revokeUntil(stateInstant))
                     .collect(Collectors.toList());
-            if (revokedLocks.size() > 0) {
+            if (!revokedLocks.isEmpty()) {
                 logger.trace("{}::stateChanged[{}], revoked locks: {}", this.getClass().getSimpleName(), newState, revokedLocks);
                 return;
             }
@@ -93,7 +95,7 @@ public class ZookeeperLockService implements LockService, Closeable {
     public Lock getNamedLock(@Nonnull String name) {
         Objects.requireNonNull(name);
         synchronized (locks) {
-            _clearWeak();
+            clearWeak();
             if (!locks.containsKey(name)) {
                 ZookeeperReentantLock result = new ZookeeperReentantLock(new InterProcessMutex(curatorFramework, constructPath(name)), this::getStateInstant);
                 locks.put(name, new WeakReference<>(result));
@@ -115,12 +117,9 @@ public class ZookeeperLockService implements LockService, Closeable {
         }
     }
 
-    private final void _clearWeak() {
+    private final void clearWeak() {
         // Должно вызываться в синхронизационной секции по locks
-        if (checkWeakInstant.plus(CHECK_WEAK_DURATION).isBefore(Instant.now())) {
-            locks.entrySet().removeIf(e -> e.getValue().get() == null);
-            checkWeakInstant = Instant.now();
-        }
+
     }
 
     private String constructPath(String name) {

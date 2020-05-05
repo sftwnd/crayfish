@@ -20,8 +20,6 @@ import java.util.stream.Stream;
 @Slf4j
 public class ZookeeperNamedInfoLoader<I> extends ZookeeperHelper implements NamedInfoLoader<I> {
 
-  //private static final MessageSource messageSource = I18n.getMessageSource();
-
     @Getter private final Class<I> clazz;
     @Getter private final NamedInfoOnThrowListener<I, byte[], Throwable> onThrow;
 
@@ -52,12 +50,12 @@ public class ZookeeperNamedInfoLoader<I> extends ZookeeperHelper implements Name
                                       } else {
                                           result = new BaseNamedInfo<>(nodeName, JsonMapper.parseObject(nodeData, clazz));
                                       }
-                                  } catch (Throwable throwable) {
-                                      result = onThrow == null ? (NamedInfo<I>)ExceptionUtils.uncheckExceptions(throwable) : onThrow.get(new BaseNamedInfo<>(nodeName, nodeData), throwable);
+                                  } catch (Exception expt) {
+                                      result = onThrow == null ? (NamedInfo<I>)ExceptionUtils.uncheckExceptions(expt): onThrow.get(new BaseNamedInfo<>(nodeName, nodeData), expt);
                                   }
                                   return result;
                               }
-                      ).filter(n -> n != null);
+                      ).filter(Objects::nonNull);
         } catch (Exception ex) {
             return ExceptionUtils.uncheckExceptions(ex);
         }

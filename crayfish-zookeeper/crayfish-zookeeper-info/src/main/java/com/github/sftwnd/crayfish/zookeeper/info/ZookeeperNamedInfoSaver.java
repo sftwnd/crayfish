@@ -17,7 +17,6 @@ import static com.github.sftwnd.crayfish.common.exception.ExceptionUtils.wrapUnc
 @Slf4j
 public class ZookeeperNamedInfoSaver<I> extends ZookeeperHelper implements NamedInfoSaver<I> {
 
-  //private static final MessageSource messageSource = I18n.getMessageSource();
     private final Class<I> clazz;
 
     public ZookeeperNamedInfoSaver(@Nonnull final ZookeeperService zookeeperService, @Nonnull Class<I> clazz, @Nonnull String path) {

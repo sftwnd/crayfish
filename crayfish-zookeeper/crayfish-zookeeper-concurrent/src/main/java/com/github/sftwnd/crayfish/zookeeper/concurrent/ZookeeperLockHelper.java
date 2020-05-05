@@ -31,7 +31,7 @@ public class ZookeeperLockHelper implements Lock {
 
 
     @Override
-    @SuppressWarnings("squid:S1181")
+    @SuppressWarnings({"squid:S1181", "squid:S1905"})
     public void lock() {
         try {
             logger.trace("::lock()");
