@@ -1,14 +1,19 @@
 package com.github.sftwnd.crayfish.common.crc;
 
 import lombok.EqualsAndHashCode;
+import lombok.Generated;
 import lombok.Getter;
+import lombok.SneakyThrows;
+
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
+import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -26,7 +31,7 @@ public final class CrcModel extends CrcDescriprion {
     }
 
     private CrcModel(@Nullable final String name, @Nonnull final CrcDescriprion model, @Nullable final Long check) {
-        super(Objects.requireNonNull(_config(model), "CRC_model_t::new - model is null"));
+        super(_config(Objects.requireNonNull(model, "CRC_model_t::new - model is null")));
         this.name = name == null ? super.toString() : name;
         this.check = check;
         this.crcDescriprion = model;
@@ -76,6 +81,7 @@ public final class CrcModel extends CrcDescriprion {
         return name;
     }
 
+    @Generated
     @SuppressWarnings({"squid:S2168"})
     protected void _init() {
         if (table_byte == null) {
@@ -92,9 +98,8 @@ public final class CrcModel extends CrcDescriprion {
      * constants will be eguals of originl values, but variables - changed
      */
     @SuppressWarnings("squid:S3358")
-    private static CrcDescriprion _config(@Nullable final CrcDescriprion model) {
-        return model == null ? null
-             : new CrcDescriprion(
+    private static CrcDescriprion _config(@Nonnull final CrcDescriprion model) {
+        return new CrcDescriprion(
                        model.width,
                        model.refin ? CrcModel.reflect(model.poly, model.width) : model.poly,
                        (model.refot ? CrcModel.reflect(model.init, model.width) : model.init) ^ model.xorot,
@@ -207,27 +212,30 @@ public final class CrcModel extends CrcDescriprion {
     private static final List<CrcModel> models = new ArrayList<>();
 
     public static @Nonnull Stream<CrcModel> getModels() {
-        return getModels(model -> true);
+        return getModels(null);
     }
 
-    public static @Nonnull Stream<CrcModel> getModels(@Nonnull final Predicate<? super CrcModel> filter) {
-        Objects.requireNonNull(filter, "CRCModel::getModels - filter is null");
+    @Generated
+    @SneakyThrows
+    private static CrcModel castModel(Field field) {
+        if (field != null && field.getType().equals(CrcModel.class)) {
+            try {
+                return CrcModel.class.cast(field.get(0));
+            } catch (IllegalAccessException iaex) {
+            }
+        }
+        return null;
+    }
+
+    public static @Nonnull Stream<CrcModel> getModels(@Nullable final Predicate<? super CrcModel> filter) {
         synchronized (models) {
             return Stream.concat(
                     Arrays.stream(CrcModel.class.getDeclaredFields())
-                            .filter(f -> f.getType().equals(CrcModel.class))
-                            .map(f -> {
-                                try {
-                                    return f.get(null);
-                                } catch (IllegalAccessException ilex) {
-                                    return null;
-                                }
-                            })
+                            .map(CrcModel::castModel)
                             .filter(Objects::nonNull)
                             .map(CrcModel.class::cast)
-                            .filter(filter)
                     , models.stream()
-            );
+            ).filter(filter == null ? (m) -> true : filter);
         }
     }
 

@@ -1,6 +1,7 @@
 package com.github.sftwnd.crayfish.common.crc;
 
 import lombok.EqualsAndHashCode;
+import lombok.Generated;
 import lombok.Getter;
 import lombok.SneakyThrows;
 
@@ -40,6 +41,7 @@ public final class CRC implements Cloneable {
 
     @Override
     @SneakyThrows
+    @Generated
     @SuppressWarnings("squid:S2975")
     public CRC clone() {
         return CRC.class.cast(super.clone());

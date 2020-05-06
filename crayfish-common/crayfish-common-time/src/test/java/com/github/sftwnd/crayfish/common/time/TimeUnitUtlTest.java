@@ -1,7 +1,7 @@
 package com.github.sftwnd.crayfish.common.time;
 
-import org.junit.After;
-import org.junit.Before;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.security.InvalidParameterException;
@@ -36,12 +36,12 @@ class TimeUnitUtlTest {
                                                                 ,"era", ChronoUnit.ERAS
                                                                 ,"forever", ChronoUnit.FOREVER );
 
-    @Before
+    @BeforeEach
     public void startUp() {
         Locale.setDefault(Locale.forLanguageTag("ru"));
     }
 
-    @After
+    @AfterEach
     public void tearDown() {
         Locale.setDefault(defaultLocale);
     }
