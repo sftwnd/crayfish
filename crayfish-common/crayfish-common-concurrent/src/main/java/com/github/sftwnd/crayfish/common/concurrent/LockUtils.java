@@ -1,11 +1,11 @@
 package com.github.sftwnd.crayfish.common.concurrent;
 
-import com.github.sftwnd.crayfish.common.base.Holder;
-import com.github.sftwnd.crayfish.common.exception.ExceptionUtils;
+import lombok.SneakyThrows;
 
 import javax.annotation.Nullable;
 import java.util.concurrent.Callable;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 
@@ -139,7 +139,7 @@ public final class LockUtils {
             }
         }
 
-        try (AutoCloseable x = () -> lock.unlock()) {
+        try (AutoCloseable x = lock::unlock) {
             return callable.call();
         }
     }
@@ -168,17 +168,14 @@ public final class LockUtils {
      * Обёртка вокруг {@link #callWithLock(Lock, long, TimeUnit, RuntimeException, Callable)}, оборачивающая
      * возникающие при выполнении <code>callable.call()</code> checked исключения в {@link RuntimeException}.
      */
+    @SneakyThrows
     public static <T> T callWithLockAndHideCheckedExceptions(
             Lock lock,
             long timeout,
             @Nullable TimeUnit timeUnit,
             @Nullable RuntimeException timeoutError,
             Callable<T> callable) throws LockAquireTimeoutException {
-        try {
-            return callWithLock(lock, timeout, timeUnit, timeoutError, callable);
-        } catch (Exception e) {
-            return ExceptionUtils.uncheckExceptions(e);
-        }
+        return callWithLock(lock, timeout, timeUnit, timeoutError, callable);
     }
 
     /**
@@ -271,25 +268,25 @@ public final class LockUtils {
                                           @Nullable TimeUnit timeUnit,
                                           @Nullable RuntimeException timeoutError,
                                           final Callable<T> callable) throws LockAquireTimeoutException, Exception {
-        final Holder<Integer> readLockCount = new Holder<>(0);
+        final AtomicInteger readLockCount = new AtomicInteger(0);
         while (lock.getReadHoldCount() > 0) {
             lock.readLock().unlock();
-            readLockCount.value++;
+            readLockCount.incrementAndGet();
         }
 
         try (AutoCloseable x = () -> {
-            while (readLockCount.value > 0) {
+            while (readLockCount.get() > 0) {
                 // Восстанавливаем количество блокировок на чтение
                 lock.readLock().lock();
-                readLockCount.value--;
+                readLockCount.decrementAndGet();
             }
         }) {
             Callable<T> doIt = () -> {
                 try (AutoCloseable x1 = () -> {
-                    if (readLockCount.value > 0) {
+                    if (readLockCount.get() > 0) {
                         // Downgrade by acquiring read lock before releasing write lock
                         lock.readLock().lock();
-                        readLockCount.value--;
+                        readLockCount.decrementAndGet();
                     }
                 }) {
                     return callable.call();
@@ -297,7 +294,7 @@ public final class LockUtils {
             };
 
 
-            if (readLockCount.value > 0) {
+            if (readLockCount.get() > 0) {
                 StolenReadLockException markException = new StolenReadLockException();
                 try {
                     // Сразу пробуем прорваться вперёд всех: см. доку к ReentrantReadWriteLock.WriteLock.tryLock() (этот метод нарушает соглашения об очерёдности)
@@ -351,17 +348,14 @@ public final class LockUtils {
      * смотри важное примечание касающееся особенностей {@link ReentrantReadWriteLock}.
      * </p>
      */
+    @SneakyThrows
     public static <T> T callWithWriteLockAndHideCheckedExceptions(
             ReentrantReadWriteLock lock,
             long timeout,
             @Nullable TimeUnit timeUnit,
             @Nullable RuntimeException timeoutError,
             Callable<T> callable) throws LockAquireTimeoutException {
-        try {
-            return callWithWriteLock(lock, timeout, timeUnit, timeoutError, callable);
-        } catch (Exception e) {
-            return ExceptionUtils.uncheckExceptions(e);
-        }
+        return callWithWriteLock(lock, timeout, timeUnit, timeoutError, callable);
     }
 
 

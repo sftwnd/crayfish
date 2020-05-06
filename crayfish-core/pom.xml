@@ -8,7 +8,7 @@
     <parent>
         <groupId>com.github.sftwnd.crayfish</groupId>
         <artifactId>crayfish</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.1.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>crayfish-core</artifactId>
@@ -70,14 +70,6 @@
                 <version>${lombok.version}</version>
                 <scope>provided</scope>
             </dependency>
-            <!-- Kotlin -->
-            <!--
-            <dependency>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-stdlib-jdk8</artifactId>
-                <version>${kotlin.version}</version>
-            </dependency>
-            -->
             <!-- Externals -->
             <dependency>
                 <groupId>com.google.code.findbugs</groupId>
@@ -98,8 +90,8 @@
                 <version>${junit.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.junit.vintage</groupId>
-                <artifactId>junit-vintage-engine</artifactId>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
                 <version>${junit.version}</version>
             </dependency>
             <!-- Zookeeper/Curator -->
@@ -147,7 +139,7 @@
             <!-- -== CRAYFISH ==- -->
             <dependency>
                 <groupId>com.github.sftwnd.crayfish.common</groupId>
-                <artifactId>crayfish-common-base</artifactId>
+                <artifactId>crayfish-common-concurrent</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -157,57 +149,12 @@
             </dependency>
             <dependency>
                 <groupId>com.github.sftwnd.crayfish.common</groupId>
-                <artifactId>crayfish-common-concurrent</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.sftwnd.crayfish.common</groupId>
-                <artifactId>crayfish-common-exception</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.sftwnd.crayfish.common</groupId>
                 <artifactId>crayfish-common-format</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.sftwnd.crayfish.common</groupId>
-                <artifactId>crayfish-common-i18n</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.sftwnd.crayfish.common</groupId>
-                <artifactId>crayfish-common-info</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.sftwnd.crayfish.common</groupId>
                 <artifactId>crayfish-common-json</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.sftwnd.crayfish.common</groupId>
-                <artifactId>crayfish-common-resource</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.sftwnd.crayfish.common</groupId>
-                <artifactId>crayfish-common-time</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.sftwnd.crayfish.common</groupId>
-                <artifactId>crayfish-common-utl</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.sftwnd.crayfish.zookeeper</groupId>
-                <artifactId>crayfish-zookeeper-common</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.sftwnd.crayfish.distributed</groupId>
-                <artifactId>crayfish-distributed-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>
@@ -238,8 +185,8 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -247,12 +194,6 @@
             <artifactId>javax.annotation-api</artifactId>
             <scope>compile</scope>
         </dependency>
-        <!--
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib-jdk8</artifactId>
-        </dependency>
-        -->
     </dependencies>
 
 </project>

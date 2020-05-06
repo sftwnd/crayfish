@@ -1,6 +1,5 @@
 package com.github.sftwnd.crayfish.common.concurrent;
 
-import com.github.sftwnd.crayfish.common.exception.ExceptionUtils;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -8,7 +7,6 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.time.Instant;
 import java.util.Objects;
-import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -19,14 +17,17 @@ import java.util.function.Supplier;
 @Slf4j
 public class RevocableReentantLockHelper implements Lock, Revocable {
 
-    private static ThreadLocal<AtomicInteger> acquires = ThreadLocal.withInitial(() -> new AtomicInteger(0));
+    @SuppressWarnings("squid:S5164")
+    private final ThreadLocal<AtomicInteger> acquires = ThreadLocal.withInitial(() -> new AtomicInteger(0));
 
     private final String logName;
     private final Lock lockHelper;
     @Getter
     private final Supplier<Instant>        statusMonitor;
+    @SuppressWarnings("squid:S5164")
     private final ThreadLocal<Instant>     initAt    = ThreadLocal.withInitial(() -> Instant.MIN);
     private final AtomicReference<Instant> revokedAt = new AtomicReference<>(Instant.MIN);
+    @SuppressWarnings("squid:S5164")
     private final ThreadLocal<Long>        checkedAt = ThreadLocal.withInitial(() -> 0L);
 
     public RevocableReentantLockHelper(@Nonnull Lock lockHelper) {
@@ -60,9 +61,7 @@ public class RevocableReentantLockHelper implements Lock, Revocable {
             // Подразумевается, что есть маааленький slice временя между первым успешным взятием блокировки и очисткой флага revoked,
             // когда флаг может быть установлен триггером, и после этого без проверки опять сброшен. Посредством определения метода в
             // clearFlag можно задать правильное значение
-            @SuppressWarnings("squid:HiddenFieldCheck")
-            final int acquires = RevocableReentantLockHelper.acquires.get().incrementAndGet();
-            logger.trace("{} acquires: {}", logName, acquires);
+            logger.trace("{} acquires: {}", logName, acquires.get().incrementAndGet());
         }
     }
 
@@ -70,12 +69,12 @@ public class RevocableReentantLockHelper implements Lock, Revocable {
         synchronized (revokedAt) {
             if (acquires.get().intValue() > 0) {
                 @SuppressWarnings("squid:HiddenFieldCheck")
-                final int acquires = RevocableReentantLockHelper.acquires.get().decrementAndGet();
+                final int _acquires = acquires.get().decrementAndGet();
                 try {
-                    logger.trace("{} has been released {} to: {} acquires", logName, acquires == 0 ? "completely" : "", acquires);
+                    logger.trace("{} has been released {} to: {} acquires", logName, _acquires == 0 ? "completely" : "", _acquires);
                     checkRevoked("::released", false);
                 } finally {
-                    if (acquires == 0) {
+                    if (_acquires == 0) {
                         this.initAt.set(Instant.MIN);
                     }
                 }
@@ -111,35 +110,24 @@ public class RevocableReentantLockHelper implements Lock, Revocable {
     @SuppressWarnings("squid:S1181")
     private void checkRevoked(final String callerName, final boolean acquired) {
         synchronized (revokedAt) {
-            try {
-                if (revokedAt.get().isAfter(initAt.get())) {
-                    if (acquires.get().intValue() == 0) {
-                        logger.trace("{} is checked as revoked by {} at {}. Lock is not possible", this.logName, callerName, revokedAt.get());
-                    } else {
-                        logger.trace("{} is checked as revoked by {} at {}", this.logName, callerName, revokedAt.get());
-                    }
-                    throw new RevokedException(String.format("Lock [%s] has been revoked at %s", logName, revokedAt.get()));
+            if (revokedAt.get().isAfter(initAt.get())) {
+                if (acquires.get().intValue() == 0) {
+                    logger.trace("{} is checked as revoked by {} at {}. Lock is not possible", this.logName, callerName, revokedAt.get());
+                } else {
+                    logger.trace("{} is checked as revoked by {} at {}", this.logName, callerName, revokedAt.get());
                 }
-                checkedAt.set(System.currentTimeMillis());
-            } catch (Throwable throwable) {
-                if (acquired) {
-                    lockHelper.unlock();
-                }
-                ExceptionUtils.uncheckExceptions(throwable);
+                throw new RevokedException(String.format("Lock [%s] has been revoked at %s", logName, revokedAt.get()));
             }
+            checkedAt.set(System.currentTimeMillis());
         }
     }
 
     @Override
     @SuppressWarnings("squid:S1181")
     public void lock() {
-        try {
-            preacquire();
-            lockHelper.lock();
-            acquired();
-        } catch (Throwable throwable) {
-            ExceptionUtils.uncheckExceptions(throwable);
-        }
+        preacquire();
+        lockHelper.lock();
+        acquired();
     }
 
     @Override
@@ -152,22 +140,16 @@ public class RevocableReentantLockHelper implements Lock, Revocable {
         } catch (InterruptedException itex) {
             Thread.currentThread().interrupt();
             throw itex;
-        } catch (Throwable throwable) {
-            ExceptionUtils.uncheckExceptions(throwable);
         }
     }
 
     @Override
     @SuppressWarnings("squid:S1181")
     public boolean tryLock() {
-        try {
-            preacquire();
-            if (lockHelper.tryLock()) {
-                acquired();
-                return true;
-            }
-        } catch (Throwable throwable) {
-            ExceptionUtils.uncheckExceptions(throwable);
+        preacquire();
+        if (lockHelper.tryLock()) {
+            acquired();
+            return true;
         }
         return false;
     }
@@ -184,8 +166,6 @@ public class RevocableReentantLockHelper implements Lock, Revocable {
         } catch (InterruptedException itex) {
             Thread.currentThread().interrupt();
             throw itex;
-        } catch (Throwable throwable) {
-            ExceptionUtils.uncheckExceptions(throwable);
         }
         return false;
     }

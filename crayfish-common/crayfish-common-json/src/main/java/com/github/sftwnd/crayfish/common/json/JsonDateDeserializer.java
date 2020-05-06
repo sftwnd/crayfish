@@ -4,11 +4,13 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.github.sftwnd.crayfish.common.format.DateSerializeUtility;
+import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.IntStream;
@@ -23,12 +25,7 @@ public final class JsonDateDeserializer extends JsonDeserializer<Date> {
     private static final Pattern pattern = Pattern.compile("^\\d{4}-\\d{2}-\\d{2}(T\\d{1,2}(\\:\\d{1,2}(\\:\\d{1,2}(\\.\\d+)?)?)?)?(Z|z|(?:[\\+|-]\\d{1,2}\\:\\d{1,2}))?.*$");
     private static String defaultTimeZoneId = "UTC";
 
-    private static ThreadLocal<String> timeZone = new ThreadLocal<String>() {
-        @Override
-        protected String initialValue() {
-            return defaultTimeZoneId;
-        }
-    };
+    private static ThreadLocal<String> timeZone = new ThreadLocal<>();
 
     private static final String[] DATE_DESERIALIZE_FORMAT_ELEMENTS = new String[] { "yyyy-MM-dd", "'T'HH", ":mm", ":ss", ".SSS", "XXX" };
 
@@ -39,6 +36,7 @@ public final class JsonDateDeserializer extends JsonDeserializer<Date> {
     // yyyy-MM-dd'T'HH              yyyy-MM-dd'T'HHXXX
     // yyyy-MM-dd                   yyyy-MM-ddXXX
     @Override
+    @SneakyThrows
     public Date deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
         try {
             Matcher matcher = pattern.matcher(jsonParser.getText());
@@ -55,12 +53,12 @@ public final class JsonDateDeserializer extends JsonDeserializer<Date> {
             return result;
         } catch (ParseException pex) {
             logger.error("unable to deserialize(date:`{}`)", jsonParser.getText());
-            throw new RuntimeException(pex);
+            throw pex;
         }
     }
 
     public static String getTimeZoneId() {
-        return timeZone.get();
+        return Optional.ofNullable(timeZone.get()).orElse(defaultTimeZoneId);
     }
 
     public static void setTimeZoneId(String timeZoneId) {
@@ -73,12 +71,13 @@ public final class JsonDateDeserializer extends JsonDeserializer<Date> {
             // То ничего не меняем
             return;
         }
-        timeZone.set( timeZoneId == null
-                      ? defaultTimeZoneId
-                     // UTC зону не используем со смещением. Вместо неё берём GMT плюс смещение
-                      : timeZoneId.matches("(?i)UTC.+")
+        if (timeZoneId == null) {
+            timeZone.remove();
+        } else {
+            timeZone.set( timeZoneId.matches("(?i)UTC.+")
                         ? String.valueOf(new StringBuilder("GMT").append(timeZoneId.substring(3)))
-                        : timeZoneId );
+                        : timeZoneId);
+        }
     }
 
     public static void setLocalTimeZone() {
@@ -95,11 +94,12 @@ public final class JsonDateDeserializer extends JsonDeserializer<Date> {
 
     public static void setDefaultTimeZoneId(String timeZoneId) {
         synchronized (JsonDateDeserializer.class) {
-            defaultTimeZoneId = timeZoneId == null
-                    ? "UTC"
-                    : timeZoneId.matches("(?i)UTC.+")
-                    ? String.valueOf(new StringBuilder("GMT").append(timeZoneId.substring(3)))
-                    : timeZoneId;
+            defaultTimeZoneId =
+                    Optional.ofNullable(timeZoneId)
+                            .map(tz -> tz.matches("(?i)UTC.+")
+                                     ? String.valueOf(new StringBuilder("GMT").append(tz.substring(3)))
+                                     : tz)
+                            .orElse("UTC");
         }
     }
 

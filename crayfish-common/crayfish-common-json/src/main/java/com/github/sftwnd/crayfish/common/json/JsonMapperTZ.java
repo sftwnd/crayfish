@@ -18,12 +18,13 @@ public final class JsonMapperTZ {
 
     public static final TimeZone currentTimeZone = Calendar.getInstance().getTimeZone();
 
-    private static ThreadLocal<Map<String, ObjectMapper>> objectMappers = new ThreadLocal<Map<String, ObjectMapper>>() {
-        @Override
-        protected Map<String, ObjectMapper> initialValue() {
-             return new HashMap<>();
-        }
-    };
+    private JsonMapperTZ() {
+        throw new IllegalStateException("JsonMapperTZ is utility class");
+    }
+
+    // Подразумевается, что mapper дйствует на проект и пересоздание, как и стирание mapper-конфигурации не требуется
+    @SuppressWarnings("squid:S5164")
+    private static ThreadLocal<Map<String, ObjectMapper>> objectMappers = ThreadLocal.withInitial(HashMap::new);
 
     public static ObjectMapper getObjectMapper(TimeZone timeZone) {
         Map<String, ObjectMapper> mappers = objectMappers.get();

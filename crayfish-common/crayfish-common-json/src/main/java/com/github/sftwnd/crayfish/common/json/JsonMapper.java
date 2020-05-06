@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.github.sftwnd.crayfish.common.exception.ExceptionUtils;
+import lombok.SneakyThrows;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -15,18 +15,18 @@ import java.util.Calendar;
  */
 public final class JsonMapper {
 
-    private static ThreadLocal<ObjectMapper> objectMapper = new ThreadLocal<ObjectMapper>() {
-        @Override
-        protected ObjectMapper initialValue() {
-            return new ObjectMapper()
-                      .registerModule(new JavaTimeModule())
-                      .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
-                      .configure(SerializationFeature.WRITE_DATES_WITH_ZONE_ID, true)
-                      .setTimeZone(Calendar.getInstance().getTimeZone())
-                      .setSerializationInclusion(JsonInclude.Include.NON_NULL)
-                      .findAndRegisterModules();
-        }
-    };
+    private JsonMapper() {
+        super();
+    }
+    // Подразумевается, что mapper дйствует на проект и пересоздание, как и стирание mapper-конфигурации не требуется
+    @SuppressWarnings("squid:S5164")
+    private static ThreadLocal<ObjectMapper> objectMapper = ThreadLocal.withInitial(() -> new ObjectMapper()
+              .registerModule(new JavaTimeModule())
+              .configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false)
+              .configure(SerializationFeature.WRITE_DATES_WITH_ZONE_ID, true)
+              .setTimeZone(Calendar.getInstance().getTimeZone())
+              .setSerializationInclusion(JsonInclude.Include.NON_NULL)
+              .findAndRegisterModules());
 
     public static <T>T parseObject(String json, Class<T> clazz) throws IOException {
         return objectMapper.get().readerFor(clazz).readValue(json);
@@ -48,28 +48,20 @@ public final class JsonMapper {
         return objectMapper.get().writeValueAsString(object);
     }
 
+    @SneakyThrows
     public static <T>T snakyParseObject(String json, Class<T> clazz) {
-        try {
-            return objectMapper.get().readerFor(clazz).readValue(json);
-        } catch (IOException ioex) {
-            return ExceptionUtils.uncheckExceptions(ioex);
-        }
+        return objectMapper.get().readerFor(clazz).readValue(json);
     }
 
+    @SneakyThrows
     public static <T>T snakyParseObject(byte[] json, Class<T> clazz) {
-        try {
-            return objectMapper.get().readerFor(clazz).readValue(json);
-        } catch (IOException ioex) {
-            return ExceptionUtils.uncheckExceptions(ioex);
-        }
+        return objectMapper.get().readerFor(clazz).readValue(json);
     }
 
+    @SneakyThrows
     public static String snakySerializeObject(Object object) {
-        try {
-            return objectMapper.get().writeValueAsString(object);
-        } catch (IOException ioex) {
-            return ExceptionUtils.uncheckExceptions(ioex);
-        }
+        return objectMapper.get().writeValueAsString(object);
+
     }
 
     public static ObjectMapper getObjectMapper() {

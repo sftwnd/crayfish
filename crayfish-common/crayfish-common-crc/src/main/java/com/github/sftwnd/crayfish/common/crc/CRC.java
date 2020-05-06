@@ -1,7 +1,9 @@
 package com.github.sftwnd.crayfish.common.crc;
 
 import lombok.EqualsAndHashCode;
+import lombok.Generated;
 import lombok.Getter;
+import lombok.SneakyThrows;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
@@ -13,6 +15,7 @@ import static com.github.sftwnd.crayfish.common.crc.CrcModel.crc_general_combine
 public final class CRC implements Cloneable {
 
     @Getter private CrcModel model;
+    @SuppressWarnings("squid:S1700")
     protected long crc;
     @Getter private int length = 0;
 
@@ -37,8 +40,11 @@ public final class CRC implements Cloneable {
     }
 
     @Override
-    public Object clone() {
-        return new CRC(this);
+    @SneakyThrows
+    @Generated
+    @SuppressWarnings("squid:S2975")
+    public CRC clone() {
+        return CRC.class.cast(super.clone());
     }
 
     public long getCrc() {
