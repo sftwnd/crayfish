@@ -37,7 +37,7 @@ public class ResourceInfoCoordinated extends JsonToStringProcessed implements Re
     }
 
     public ResourceInfoCoordinated(@Nullable String owner, @Nullable Instant ownTime) {
-        this(owner, null, null);
+        this(owner, ownTime, null);
     }
 
     public ResourceInfoCoordinated(@Nullable String owner, @Nullable Instant ownTime, @Nullable Instant suspendTime) {
