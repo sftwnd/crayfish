@@ -15,6 +15,9 @@ import java.util.Calendar;
  */
 public final class JsonMapper {
 
+    private JsonMapper() {
+        super();
+    }
     // Подразумевается, что mapper дйствует на проект и пересоздание, как и стирание mapper-конфигурации не требуется
     @SuppressWarnings("squid:S5164")
     private static ThreadLocal<ObjectMapper> objectMapper = ThreadLocal.withInitial(() -> new ObjectMapper()

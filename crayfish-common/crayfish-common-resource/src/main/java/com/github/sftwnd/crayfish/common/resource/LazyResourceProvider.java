@@ -58,7 +58,7 @@ public class LazyResourceProvider<P,R> implements IResourceProvider<R>, Closeabl
     @SuppressWarnings("squid:S3077")
     @Getter
     @Nullable
-    volatile private Throwable error;
+    private volatile Throwable error;
 
     protected LazyResourceProvider(@Nonnull Constructor<P> providerConstructor, @Nonnull Provider<P,R> resourceProvider, Set<Class<? extends Throwable>> baseAbsorbedThrows) {
         this.resourceProvider = Objects.requireNonNull(resourceProvider,"LazyResourceProvider::new - connector is null");
@@ -156,6 +156,7 @@ public class LazyResourceProvider<P,R> implements IResourceProvider<R>, Closeabl
     }
 
     @Override
+    @SuppressWarnings("squid:S1181")
     public synchronized void close() {
         this.error = null;
         try {
@@ -188,6 +189,7 @@ public class LazyResourceProvider<P,R> implements IResourceProvider<R>, Closeabl
     }
 
     // Вызов идёт в synchronized секции и на момент вызова provided = false
+    @SuppressWarnings("squid:S1181")
     private synchronized R provide(@Nullable P provider) {
         try {
             this.resource = Optional.ofNullable( Optional.ofNullable(provider).orElse(doConstruct()) )
@@ -203,7 +205,8 @@ public class LazyResourceProvider<P,R> implements IResourceProvider<R>, Closeabl
         return this.resource;
     }
 
-    private final synchronized R doProvide(@Nonnull P provider) {
+    @SuppressWarnings("squid:S1181")
+    private final synchronized R doProvide(@Nullable P provider) {
         try {
             this.resource = this.provided || provider == null ? this.resource : resourceProvider.provide(provider);
         } catch (Throwable throwable) {
@@ -214,6 +217,7 @@ public class LazyResourceProvider<P,R> implements IResourceProvider<R>, Closeabl
         return this.resource;
     }
 
+    @SuppressWarnings("squid:S1181")
     private final synchronized P doConstruct() {
         try {
             this.provider = providerConstructor.construct();

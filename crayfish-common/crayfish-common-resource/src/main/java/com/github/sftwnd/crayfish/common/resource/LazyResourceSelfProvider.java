@@ -14,7 +14,7 @@ import java.util.function.Consumer;
 public class LazyResourceSelfProvider<R> extends LazyResourceProvider<R, R> {
 
     protected LazyResourceSelfProvider(@Nonnull Constructor<R> constructor) {
-        super(constructor, (resource) -> resource);
+        super(constructor, resource -> resource);
     }
 
     public synchronized void setOnClose(Consumer<R> onClose) {
