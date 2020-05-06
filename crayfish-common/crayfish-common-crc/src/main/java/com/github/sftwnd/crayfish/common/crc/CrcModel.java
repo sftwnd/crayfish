@@ -13,7 +13,6 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Stream;
 
@@ -222,6 +221,7 @@ public final class CrcModel extends CrcDescriprion {
             try {
                 return CrcModel.class.cast(field.get(0));
             } catch (IllegalAccessException iaex) {
+                return null;
             }
         }
         return null;
@@ -235,7 +235,7 @@ public final class CrcModel extends CrcDescriprion {
                             .filter(Objects::nonNull)
                             .map(CrcModel.class::cast)
                     , models.stream()
-            ).filter(filter == null ? (m) -> true : filter);
+            ).filter(filter == null ? m -> true : filter);
         }
     }
 
