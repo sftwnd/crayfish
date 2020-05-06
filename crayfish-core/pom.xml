@@ -68,14 +68,12 @@
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
-                <scope>provided</scope>
             </dependency>
             <!-- Externals -->
             <dependency>
                 <groupId>com.google.code.findbugs</groupId>
                 <artifactId>jsr305</artifactId>
                 <version>${jsr305.version}</version>
-                <scope>compile</scope>
             </dependency>
             <!-- JavaX -->
             <dependency>
@@ -114,27 +112,27 @@
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
-                <version>${fasterxml-jackson.version}</version>
+                <version>[${fasterxml-jackson.version},)</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>${fasterxml-jackson-databind.version}</version>
+                <version>[${fasterxml-jackson-databind.version},)</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
-                <version>${fasterxml-jackson.version}</version>
+                <version>[${fasterxml-jackson.version},)</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-jsr310</artifactId>
-                <version>${fasterxml-jackson.version}</version>
+                <version>[${fasterxml-jackson.version},)</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-jdk8</artifactId>
-                <version>${fasterxml-jackson.version}</version>
+                <version>[${fasterxml-jackson.version},)</version>
             </dependency>
             <!-- -== CRAYFISH ==- -->
             <dependency>

@@ -14,6 +14,4 @@ public class JsonToStringProcessed {
         return obj == null ? null : JsonMapper.serializeObject(obj);
     }
 
-
-
 }

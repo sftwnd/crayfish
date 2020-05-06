@@ -5,6 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
+import lombok.Generated;
 import lombok.SneakyThrows;
 
 import java.io.IOException;
@@ -49,19 +50,20 @@ public final class JsonMapper {
     }
 
     @SneakyThrows
-    public static <T>T snakyParseObject(String json, Class<T> clazz) {
+    public static <T>T sneakyParseObject(String json, Class<T> clazz) {
         return objectMapper.get().readerFor(clazz).readValue(json);
     }
 
+    @Generated
     @SneakyThrows
-    public static <T>T snakyParseObject(byte[] json, Class<T> clazz) {
+    public static <T>T sneakyParseObject(byte[] json, Class<T> clazz) {
         return objectMapper.get().readerFor(clazz).readValue(json);
     }
 
+    @Generated
     @SneakyThrows
-    public static String snakySerializeObject(Object object) {
+    public static String sneakySerializeObject(Object object) {
         return objectMapper.get().writeValueAsString(object);
-
     }
 
     public static ObjectMapper getObjectMapper() {
