@@ -12,11 +12,4 @@
     <artifactId>crayfish-common-concurrent</artifactId>
     <name>CrayFish :: COMMON :: Concurrent</name>
 
-    <dependencies>
-        <dependency>
-            <groupId>com.github.sftwnd.crayfish.common</groupId>
-            <artifactId>crayfish-common-base</artifactId>
-        </dependency>
-    </dependencies>
-
 </project>
