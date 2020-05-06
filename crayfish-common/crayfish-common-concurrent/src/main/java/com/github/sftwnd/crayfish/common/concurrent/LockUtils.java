@@ -1,7 +1,7 @@
 package com.github.sftwnd.crayfish.common.concurrent;
 
 import com.github.sftwnd.crayfish.common.base.Holder;
-import com.github.sftwnd.crayfish.common.exception.ExceptionUtils;
+import lombok.SneakyThrows;
 
 import javax.annotation.Nullable;
 import java.util.concurrent.Callable;
@@ -168,17 +168,14 @@ public final class LockUtils {
      * Обёртка вокруг {@link #callWithLock(Lock, long, TimeUnit, RuntimeException, Callable)}, оборачивающая
      * возникающие при выполнении <code>callable.call()</code> checked исключения в {@link RuntimeException}.
      */
+    @SneakyThrows
     public static <T> T callWithLockAndHideCheckedExceptions(
             Lock lock,
             long timeout,
             @Nullable TimeUnit timeUnit,
             @Nullable RuntimeException timeoutError,
             Callable<T> callable) throws LockAquireTimeoutException {
-        try {
-            return callWithLock(lock, timeout, timeUnit, timeoutError, callable);
-        } catch (Exception e) {
-            return ExceptionUtils.uncheckExceptions(e);
-        }
+        return callWithLock(lock, timeout, timeUnit, timeoutError, callable);
     }
 
     /**
@@ -351,17 +348,14 @@ public final class LockUtils {
      * смотри важное примечание касающееся особенностей {@link ReentrantReadWriteLock}.
      * </p>
      */
+    @SneakyThrows
     public static <T> T callWithWriteLockAndHideCheckedExceptions(
             ReentrantReadWriteLock lock,
             long timeout,
             @Nullable TimeUnit timeUnit,
             @Nullable RuntimeException timeoutError,
             Callable<T> callable) throws LockAquireTimeoutException {
-        try {
-            return callWithWriteLock(lock, timeout, timeUnit, timeoutError, callable);
-        } catch (Exception e) {
-            return ExceptionUtils.uncheckExceptions(e);
-        }
+        return callWithWriteLock(lock, timeout, timeUnit, timeoutError, callable);
     }
 
 

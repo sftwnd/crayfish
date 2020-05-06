@@ -5,7 +5,7 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
-import com.github.sftwnd.crayfish.common.exception.ExceptionUtils;
+import lombok.SneakyThrows;
 
 import java.io.IOException;
 import java.util.Calendar;
@@ -48,28 +48,20 @@ public final class JsonMapper {
         return objectMapper.get().writeValueAsString(object);
     }
 
+    @SneakyThrows
     public static <T>T snakyParseObject(String json, Class<T> clazz) {
-        try {
-            return objectMapper.get().readerFor(clazz).readValue(json);
-        } catch (IOException ioex) {
-            return ExceptionUtils.uncheckExceptions(ioex);
-        }
+        return objectMapper.get().readerFor(clazz).readValue(json);
     }
 
+    @SneakyThrows
     public static <T>T snakyParseObject(byte[] json, Class<T> clazz) {
-        try {
-            return objectMapper.get().readerFor(clazz).readValue(json);
-        } catch (IOException ioex) {
-            return ExceptionUtils.uncheckExceptions(ioex);
-        }
+        return objectMapper.get().readerFor(clazz).readValue(json);
     }
 
+    @SneakyThrows
     public static String snakySerializeObject(Object object) {
-        try {
-            return objectMapper.get().writeValueAsString(object);
-        } catch (IOException ioex) {
-            return ExceptionUtils.uncheckExceptions(ioex);
-        }
+        return objectMapper.get().writeValueAsString(object);
+
     }
 
     public static ObjectMapper getObjectMapper() {

@@ -13,7 +13,7 @@
 
     <groupId>com.github.sftwnd.crayfish</groupId>
     <artifactId>crayfish</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>CrayFish</name>
@@ -66,9 +66,7 @@
     <modules>
         <module>crayfish-core</module>
         <module>crayfish-common</module>
-        <module>crayfish-distributed</module>
         <module>crayfish-libs</module>
-        <module>crayfish-zookeeper</module>
     </modules>
 
     <build>

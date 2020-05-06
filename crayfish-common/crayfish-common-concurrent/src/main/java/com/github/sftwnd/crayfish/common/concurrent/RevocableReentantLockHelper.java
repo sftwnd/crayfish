@@ -1,6 +1,5 @@
 package com.github.sftwnd.crayfish.common.concurrent;
 
-import com.github.sftwnd.crayfish.common.exception.ExceptionUtils;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -111,35 +110,24 @@ public class RevocableReentantLockHelper implements Lock, Revocable {
     @SuppressWarnings("squid:S1181")
     private void checkRevoked(final String callerName, final boolean acquired) {
         synchronized (revokedAt) {
-            try {
-                if (revokedAt.get().isAfter(initAt.get())) {
-                    if (acquires.get().intValue() == 0) {
-                        logger.trace("{} is checked as revoked by {} at {}. Lock is not possible", this.logName, callerName, revokedAt.get());
-                    } else {
-                        logger.trace("{} is checked as revoked by {} at {}", this.logName, callerName, revokedAt.get());
-                    }
-                    throw new RevokedException(String.format("Lock [%s] has been revoked at %s", logName, revokedAt.get()));
+            if (revokedAt.get().isAfter(initAt.get())) {
+                if (acquires.get().intValue() == 0) {
+                    logger.trace("{} is checked as revoked by {} at {}. Lock is not possible", this.logName, callerName, revokedAt.get());
+                } else {
+                    logger.trace("{} is checked as revoked by {} at {}", this.logName, callerName, revokedAt.get());
                 }
-                checkedAt.set(System.currentTimeMillis());
-            } catch (Throwable throwable) {
-                if (acquired) {
-                    lockHelper.unlock();
-                }
-                ExceptionUtils.uncheckExceptions(throwable);
+                throw new RevokedException(String.format("Lock [%s] has been revoked at %s", logName, revokedAt.get()));
             }
+            checkedAt.set(System.currentTimeMillis());
         }
     }
 
     @Override
     @SuppressWarnings("squid:S1181")
     public void lock() {
-        try {
-            preacquire();
-            lockHelper.lock();
-            acquired();
-        } catch (Throwable throwable) {
-            ExceptionUtils.uncheckExceptions(throwable);
-        }
+        preacquire();
+        lockHelper.lock();
+        acquired();
     }
 
     @Override
@@ -152,22 +140,16 @@ public class RevocableReentantLockHelper implements Lock, Revocable {
         } catch (InterruptedException itex) {
             Thread.currentThread().interrupt();
             throw itex;
-        } catch (Throwable throwable) {
-            ExceptionUtils.uncheckExceptions(throwable);
         }
     }
 
     @Override
     @SuppressWarnings("squid:S1181")
     public boolean tryLock() {
-        try {
-            preacquire();
-            if (lockHelper.tryLock()) {
-                acquired();
-                return true;
-            }
-        } catch (Throwable throwable) {
-            ExceptionUtils.uncheckExceptions(throwable);
+        preacquire();
+        if (lockHelper.tryLock()) {
+            acquired();
+            return true;
         }
         return false;
     }
@@ -184,8 +166,6 @@ public class RevocableReentantLockHelper implements Lock, Revocable {
         } catch (InterruptedException itex) {
             Thread.currentThread().interrupt();
             throw itex;
-        } catch (Throwable throwable) {
-            ExceptionUtils.uncheckExceptions(throwable);
         }
         return false;
     }
