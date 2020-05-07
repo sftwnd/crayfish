@@ -2,6 +2,7 @@ package com.github.sftwnd.crayfish.common.format;
 
 import lombok.extern.slf4j.Slf4j;
 
+import javax.annotation.Nullable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -11,6 +12,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TimeZone;
 
 /**
@@ -27,19 +29,19 @@ public final class DateSerializeUtility {
     @SuppressWarnings("squid:S5164")
     private ThreadLocal<DateFormat> dateFormat;
 
-    public DateSerializeUtility() {
+    protected DateSerializeUtility() {
         this((TimeZone) null);
     }
 
-    public DateSerializeUtility(String timeZoneId) {
+    protected DateSerializeUtility(String timeZoneId) {
         this(timeZoneId, null);
     }
 
-    public DateSerializeUtility(String timeZoneId, String dateFormatStr) {
+    protected DateSerializeUtility(String timeZoneId, String dateFormatStr) {
         this(timeZoneId == null ? null : TimeZone.getTimeZone(timeZoneId), dateFormatStr);
     }
 
-    public DateSerializeUtility(TimeZone timeZone) {
+    protected DateSerializeUtility(TimeZone timeZone) {
         this(timeZone, null);
     }
 
@@ -52,16 +54,16 @@ public final class DateSerializeUtility {
         });
     }
 
-    public String serialize(Date dateTime) {
+    public @Nullable String serialize(@Nullable Date dateTime) {
         logger.trace("serialize(Date:`{}`)", dateTime);
         return dateTime == null ? null : dateFormat.get().format(dateTime);
     }
 
-    public String serialize(Instant dateTime) {
-        return serialize(Date.from(dateTime));
+    public @Nullable String serialize(@Nullable Instant dateTime) {
+        return serialize(Optional.ofNullable(dateTime).map(Date::from).orElse(null));
     }
 
-    public Date deserialize(String dateTime) throws ParseException {
+    public @Nullable Date deserialize(@Nullable String dateTime) throws ParseException {
         try {
             Date result =  dateTime == null || dateTime.trim().length() == 0
                            ? null

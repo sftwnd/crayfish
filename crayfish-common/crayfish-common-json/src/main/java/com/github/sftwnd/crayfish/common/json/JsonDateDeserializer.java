@@ -4,8 +4,9 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.github.sftwnd.crayfish.common.format.DateSerializeUtility;
-import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
+
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.text.ParseException;
 import java.util.Calendar;
@@ -36,7 +37,6 @@ public final class JsonDateDeserializer extends JsonDeserializer<Date> {
     // yyyy-MM-dd'T'HH              yyyy-MM-dd'T'HHXXX
     // yyyy-MM-dd                   yyyy-MM-ddXXX
     @Override
-    @SneakyThrows
     public Date deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
         try {
             Matcher matcher = pattern.matcher(jsonParser.getText());
@@ -53,27 +53,18 @@ public final class JsonDateDeserializer extends JsonDeserializer<Date> {
             return result;
         } catch (ParseException pex) {
             logger.error("unable to deserialize(date:`{}`)", jsonParser.getText());
-            throw pex;
+            throw new IOException(pex.getMessage(), pex);
         }
     }
 
-    public static String getTimeZoneId() {
+    public static @Nonnull String getTimeZoneId() {
         return Optional.ofNullable(timeZone.get()).orElse(defaultTimeZoneId);
     }
 
     public static void setTimeZoneId(String timeZoneId) {
-        String currentTimeZoneId = getTimeZoneId();
-        // Если временная зона та же, что и установлена
-        if ( ( timeZoneId == null && currentTimeZoneId == null) ||
-             ( timeZoneId != null && timeZoneId.equals(currentTimeZoneId) )
-           )
-        {
-            // То ничего не меняем
-            return;
-        }
-        if (timeZoneId == null) {
+        if (timeZoneId == null || timeZoneId.isBlank()) {
             timeZone.remove();
-        } else {
+        } else if (!timeZoneId.equals(getTimeZoneId())) {
             timeZone.set( timeZoneId.matches("(?i)UTC.+")
                         ? String.valueOf(new StringBuilder("GMT").append(timeZoneId.substring(3)))
                         : timeZoneId);

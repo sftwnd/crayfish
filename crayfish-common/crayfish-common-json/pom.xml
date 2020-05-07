@@ -15,6 +15,10 @@
     <dependencies>
         <dependency>
             <groupId>com.github.sftwnd.crayfish.common</groupId>
+            <artifactId>crayfish-common-exception</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.sftwnd.crayfish.common</groupId>
             <artifactId>crayfish-common-format</artifactId>
         </dependency>
         <dependency>

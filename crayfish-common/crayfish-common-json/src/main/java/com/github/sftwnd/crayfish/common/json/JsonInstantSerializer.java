@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Date;
+import java.util.Optional;
 import java.util.TimeZone;
 
 /**
@@ -18,15 +18,14 @@ import java.util.TimeZone;
 public final class JsonInstantSerializer extends JsonSerializer<Instant> {
 
     public static final String DATE_FORMAT_STR = "yyyy-MM-dd'T'HH:mm:ssXXX";
+    private final DateSerializeUtility dateSerializeUtility = DateSerializeUtility.getDateSerializeUtility(TimeZone.getTimeZone("UTC"), DATE_FORMAT_STR);
 
     @Override
     public void serialize(Instant instant, JsonGenerator gen, SerializerProvider provider) throws IOException {
         logger.trace("serialize(date:`{}`)", instant);
-        Date date = null;
-        if (instant != null) {
-            date = Date.from(instant);
-        }
-        gen.writeString(date == null ? null : DateSerializeUtility.getDateSerializeUtility(TimeZone.getDefault(), DATE_FORMAT_STR).serialize(date));
+        gen.writeString(Optional.ofNullable(instant)
+                .map(dateSerializeUtility::serialize)
+                .orElse(null));
     }
 
 }
