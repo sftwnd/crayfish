@@ -186,11 +186,21 @@ public class JsonDateDeserializerTest {
 
     @Test
     public void testSetGetTimeZoneId() throws Exception {
-        for (int i=0; i<10; i++) {
-            String timeZone = TimeZone.getAvailableIDs()[random.nextInt(TimeZone.getAvailableIDs().length)];
-            JsonDateDeserializer.setTimeZoneId(timeZone);
-            assertEquals(timeZone, JsonDateDeserializer.getTimeZoneId(), "Check [get/set]TimeZoneId("+timeZone+") value");
-            JsonDateDeserializer.setTimeZoneId(timeZone);
+        String[] emptyTimeZone = new String[] {null, "", "  "};
+        try {
+            for (int i = 0; i < 17; i++) {
+                // Check setTimeZone(random Value)
+                String timeZone = TimeZone.getAvailableIDs()[random.nextInt(TimeZone.getAvailableIDs().length)];
+                JsonDateDeserializer.setTimeZoneId(timeZone);
+                assertEquals(timeZone, JsonDateDeserializer.getTimeZoneId(), "Check [get/set]TimeZoneId(" + timeZone + ") value");
+                // Check setTimeZone(empty Value)
+                timeZone = TimeZone.getAvailableIDs()[random.nextInt(TimeZone.getAvailableIDs().length)];
+                JsonDateDeserializer.setDefaultTimeZoneId(timeZone);
+                JsonDateDeserializer.setTimeZoneId(emptyTimeZone[i % emptyTimeZone.length]);
+                assertEquals(timeZone, JsonDateDeserializer.getTimeZoneId(), "Check [get/set]TimeZoneId(empty timeZone) value");
+            }
+        } finally {
+            JsonDateDeserializer.setDefaultTimeZoneId("UTC");
         }
     }
 
