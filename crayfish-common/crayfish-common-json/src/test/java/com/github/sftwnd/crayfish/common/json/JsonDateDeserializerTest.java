@@ -207,7 +207,7 @@ public class JsonDateDeserializerTest {
             String timeZone = TimeZone.getAvailableIDs()[random.nextInt(TimeZone.getAvailableIDs().length)];
             JsonDateDeserializer.setTimeZoneId(timeZone);
             JsonDateDeserializer.clearTimeZoneId();
-            assertEquals(JsonDateDeserializer.getDefaultTimeZoneId(), JsonDateDeserializer.getDefaultTimeZoneId(), "Check clearDefaultTimeZoneId() value = defaultTimeZone");
+            assertEquals(JsonDateDeserializer.getDefaultTimeZoneId(), JsonDateDeserializer.getTimeZoneId(), "Check clearDefaultTimeZoneId() value = defaultTimeZone");
         }
     }
 
@@ -226,7 +226,7 @@ public class JsonDateDeserializerTest {
             String timeZone = TimeZone.getAvailableIDs()[random.nextInt(TimeZone.getAvailableIDs().length)];
             JsonDateDeserializer.setDefaultTimeZoneId(timeZone);
             JsonDateDeserializer.clearDefaultTimeZoneId();
-            assertEquals(JsonDateDeserializer.getDefaultTimeZoneId(), "UTC", "Check clearDefaultTimeZoneId() value is UTC");
+            assertEquals("UTC", JsonDateDeserializer.getDefaultTimeZoneId(), "Check clearDefaultTimeZoneId() value is UTC");
         }
     }
 
