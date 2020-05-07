@@ -1,6 +1,5 @@
 package com.github.sftwnd.crayfish.common.json;
 
-import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
@@ -15,12 +14,18 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
-import static org.junit.jupiter.api.Assertions.assertThrows;
 
 public class JsonMapperTest {
 
     @Test
-    public void testParseObject() throws IOException {
+    void testClear() {
+        ObjectMapper om = JsonMapper.getObjectMapper();
+        JsonMapper.clear();
+        assertNotSame(om, JsonMapper.getObjectMapper(), "JsonMapper.getObjectMapper() has to be changed after clear()");
+    }
+
+    @Test
+    void testParseObject() throws IOException {
         String msisdn = "abc";
         long objectId = 123L;
         final String json = "{\"msisdn\":\""+msisdn+"\", \"objectId\":"+objectId+"}";
@@ -30,7 +35,7 @@ public class JsonMapperTest {
     }
 
     @Test
-    public void testParseObjectTypeRef() throws IOException {
+    void testParseObjectTypeRef() throws IOException {
         JsonMapperTestObjectTypeRef typeRef = new JsonMapperTestObjectTypeRef();
         String msisdn = "abc";
         long objectId = 123L;
@@ -42,20 +47,7 @@ public class JsonMapperTest {
     }
 
     @Test
-    public void testSneakyParseObject() {
-        String msisdn = "bcd";
-        long objectId = 234L;
-        final String json = "{\"msisdn\":\""+msisdn+"\", \"objectId\":"+objectId+"}";
-        JsonMapperTestObject msg = new JsonMapperTestObject(msisdn, objectId);
-        assertEquals(msg, JsonMapper.sneakyParseObject(json, JsonMapperTestObject.class), "JsonMapper.sneakyParseObject(Class) result has to be equals of POJO object");
-        assertEquals(msg, JsonMapper.sneakyParseObject(json.getBytes(), JsonMapperTestObject.class), "JsonMapper.sneakyParseObject(Class) result has to be equals of POJO object");
-        assertThrows(JsonParseException.class,
-                () -> JsonMapper.sneakyParseObject("^%#$#", JsonMapperTestObject.class),
-                "JsonMapper.sneakyParseObject result has to be equals of POJO object");
-    }
-
-    @Test
-    public void testSerializeObject() throws IOException {
+    void testSerializeObject() throws IOException {
         String msisdn = "def";
         long objectId = 456L;
         final String json = "{\"msisdn\":\""+msisdn+"\", \"objectId\":"+objectId+"}";
@@ -63,19 +55,9 @@ public class JsonMapperTest {
         String msg = JsonMapper.serializeObject(obj);
         assertEquals(obj, JsonMapper.parseObject(msg, JsonMapperTestObject.class), "JsonMapper.parseObject(serializedObject(POJO)) result has to be equals of original POJO object");
     }
-
-    @Test
-    public void testSneakySerializeObject() {
-        String msisdn = "def";
-        long objectId = 456L;
-        final String json = "{\"msisdn\":\""+msisdn+"\", \"objectId\":"+objectId+"}";
-        JsonMapperTestObject obj = new JsonMapperTestObject(msisdn, objectId);
-        String msg = JsonMapper.sneakySerializeObject(obj);
-        assertEquals(obj, JsonMapper.sneakyParseObject(msg, JsonMapperTestObject.class), "JsonMapper.sneakyParseObject(sneakySerializeObject(POJO)) result has to be equals of original POJO object");
-    }
     
     @Test
-    public void testGetObjectMapper() throws InterruptedException {
+    void testGetObjectMapper() throws InterruptedException {
         ObjectMapper mapper = JsonMapper.getObjectMapper();
         assertNotNull(JsonMapper.getObjectMapper(), "JsonMapper.getObjectMapper result has to be not null");
         assertSame(mapper, JsonMapper.getObjectMapper(), "JsonMapper.getObjectMapper result in one thread has to be the same");

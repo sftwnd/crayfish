@@ -16,6 +16,7 @@
     <modules>
         <module>crayfish-common-concurrent</module>
         <module>crayfish-common-crc</module>
+        <module>crayfish-common-exception</module>
         <module>crayfish-common-format</module>
         <module>crayfish-common-json</module>
    </modules>

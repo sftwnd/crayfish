@@ -1,5 +1,6 @@
 package com.github.sftwnd.crayfish.common.json;
 
+import com.fasterxml.jackson.databind.JsonMappingException;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -39,9 +40,18 @@ class JsonToStringProcessedTest {
     @Test
     void testToStringObj() {
         check("JsonToStringProcessed::toString()", JsonToStringProcessedTest::applyObj);
-        check("JsonToStringProcessed::toString()", JsonToStringProcessedTest::applyObj);
     }
 
+    @Test
+    void testToStringObjSneakyThrow() {
+        Object obj = new JsonToStringProcessedTestObject() {
+            @Override
+            public Long getValue() {
+                throw new NullPointerException();
+            }
+        };
+        assertThrows(JsonMappingException.class, () -> JsonToStringProcessed.toString(obj), "JsonToStringProcessed.toString(obj) has to throw JsonMappingException");
+    }
 
     @AllArgsConstructor
     @NoArgsConstructor
