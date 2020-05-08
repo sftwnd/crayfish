@@ -44,11 +44,11 @@ class RevocableReentantLockHelperTest {
                               revocableLock
                               , () -> {
                                   value.incrementAndGet(); // value = 1
-                                  LockUtils.runWithLock(revocableLock, () -> value.incrementAndGet()); // value = 2
+                                  LockUtils.sneakyRunWithLock(revocableLock, value::incrementAndGet); // value = 2
                                   revocableLock.revokeUntil(Instant.now().minusSeconds(10));
-                                  LockUtils.runWithLock(revocableLock, () -> value.incrementAndGet()); // value = 3
+                                  LockUtils.sneakyRunWithLock(revocableLock, value::incrementAndGet); // value = 3
                                   revocableLock.revokeUntil(Instant.now());
-                                  LockUtils.runWithLock(revocableLock, () -> value.incrementAndGet()); // unaccessible
+                                  LockUtils.sneakyRunWithLock(revocableLock, value::incrementAndGet); // unaccessible
                               }
                            )
                     );

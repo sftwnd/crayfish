@@ -2,8 +2,6 @@ package com.github.sftwnd.crayfish.common.exception;
 
 import org.junit.jupiter.api.Test;
 
-import java.util.concurrent.Callable;
-
 import static com.github.sftwnd.crayfish.common.exception.ExceptionUtils.uncheckExceptions;
 import static com.github.sftwnd.crayfish.common.exception.ExceptionUtils.wrapUncheckedExceptions;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -40,6 +38,7 @@ class ExceptionUtilsTest {
                  () -> wrapUncheckedExceptions(() -> {})
                 ,"UnsupportedOperationException has to be completle finished without throws in wrapUncheckedExceptions(Process)"
         );
+
     }
 
     @Test

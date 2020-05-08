@@ -25,7 +25,7 @@ public final class ExceptionUtils {
     @SneakyThrows
     public static void wrapUncheckedExceptions(Process<? extends Exception> process) {
         try {
-            process.run();
+            process.work();
         } catch (Exception ex) {
             // Next line is covered by the JUnit. JaCoCo result is wrong
             uncheckExceptions(ex);
