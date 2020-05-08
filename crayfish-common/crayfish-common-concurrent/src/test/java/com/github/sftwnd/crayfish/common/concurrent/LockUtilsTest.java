@@ -26,10 +26,6 @@ import static org.mockito.Mockito.when;
 
 class LockUtilsTest {
 
-    private static Object call() {
-        return null;
-    }
-
     @Test
     void testAcquireLock() {
         Lock lock = Mockito.mock(Lock.class);

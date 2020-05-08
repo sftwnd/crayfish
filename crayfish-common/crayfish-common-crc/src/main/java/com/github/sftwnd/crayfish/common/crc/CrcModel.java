@@ -81,6 +81,7 @@ public final class CrcModel extends CrcDescriprion {
         return name;
     }
 
+    // This DCL is correct because variable is volatile and initialization makes before
     protected void _init() {
         if (this.table_byte == null) {
             synchronized (this.crcDescriprion) {
