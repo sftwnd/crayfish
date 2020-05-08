@@ -22,10 +22,9 @@ import java.util.stream.Stream;
 @EqualsAndHashCode(callSuper = true)
 public final class CrcModel extends CrcDescriprion {
 
-    @Nonnull
-    @Getter public  final String name;
-    @Getter public  final Long check;
-    @Getter private final CrcDescriprion crcDescriprion;
+    @Nonnull  @Getter public  final String name;
+    @Nullable @Getter public  final Long check;
+    @Nonnull  @Getter private final CrcDescriprion crcDescriprion;
 
     private CrcModel(@Nullable final String name, final int width, final long poly, final long init, final boolean refin, final boolean refot, final long xorot, @Nullable final Long check) {
         this(name, new CrcDescriprion(width, poly, init, refin, refot, xorot), check);
@@ -82,14 +81,13 @@ public final class CrcModel extends CrcDescriprion {
         return name;
     }
 
-    @Generated
-    @SuppressWarnings({"squid:S2168"})
     protected void _init() {
-        if (table_byte == null) {
-            synchronized (this) {
-                if (table_byte == null) {
-                    table_byte = _createBytewiseTable();
+        if (this.table_byte == null) {
+            synchronized (this.crcDescriprion) {
+                if (this.crcDescriprion.table_byte == null) {
+                    this.crcDescriprion.table_byte = _createBytewiseTable();
                 }
+                this.table_byte = this.crcDescriprion.table_byte;
             }
         }
     }
@@ -109,9 +107,6 @@ public final class CrcModel extends CrcDescriprion {
                        model.xorot
                    );
     }
-
-    @SuppressWarnings({"squid:S3077", "squid:S116"})
-    private volatile long[] table_byte = null;
 
     private long[] _createBytewiseTable() {
         long[] table = new long[256];

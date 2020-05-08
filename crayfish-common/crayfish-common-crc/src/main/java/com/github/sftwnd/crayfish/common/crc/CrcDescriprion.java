@@ -1,14 +1,14 @@
 package com.github.sftwnd.crayfish.common.crc;
 
-import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Generated;
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 import javax.annotation.Nonnull;
 import java.util.Objects;
 
-@AllArgsConstructor
+@RequiredArgsConstructor
 @EqualsAndHashCode
 public class CrcDescriprion {
 
@@ -33,5 +33,15 @@ public class CrcDescriprion {
              + (refot ? "_RO" : "")
              + (xorot == 0 ? "" : "_X"+Long.toHexString(xorot).toUpperCase());
     }
+
+    @SuppressWarnings({
+            // squil:S116 Field names should comply with a naming convention
+            // We have save the names of original C algorithm
+            "squid:S116",
+            // squid:S3077 Non-primitive fields should not be "volatile"
+            // table items are not mutable and use of table is controlled in CrcModel carefully
+            "squid:S3077"
+    })
+    protected volatile long[] table_byte = null;
 
 }
