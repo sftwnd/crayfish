@@ -16,6 +16,14 @@ import static com.github.sftwnd.crayfish.common.exception.ExceptionUtils.wrapUnc
 /**
  * Функции упрощающие работу с блокировками.
  */
+@SuppressWarnings({
+        // "throws" declarations should not be superfluous
+        // LockAquireTimeoutException is RuntimeException, but we have use it in throw section
+        "squid:S1130",
+        // Generic exceptions should never be thrown
+        // Lock.tryLock(...) throws Exception and we have to define it in throw section
+        "squid:S112"
+})
 public final class LockUtils {
 
     private LockUtils() {
@@ -52,6 +60,11 @@ public final class LockUtils {
         return acquireLock(lock, timeout, timeUnit, null);
     }
 
+    @SuppressWarnings({
+            // Locks should be released
+            // Same as tryLock
+            "squid:S2222"
+    })
     public static AutoCloseable acquireLock(@Nonnull final Lock lock, final long timeout, @Nullable final TimeUnit timeUnit, @Nullable final Supplier<RuntimeException> onErrorThrow) {
         if ( tryLock(Objects.requireNonNull(lock, "LockUtl::acquireLock - lock is null"), timeout, timeUnit)) {
             return lock::unlock;
@@ -59,6 +72,11 @@ public final class LockUtils {
         throw Optional.ofNullable(onErrorThrow).map(Supplier::get).orElseGet(() -> new LockAquireTimeoutException(lock));
     }
 
+    @SuppressWarnings({
+            // Locks should be released
+            // tryLock/tryLock(...) is a part of Lock interface implementation so we are able to call
+            "squid:S2222"
+    })
     private static boolean tryLock(@Nonnull final Lock lock, final long timeout, @Nullable final TimeUnit timeUnit) {
         if (timeout == TRY_LOCK_WITHOUT_TIMEOUT_TIMEOUT || timeUnit == null) {
             return lock.tryLock();
@@ -160,9 +178,7 @@ public final class LockUtils {
                                              @Nullable TimeUnit timeUnit,
                                              @Nullable final Supplier<RuntimeException> onErrorThrow,
                                              Process<?> process) throws LockAquireTimeoutException {
-        wrapUncheckedExceptions(() -> {
-            runWithLock(lock, timeout, timeUnit, onErrorThrow, process);
-        });
+        wrapUncheckedExceptions(() -> runWithLock(lock, timeout, timeUnit, onErrorThrow, process));
     }
 
     public static void sneakyRunWithLock(final Lock lock,
