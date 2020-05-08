@@ -3,8 +3,15 @@ package com.github.sftwnd.crayfish.common.crc;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
+import java.util.Arrays;
 import java.util.Optional;
 
+import static com.github.sftwnd.crayfish.common.crc.CrcModel.CKSUM;
+import static com.github.sftwnd.crayfish.common.crc.CrcModel.CRC32_CKSUM;
+import static com.github.sftwnd.crayfish.common.crc.CrcModel.CRC32_POSIX;
+import static com.github.sftwnd.crayfish.common.crc.CrcModel.CRC4_G_704;
+import static com.github.sftwnd.crayfish.common.crc.CrcModel.CRC4_ITU;
+import static com.github.sftwnd.crayfish.common.crc.CrcModel.CRC64_GO_ISO;
 import static com.github.sftwnd.crayfish.common.crc.CrcModel.CRC64_XZ;
 import static com.github.sftwnd.crayfish.common.crc.CrcModel.construct;
 import static com.github.sftwnd.crayfish.common.crc.CrcModel.crc_general_combine;
@@ -12,6 +19,7 @@ import static com.github.sftwnd.crayfish.common.crc.CrcModel.find;
 import static com.github.sftwnd.crayfish.common.crc.CrcModel.getModels;
 import static com.github.sftwnd.crayfish.common.crc.CrcModel.reflect;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -74,7 +82,8 @@ class CrcModelTest {
         getModels().forEach(
                 m -> {
                     CrcModel model = getModels(mdl -> mdl.getCrcDescriprion().equals(m.getCrcDescriprion())).findFirst().orElse(null);
-                    assertSame(m, model, "getModels(byName) result is wrong");
+                    assertNotNull(model, "getModels(byName: '"+m.getName()+"') result hasn't got to be null");
+                    assertEquals(m.getCrcDescriprion(), model.getCrcDescriprion(), "getModels(byName: '"+m.getName()+"').crcDescription value is wrong for model: "+m.getName());
                 }
         );
     }
@@ -148,17 +157,24 @@ class CrcModelTest {
     @Test
     void testFind() {
         assertNull(find("$$$"), "Result for unknown model has to be null");
-        assertSame(CRC64_XZ, find(CRC64_XZ.getName()), "Result for find(known model) has to return known model");
+        assertSame(CRC64_GO_ISO, find(CRC64_GO_ISO.getName()), "Result for find(known model) has to return known model");
     }
 
     @Test
     void testConstruct() {
-        assertSame(CRC64_XZ, construct("$$$", CRC64_XZ, 0L), "Result for construct(name, known model, length) has to return known model");
-        assertSame(CRC64_XZ, construct(CRC64_XZ, 0L), "Result for construct(known model, length) has to return known model");
-        assertSame(CRC64_XZ, construct(CRC64_XZ), "Result for construct(known model, length) has to return known model");
+        assertSame(CRC64_GO_ISO, construct("$$$", CRC64_GO_ISO, 0L), "Result for construct(name, known model, length) has to return known model");
+        assertSame(CRC64_GO_ISO, construct(CRC64_GO_ISO, 0L), "Result for construct(known model, length) has to return known model");
+        assertSame(CRC64_GO_ISO, construct(CRC64_GO_ISO), "Result for construct(known model, length) has to return known model");
         CrcDescriprion descriprion = new CrcDescriprion(27, 0x800069, 0x0, true, true, 0x0);
         CrcModel model = CrcModel.construct(null, descriprion, null);
         assertEquals(descriprion, construct("###", descriprion, null).getCrcDescriprion(), "Result for construct(name, model, length) has to return model");
+        assertSame(CRC4_G_704, CrcModel.construct(CRC4_G_704.getName(), CRC4_ITU.getCrcDescriprion(), CRC4_ITU.getCheck()), "Result of construct(known name, knodn description, check) has to be same with model(known name). Model: '"+CRC4_G_704.getName()+"'.");
+        assertSame(CRC4_ITU, CrcModel.construct(CRC4_ITU.getName(), CRC4_G_704.getCrcDescriprion(), CRC4_G_704.getCheck()), "Result of construct(known name, knodn description, check) has to be same with model(known name). Model: '"+CRC4_ITU.getName()+"'.");
+        assertTrue(
+                Arrays.asList(CKSUM, CRC32_POSIX, CRC32_CKSUM).contains(
+                        construct(null, CRC32_CKSUM.getCrcDescriprion(), null)
+                )
+        );
     }
 
     @Test
