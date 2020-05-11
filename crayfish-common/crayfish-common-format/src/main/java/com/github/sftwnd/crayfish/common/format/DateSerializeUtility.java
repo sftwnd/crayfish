@@ -16,7 +16,12 @@ import java.util.Optional;
 import java.util.TimeZone;
 
 /**
- * Created by ashindarev on 08.02.16.
+ * Serialize date to String and deserialize it back utility
+ *
+ * Created: 2016-02-08
+ *
+ * @version 1.1.0
+ * @since 1.0.0
  */
 @Slf4j
 public final class DateSerializeUtility {

@@ -6,7 +6,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import java.io.IOException;
 
 /**
- * Created by ashindarev on 02.02.16.
+ * <p>Json Object Mapper</p>
+ *
+ * Created 2016-02-02
+ *
+ * @author Andrey D. Shindarev
+ * @version 1.1.1
+ * @since 1.0.0
  */
 public final class JsonMapper {
 
@@ -37,6 +43,7 @@ public final class JsonMapper {
     public static String serializeObject(Object object) throws IOException {
         return JsonMapperTZ.serializeObject(null, object);
     }
+
     public static ObjectMapper getObjectMapper() {
         return JsonMapperTZ.getObjectMapper(null);
     }

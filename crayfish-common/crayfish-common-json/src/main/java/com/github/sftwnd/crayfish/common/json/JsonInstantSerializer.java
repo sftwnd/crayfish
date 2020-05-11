@@ -20,6 +20,14 @@ public final class JsonInstantSerializer extends JsonSerializer<Instant> {
     public static final String DATE_FORMAT_STR = "yyyy-MM-dd'T'HH:mm:ssXXX";
     private final DateSerializeUtility dateSerializeUtility = DateSerializeUtility.getDateSerializeUtility(TimeZone.getTimeZone("UTC"), DATE_FORMAT_STR);
 
+    /**
+     * Serialize date to String
+     *
+     * @param instant Serialized instant
+     * @param gen Json Generator
+     * @param provider Serializer Provider
+     * @throws IOException
+     */
     @Override
     public void serialize(Instant instant, JsonGenerator gen, SerializerProvider provider) throws IOException {
         logger.trace("serialize(date:`{}`)", instant);

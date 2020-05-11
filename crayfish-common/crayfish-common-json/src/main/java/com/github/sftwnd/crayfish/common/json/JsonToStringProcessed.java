@@ -2,6 +2,9 @@ package com.github.sftwnd.crayfish.common.json;
 
 import lombok.SneakyThrows;
 
+/**
+ * Base class for Object with ability to provide toString result as JSON representation
+ */
 public class JsonToStringProcessed {
 
     @Override

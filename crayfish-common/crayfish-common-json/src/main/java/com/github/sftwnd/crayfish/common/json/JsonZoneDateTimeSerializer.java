@@ -13,13 +13,28 @@ import java.util.Optional;
 import java.util.TimeZone;
 
 /**
- * Created by ashindarev on 08.02.16.
+ * <p>Json ZoneDateTime Serializer using {@link DateSerializeUtility}</p>
+ *
+ * Created 2016-02-08
+ *
+ * @author Andrey D. Shindarev
+ * @version 1.1.1
+ * @since 1.0.0
  */
+
 @Slf4j
 public final class JsonZoneDateTimeSerializer extends JsonSerializer<ZonedDateTime> {
 
     public static final String DATE_FORMAT_STR = "yyyy-MM-dd'T'HH:mm:ssXXX";
 
+    /**
+     * Serialize ZoneDateTime to String
+     *
+     * @param dateTime Serialized data with timezone
+     * @param gen Json Generator
+     * @param provider Serializer Provider
+     * @throws IOException
+     */
     @Override
     public void serialize(ZonedDateTime dateTime, JsonGenerator gen, SerializerProvider provider) throws IOException {
         logger.trace("serialize(date:`{}`)", dateTime);

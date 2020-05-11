@@ -10,13 +10,30 @@ import java.io.IOException;
 import java.util.Date;
 
 /**
- * Created by ashindarev on 08.02.16.
+ * <p>Json Data Serializer using {@link DateSerializeUtility}</p>
+ *
+ * Created 2016-02-08
+ *
+ * @author Andrey D. Shindarev
+ * @version 1.1.1
+ * @since 1.0.0
  */
 @Slf4j
 public class JsonDateSerializer extends JsonSerializer<Date> {
 
+    /**
+     * Default date format
+     */
     public static final String DATE_FORMAT_STR = "yyyy-MM-dd'T'HH:mm:ssXXX";
 
+    /**
+     * Serialize date to String
+     *
+     * @param date Serialized data
+     * @param gen Json Generator
+     * @param provider Serializer Provider
+     * @throws IOException
+     */
     @Override
     public void serialize(Date date, JsonGenerator gen, SerializerProvider provider) throws IOException {
         logger.trace("serialize(date:`{}`)", date);

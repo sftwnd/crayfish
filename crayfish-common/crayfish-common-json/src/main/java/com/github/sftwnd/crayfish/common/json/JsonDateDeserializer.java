@@ -17,7 +17,13 @@ import java.util.regex.Pattern;
 import java.util.stream.IntStream;
 
 /**
- * Created by ashindarev on 08.02.16.
+ * <p>Json Data Deserializer using {@link DateSerializeUtility} with ability to control timeZone</p>
+ *
+ * Created 2016-02-08
+ *
+ * @author Andrey D. Shindarev
+ * @version 1.1.1
+ * @since 1.0.0
  */
 @Slf4j
 public final class JsonDateDeserializer extends JsonDeserializer<Date> {
@@ -30,12 +36,21 @@ public final class JsonDateDeserializer extends JsonDeserializer<Date> {
 
     private static final String[] DATE_DESERIALIZE_FORMAT_ELEMENTS = new String[] { "yyyy-MM-dd", "'T'HH", ":mm", ":ss", ".SSS", "XXX" };
 
-    // Поддерживаются только производные форматы от ISO 8601:
-    // yyyy-MM-dd'T'HH:mm:ss.SSS    yyyy-MM-dd'T'HH:mm:ss.SSSXXX
-    // yyyy-MM-dd'T'HH:mm:ss        yyyy-MM-dd'T'HH:mm:ssXXX
-    // yyyy-MM-dd'T'HH:mm           yyyy-MM-dd'T'HH:mmXXX
-    // yyyy-MM-dd'T'HH              yyyy-MM-dd'T'HHXXX
-    // yyyy-MM-dd                   yyyy-MM-ddXXX
+    /**
+     * Deserialize date from String
+     *
+     * Supportet formats (as part of ISO 8601 format):
+     * yyyy-MM-dd'T'HH:mm:ss.SSS    yyyy-MM-dd'T'HH:mm:ss.SSSXXX
+     * yyyy-MM-dd'T'HH:mm:ss        yyyy-MM-dd'T'HH:mm:ssXXX
+     * yyyy-MM-dd'T'HH:mm           yyyy-MM-dd'T'HH:mmXXX
+     * yyyy-MM-dd'T'HH              yyyy-MM-dd'T'HHXXX
+     * yyyy-MM-dd                   yyyy-MM-ddXXX
+     *
+     * @param jsonParser
+     * @param deserializationContext
+     * @return date
+     * @throws IOException
+     */
     @Override
     public Date deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
         try {
@@ -57,10 +72,18 @@ public final class JsonDateDeserializer extends JsonDeserializer<Date> {
         }
     }
 
+    /**
+     * Get timezone format for current Thread
+     * @return TimeZoneId Sting value
+     */
     public static @Nonnull String getTimeZoneId() {
         return Optional.ofNullable(timeZone.get()).orElse(defaultTimeZoneId);
     }
 
+    /**
+     * Set timezone for current Thread
+     * @param timeZoneId String value of TimeZoneId
+     */
     public static void setTimeZoneId(String timeZoneId) {
         if (timeZoneId == null || timeZoneId.isBlank()) {
             timeZone.remove();
@@ -71,18 +94,31 @@ public final class JsonDateDeserializer extends JsonDeserializer<Date> {
         }
     }
 
+    /**
+     * Set current Thread timeZoneId to the current timeZoneId
+     */
     public static void setLocalTimeZone() {
         timeZone.set(Calendar.getInstance().getTimeZone().getID());
     }
 
+    /**
+     * Set current Thread timeZoneId to default
+     */
     public static void clearTimeZoneId() {
         setTimeZoneId(null);
     }
 
+    /**
+     * Set JVM default timeZoneId to local
+     */
     public static void setDefaultTimeZoneIdToLocal() {
         setDefaultTimeZoneId(Calendar.getInstance().getTimeZone().getID());
     }
 
+    /**
+     * Set JVM default timeZoneId to defined
+     * @param timeZoneId time zone id
+     */
     public static void setDefaultTimeZoneId(String timeZoneId) {
         synchronized (JsonDateDeserializer.class) {
             defaultTimeZoneId =
@@ -94,10 +130,17 @@ public final class JsonDateDeserializer extends JsonDeserializer<Date> {
         }
     }
 
+    /**
+     * Get system default timeZoneId
+     * @return String value of default timeZone
+     */
     public static String getDefaultTimeZoneId() {
         return defaultTimeZoneId;
     }
 
+    /**
+     * Set default time zone to the current
+     */
     public static void clearDefaultTimeZoneId() {
         setDefaultTimeZoneId(null);
     }

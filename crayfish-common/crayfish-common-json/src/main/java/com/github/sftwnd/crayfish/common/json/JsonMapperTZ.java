@@ -16,7 +16,13 @@ import java.util.TimeZone;
 import java.util.concurrent.Callable;
 
 /**
- * Created by ashindarev on 02.02.16.
+ * <p>Json Mapper with ablity to control thread and JVM time zone</p>
+ *
+ * Created 2016-02-02
+ *
+ * @author Andrey D. Shindarev
+ * @version 1.1.1
+ * @since 1.0.0
  */
 public final class JsonMapperTZ {
 
