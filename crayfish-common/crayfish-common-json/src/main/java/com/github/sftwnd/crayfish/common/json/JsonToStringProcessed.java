@@ -1,8 +1,6 @@
 package com.github.sftwnd.crayfish.common.json;
 
-import com.github.sftwnd.crayfish.common.exception.ExceptionUtils;
-
-import java.io.IOException;
+import lombok.SneakyThrows;
 
 public class JsonToStringProcessed {
 
@@ -11,14 +9,9 @@ public class JsonToStringProcessed {
         return toString(this);
     }
 
+    @SneakyThrows
     public static final String toString(Object obj) {
-        try {
-            return obj == null ? null : JsonMapper.serializeObject(obj);
-        } catch (IOException ioex) {
-            return ExceptionUtils.uncheckExceptions(ioex);
-        }
+        return obj == null ? null : JsonMapper.serializeObject(obj);
     }
-
-
 
 }

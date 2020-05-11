@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.io.IOException;
 import java.time.ZonedDateTime;
 import java.util.Date;
+import java.util.Optional;
 import java.util.TimeZone;
 
 /**
@@ -22,11 +23,11 @@ public final class JsonZoneDateTimeSerializer extends JsonSerializer<ZonedDateTi
     @Override
     public void serialize(ZonedDateTime dateTime, JsonGenerator gen, SerializerProvider provider) throws IOException {
         logger.trace("serialize(date:`{}`)", dateTime);
-        Date date = null;
-        if (dateTime != null) {
-            date = Date.from(dateTime.withZoneSameLocal(TimeZone.getDefault().toZoneId()).toInstant());
-        }
-        gen.writeString(date == null ? null : DateSerializeUtility.getDateSerializeUtility(TimeZone.getTimeZone(dateTime.getZone()), DATE_FORMAT_STR).serialize(date));
+        gen.writeString(
+                Optional.ofNullable(dateTime).
+                        map(dtt -> Date.from(dtt.withZoneSameLocal(dtt.getZone()).toInstant())).
+                        map(dat -> DateSerializeUtility.getDateSerializeUtility(TimeZone.getTimeZone(dateTime.getZone()), DATE_FORMAT_STR).serialize(dat))
+                        .orElse(null));
     }
 
 }

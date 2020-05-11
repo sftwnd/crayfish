@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.IOException;
 import java.time.Instant;
+import java.util.Date;
 import java.util.Optional;
 
 /**
@@ -15,21 +16,12 @@ import java.util.Optional;
 @Slf4j
 public final class JsonInstantDeserializer extends JsonDeserializer<Instant> {
 
-    private JsonDateDeserializer jsonDateDeserializer = null;
+    private final JsonDateDeserializer jsonDateDeserializer = new JsonDateDeserializer();
 
     @Override
     public Instant deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
-        JsonDateDeserializer checkForInit = this.jsonDateDeserializer;
-        if (checkForInit == null) {
-            synchronized (this) {
-                checkForInit = this.jsonDateDeserializer;
-                if (checkForInit == null) {
-                    this.jsonDateDeserializer = new JsonDateDeserializer();
-                }
-            }
-        }
         return Optional.ofNullable(this.jsonDateDeserializer.deserialize(jsonParser, deserializationContext))
-                       .map(date -> date.toInstant())
+                       .map(Date::toInstant)
                        .orElse(null);
     }
 

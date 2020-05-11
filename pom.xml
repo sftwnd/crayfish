@@ -13,7 +13,7 @@
 
     <groupId>com.github.sftwnd.crayfish</groupId>
     <artifactId>crayfish</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.1.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>CrayFish</name>
@@ -45,7 +45,6 @@
     <properties>
         <java-version>11</java-version>
         <java.version>${java-version}</java.version>
-        <!-- <kotlin.version>1.3.21</kotlin.version> -->
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <site.path>${project.version}</site.path>
         <!-- Maven Plugins Versions -->
@@ -56,15 +55,17 @@
         <maven-source-plugin.version>3.2.1</maven-source-plugin.version>
         <maven-shade-plugin.version>3.2.3</maven-shade-plugin.version>
         <maven-jar-plugin.version>3.2.0</maven-jar-plugin.version>
+        <maven-surefire-plugin.version>2.22.2</maven-surefire-plugin.version>
+        <jacoco-maven-plugin.version>0.8.5</jacoco-maven-plugin.version>
         <!-- -->
+        <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
+        <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
     </properties>
 
     <modules>
         <module>crayfish-core</module>
         <module>crayfish-common</module>
-        <module>crayfish-distributed</module>
         <module>crayfish-libs</module>
-        <module>crayfish-zookeeper</module>
     </modules>
 
     <build>
@@ -81,37 +82,11 @@
                     <encoding>${project.build.sourceEncoding}</encoding>
                     <compilerArgs>
                         <arg>-Xlint:all</arg>
-                        <arg>-Xlint:unchecked</arg>
                         <arg>-Xlint:-processing</arg>
                     </compilerArgs>
                     <showWarnings>true</showWarnings>
-                    <!-- <showDeprecatioon>true</showDeprecatioon> -->
                 </configuration>
             </plugin>
-            <!--
-            <plugin>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-maven-plugin</artifactId>
-                <version>${kotlin.version}</version>
-                <configuration>
-                    <pluginOptions>
-                        <option >
-
-                        </option>
-                    </pluginOptions>
-                </configuration>
-                <executions>
-                    <execution>
-                        <id>compile</id>
-                        <goals> <goal>compile</goal> </goals>
-                    </execution>
-                    <execution>
-                        <id>test-compile</id>
-                        <goals> <goal>test-compile</goal> </goals>
-                    </execution>
-                </executions>
-            </plugin>
-            -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-resources-plugin</artifactId>
@@ -163,37 +138,27 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--
             <plugin>
-                <groupId>org.projectlombok</groupId>
-                <artifactId>lombok-maven-plugin</artifactId>
-                <version>1.18.6.0</version>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+            </plugin>
+            <plugin>
+                <groupId>org.jacoco</groupId>
+                <artifactId>jacoco-maven-plugin</artifactId>
+                <version>${jacoco-maven-plugin.version}</version>
+                <configuration>
+                    <destFile>${sonar.jacoco.reportPath}</destFile>
+                </configuration>
                 <executions>
                     <execution>
-                        <id>delombok</id>
-                        <phase>generate-sources</phase>
                         <goals>
-                            <goal>delombok</goal>
+                            <goal>prepare-agent</goal>
+                            <goal>report</goal>
                         </goals>
-                        <configuration>
-                            <addOutputDirectory>false</addOutputDirectory>
-                            <sourceDirectory>src/main/java</sourceDirectory>
-                        </configuration>
-                    </execution>
-                    <execution>
-                        <id>test-delombok</id>
-                        <phase>generate-test-sources</phase>
-                        <goals>
-                            <goal>testDelombok</goal>
-                        </goals>
-                        <configuration>
-                            <addOutputDirectory>false</addOutputDirectory>
-                            <sourceDirectory>src/test/java</sourceDirectory>
-                        </configuration>
                     </execution>
                 </executions>
             </plugin>
-            -->
         </plugins>
     </build>
 
@@ -201,7 +166,6 @@
         <repository>
             <id>bintray-sftwnd-crayfish</id>
             <name>sftwnd-crayfish</name>
-            <!-- ;publish=1 -->
             <url>https://api.bintray.com/maven/sftwnd/crayfish/crayfish;publish=1</url>
         </repository>
     </distributionManagement>

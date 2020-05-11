@@ -2,6 +2,7 @@ package com.github.sftwnd.crayfish.common.format;
 
 import lombok.extern.slf4j.Slf4j;
 
+import javax.annotation.Nullable;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -11,6 +12,7 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.TimeZone;
 
 /**
@@ -24,46 +26,44 @@ public final class DateSerializeUtility {
     public static final String DEFAULT_DATE_FORMAT_STR = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX";
     public static final TimeZone DEFAULT_TIME_ZONE = TimeZone.getTimeZone(Calendar.getInstance().getTimeZone().getID());
 
+    @SuppressWarnings("squid:S5164")
     private ThreadLocal<DateFormat> dateFormat;
 
-    public DateSerializeUtility() {
+    protected DateSerializeUtility() {
         this((TimeZone) null);
     }
 
-    public DateSerializeUtility(String timeZoneId) {
+    protected DateSerializeUtility(String timeZoneId) {
         this(timeZoneId, null);
     }
 
-    public DateSerializeUtility(String timeZoneId, String dateFormatStr) {
+    protected DateSerializeUtility(String timeZoneId, String dateFormatStr) {
         this(timeZoneId == null ? null : TimeZone.getTimeZone(timeZoneId), dateFormatStr);
     }
 
-    public DateSerializeUtility(TimeZone timeZone) {
+    protected DateSerializeUtility(TimeZone timeZone) {
         this(timeZone, null);
     }
 
     @SuppressWarnings("squid:HiddenFieldCheck")
     public DateSerializeUtility(TimeZone timeZone, String dateFormatStr) {
-        dateFormat = new ThreadLocal<DateFormat>() {
-            @Override
-            protected DateFormat initialValue() {
-                DateFormat dateFormat = new SimpleDateFormat(dateFormatStr == null ? DEFAULT_DATE_FORMAT_STR : dateFormatStr);
-                dateFormat.setTimeZone(timeZone == null ? DEFAULT_TIME_ZONE : timeZone);
-                return dateFormat;
-            }
-        };
+        dateFormat = ThreadLocal.withInitial(() -> {
+            DateFormat dateFormat = new SimpleDateFormat(dateFormatStr == null ? DEFAULT_DATE_FORMAT_STR : dateFormatStr);
+            dateFormat.setTimeZone(timeZone == null ? DEFAULT_TIME_ZONE : timeZone);
+            return dateFormat;
+        });
     }
 
-    public String serialize(Date dateTime) {
+    public @Nullable String serialize(@Nullable Date dateTime) {
         logger.trace("serialize(Date:`{}`)", dateTime);
         return dateTime == null ? null : dateFormat.get().format(dateTime);
     }
 
-    public String serialize(Instant dateTime) {
-        return serialize(Date.from(dateTime));
+    public @Nullable String serialize(@Nullable Instant dateTime) {
+        return serialize(Optional.ofNullable(dateTime).map(Date::from).orElse(null));
     }
 
-    public Date deserialize(String dateTime) throws ParseException {
+    public @Nullable Date deserialize(@Nullable String dateTime) throws ParseException {
         try {
             Date result =  dateTime == null || dateTime.trim().length() == 0
                            ? null
@@ -85,11 +85,11 @@ public final class DateSerializeUtility {
     }
 
     public static DateSerializeUtility getDateSerializeUtility(String timeZoneId, String dateFormat) {
-        return getDateSerializeUtility(timeZoneId == null ? (TimeZone) null : TimeZone.getTimeZone(timeZoneId), dateFormat);
+        return getDateSerializeUtility(timeZoneId == null ? null : TimeZone.getTimeZone(timeZoneId), dateFormat);
     }
 
     public static DateSerializeUtility getDateSerializeUtility(ZoneId zoneId, String dateFormat) {
-        return getDateSerializeUtility(zoneId == null ? (TimeZone) null : TimeZone.getTimeZone(zoneId), dateFormat);
+        return getDateSerializeUtility(zoneId == null ? null : TimeZone.getTimeZone(zoneId), dateFormat);
     }
 
     public static DateSerializeUtility getDateSerializeUtility(TimeZone timeZone, String dateFormat) {
@@ -97,17 +97,9 @@ public final class DateSerializeUtility {
         synchronized (utilities) {
             dateFormatMap = utilities.computeIfAbsent(timeZone, tz -> new HashMap<>());
         }
-        DateSerializeUtility dateSerializeUtility = dateFormatMap.get(dateFormat);
-        if (dateSerializeUtility == null) {
-            synchronized (dateFormatMap) {
-                dateSerializeUtility = dateFormatMap.get(dateFormat);
-                if (dateSerializeUtility == null) {
-                    dateSerializeUtility = new DateSerializeUtility(timeZone, dateFormat);
-                    dateFormatMap.put(dateFormat, dateSerializeUtility);
-                }
-            }
+        synchronized (dateFormatMap) {
+            return dateFormatMap.computeIfAbsent(dateFormat, df -> new DateSerializeUtility(timeZone, df));
         }
-        return dateSerializeUtility;
     }
 
     public static void clear() {

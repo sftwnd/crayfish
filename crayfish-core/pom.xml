@@ -8,7 +8,7 @@
     <parent>
         <groupId>com.github.sftwnd.crayfish</groupId>
         <artifactId>crayfish</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.1.0-SNAPSHOT</version>
     </parent>
 
     <artifactId>crayfish-core</artifactId>
@@ -36,60 +36,50 @@
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-api</artifactId>
-                <version>[${slf4j.version},)</version>
+                <version>${slf4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>jcl-over-slf4j</artifactId>
-                <version>[${jcl-over-slf4j.version},)</version>
+                <version>${jcl-over-slf4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-core</artifactId>
-                <version>[${logback.version},)</version>
+                <version>${logback.version}</version>
             </dependency>
             <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
-                <version>[${logback.version},)</version>
+                <version>${logback.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-log4j12</artifactId>
-                <version>[${slf4j.version},)</version>
+                <version>${slf4j.version}</version>
             </dependency>
             <dependency>
                 <groupId>uk.org.lidalia</groupId>
                 <artifactId>slf4j-test</artifactId>
-                <version>[${lidalia-slf4j-test.version},)</version>
+                <version>${lidalia-slf4j-test.version}</version>
             </dependency>
             <!-- Lombok -->
             <dependency>
                 <groupId>org.projectlombok</groupId>
                 <artifactId>lombok</artifactId>
                 <version>${lombok.version}</version>
-                <scope>provided</scope>
             </dependency>
-            <!-- Kotlin -->
-            <!--
-            <dependency>
-                <groupId>org.jetbrains.kotlin</groupId>
-                <artifactId>kotlin-stdlib-jdk8</artifactId>
-                <version>${kotlin.version}</version>
-            </dependency>
-            -->
             <!-- Externals -->
             <dependency>
                 <groupId>com.google.code.findbugs</groupId>
                 <artifactId>jsr305</artifactId>
                 <version>${jsr305.version}</version>
-                <scope>compile</scope>
             </dependency>
             <!-- JavaX -->
             <dependency>
                 <groupId>javax.annotation</groupId>
                 <artifactId>javax.annotation-api</artifactId>
-                <version>[${javax-annotation.version},)</version>
+                <version>${javax-annotation.version}</version>
             </dependency>
             <!-- JUnit -->
             <dependency>
@@ -98,66 +88,67 @@
                 <version>${junit.version}</version>
             </dependency>
             <dependency>
-                <groupId>org.junit.vintage</groupId>
-                <artifactId>junit-vintage-engine</artifactId>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter-engine</artifactId>
                 <version>${junit.version}</version>
+            </dependency>
+            <!-- Mockito -->
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-core</artifactId>
+                <version>3.3.3</version>
             </dependency>
             <!-- Zookeeper/Curator -->
             <dependency>
                 <groupId>org.apache.curator</groupId>
                 <artifactId>curator-framework</artifactId>
-                <version>[${apache-curator.version},)</version>
+                <version>${apache-curator.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.curator</groupId>
                 <artifactId>curator-recipes</artifactId>
-                <version>[${apache-curator.version},)</version>
+                <version>${apache-curator.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.apache.zookeeper</groupId>
                 <artifactId>zookeeper</artifactId>
-                <version>[${zookeeper.version},)</version>
+                <version>${zookeeper.version}</version>
             </dependency>
             <!-- Faster XML -->
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-core</artifactId>
-                <version>[${fasterxml-jackson.version},)</version>
+                <version>${fasterxml-jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-databind</artifactId>
-                <version>[${fasterxml-jackson-databind.version},)</version>
+                <version>${fasterxml-jackson-databind.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.core</groupId>
                 <artifactId>jackson-annotations</artifactId>
-                <version>[${fasterxml-jackson.version},)</version>
+                <version>${fasterxml-jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-jsr310</artifactId>
-                <version>[${fasterxml-jackson.version},)</version>
+                <version>${fasterxml-jackson.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.fasterxml.jackson.datatype</groupId>
                 <artifactId>jackson-datatype-jdk8</artifactId>
-                <version>[${fasterxml-jackson.version},)</version>
+                <version>${fasterxml-jackson.version}</version>
             </dependency>
             <!-- -== CRAYFISH ==- -->
             <dependency>
                 <groupId>com.github.sftwnd.crayfish.common</groupId>
-                <artifactId>crayfish-common-base</artifactId>
+                <artifactId>crayfish-common-concurrent</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
                 <groupId>com.github.sftwnd.crayfish.common</groupId>
                 <artifactId>crayfish-common-crc</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.sftwnd.crayfish.common</groupId>
-                <artifactId>crayfish-common-concurrent</artifactId>
                 <version>${project.version}</version>
             </dependency>
             <dependency>
@@ -172,42 +163,7 @@
             </dependency>
             <dependency>
                 <groupId>com.github.sftwnd.crayfish.common</groupId>
-                <artifactId>crayfish-common-i18n</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.sftwnd.crayfish.common</groupId>
-                <artifactId>crayfish-common-info</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.sftwnd.crayfish.common</groupId>
                 <artifactId>crayfish-common-json</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.sftwnd.crayfish.common</groupId>
-                <artifactId>crayfish-common-resource</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.sftwnd.crayfish.common</groupId>
-                <artifactId>crayfish-common-time</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.sftwnd.crayfish.common</groupId>
-                <artifactId>crayfish-common-utl</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.sftwnd.crayfish.zookeeper</groupId>
-                <artifactId>crayfish-zookeeper-common</artifactId>
-                <version>${project.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>com.github.sftwnd.crayfish.distributed</groupId>
-                <artifactId>crayfish-distributed-core</artifactId>
                 <version>${project.version}</version>
             </dependency>
         </dependencies>
@@ -221,11 +177,17 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-classic</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.annotation</groupId>
+            <artifactId>javax.annotation-api</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.google.code.findbugs</groupId>
             <artifactId>jsr305</artifactId>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.projectlombok</groupId>
@@ -238,21 +200,10 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>org.junit.vintage</groupId>
-            <artifactId>junit-vintage-engine</artifactId>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter-engine</artifactId>
             <scope>test</scope>
         </dependency>
-        <dependency>
-            <groupId>javax.annotation</groupId>
-            <artifactId>javax.annotation-api</artifactId>
-            <scope>compile</scope>
-        </dependency>
-        <!--
-        <dependency>
-            <groupId>org.jetbrains.kotlin</groupId>
-            <artifactId>kotlin-stdlib-jdk8</artifactId>
-        </dependency>
-        -->
     </dependencies>
 
 </project>
