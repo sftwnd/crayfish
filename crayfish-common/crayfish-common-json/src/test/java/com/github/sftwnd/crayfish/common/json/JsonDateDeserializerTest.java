@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2017-20xx Andrey D. Shindarev (ashindarev@gmail.com)
+ * This program is made available under the terms of the BSD 3-Clause License.
+ */
 package com.github.sftwnd.crayfish.common.json;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -132,7 +136,7 @@ public class JsonDateDeserializerTest {
                     String taskTimeZone = JsonDateDeserializer.getTimeZoneId();
                     JsonDateDeserializerTestDateObject obj = new ObjectMapper().readerFor(JsonDateDeserializerTestDateObject.class).readValue(json);
                     results[id] = obj.getDate();
-                    logger.info("Task[{}]: timeZone={}, date={}", id, taskTimeZone, DateSerializeUtility.getDateSerializeUtility(taskTimeZone, null).serialize(obj.getDate()));
+                    logger.trace("Task[{}]: timeZone={}, date={}", id, taskTimeZone, DateSerializeUtility.getDateSerializeUtility(taskTimeZone, null).serialize(obj.getDate()));
                     finishLatch.countDown();
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -173,7 +177,7 @@ public class JsonDateDeserializerTest {
         assertNotEquals(results[0], results[2], "Default date has not to be equal date translated in the other thread without timeZone change.");
         assertEquals(3600 * 1000L, results[3].getTime() - results[4].getTime(), "Date with timeZones GMT+03:00 and GMT+04:00 has to be diffeent for a hour.");
         for (Date date : results) {
-            logger.info(DateSerializeUtility.defaultSerialize(date));
+            logger.trace(DateSerializeUtility.defaultSerialize(date));
         }
     }
 
