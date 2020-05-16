@@ -10,6 +10,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>crayfish-common-state</artifactId>
+    <name>CrayFish :: COMMON :: State</name>
 
     <dependencies>
         <dependency>

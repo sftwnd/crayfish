@@ -11,6 +11,8 @@ import lombok.SneakyThrows;
  */
 public class JsonToStringProcessed {
 
+    private static final IJsonMapper jsonMapper = new JsonMapper();
+
     @Override
     public String toString() {
         return toString(this);
@@ -18,7 +20,7 @@ public class JsonToStringProcessed {
 
     @SneakyThrows
     public static final String toString(Object obj) {
-        return obj == null ? null : JsonMapper.serializeObject(obj);
+        return obj == null ? null : jsonMapper.serializeObject(obj);
     }
 
 }

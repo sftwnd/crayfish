@@ -4,7 +4,10 @@
  */
 package com.github.sftwnd.crayfish.common.exception;
 
+import lombok.Generated;
 import lombok.SneakyThrows;
+
+import javax.annotation.Nonnull;
 import java.util.concurrent.Callable;
 
 /**
@@ -12,6 +15,7 @@ import java.util.concurrent.Callable;
  */
 public final class ExceptionUtils {
 
+    @Generated
     private ExceptionUtils() {
         super();
     }
@@ -21,18 +25,40 @@ public final class ExceptionUtils {
         try {
             return callable.call();
         } catch (Exception ex) {
-            // Next line is covered by the JUnit. JaCoCo result is wrong
             return uncheckExceptions(ex);
         }
     }
 
+    public static <T> T wrapUncheckedExceptions(@Nonnull Callable<T> callable, @Nonnull Callable<T> onThrow) {
+        try {
+            return callable.call();
+        } catch (Exception ex) {
+            if (ex instanceof InterruptedException) {
+                return uncheckExceptions(ex);
+            } else {
+                return wrapUncheckedExceptions(onThrow);
+            }
+        }
+    }
+
     @SneakyThrows
-    public static void wrapUncheckedExceptions(Processor<? extends Exception> processor) {
+    public static void wrapUncheckedExceptions(@Nonnull Processor<? extends Exception> processor) {
         try {
             processor.process();
         } catch (Exception ex) {
-            // Next line is covered by the JUnit. JaCoCo result is wrong
             uncheckExceptions(ex);
+        }
+    }
+
+    public static void wrapUncheckedExceptions(@Nonnull Processor<? extends Exception> processor, @Nonnull Processor<? extends Exception> onThrow) {
+        try {
+            processor.process();
+        } catch (Exception ex) {
+            if (ex instanceof InterruptedException) {
+                uncheckExceptions(ex);
+            } else {
+                wrapUncheckedExceptions(onThrow);
+            }
         }
     }
 

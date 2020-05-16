@@ -8,7 +8,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.github.sftwnd.crayfish.common.format.DateSerializeUtility;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,7 +36,7 @@ import static org.junit.jupiter.api.Assertions.assertThrows;
  * Created by ashindarev on 29.02.16.
  */
 public class JsonDateDeserializerTest {
-
+/*
     private static final Logger logger = LoggerFactory.getLogger(JsonDateDeserializerTest.class);
 
     private static final String getTimeZone() {
@@ -277,5 +276,5 @@ public class JsonDateDeserializerTest {
         private Date date;
 
     }
-
+*/
 }

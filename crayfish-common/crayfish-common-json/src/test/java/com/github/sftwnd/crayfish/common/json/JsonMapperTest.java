@@ -4,93 +4,68 @@
  */
 package com.github.sftwnd.crayfish.common.json;
 
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicReference;
+import java.text.ParseException;
+import java.time.Instant;
+import java.util.TimeZone;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
-public class JsonMapperTest {
-
+class JsonMapperTest {
+/*
     @Test
-    void testClear() {
-        ObjectMapper om = JsonMapper.getObjectMapper();
-        JsonMapper.clear();
-        assertNotSame(om, JsonMapper.getObjectMapper(), "JsonMapper.getObjectMapper() has to be changed after clear()");
-    }
-
-    @Test
-    void testParseObject() throws IOException {
-        String msisdn = "abc";
-        long objectId = 123L;
-        final String json = "{\"msisdn\":\""+msisdn+"\", \"objectId\":"+objectId+"}";
-        JsonMapperTestObject msg = new JsonMapperTestObject(msisdn, objectId);
-        assertEquals(msg, JsonMapper.parseObject(json, JsonMapperTestObject.class), "JsonMapper.parseObject(Class) result has to be equals of POJO object");
-        assertEquals(msg, JsonMapper.parseObject(json.getBytes(), JsonMapperTestObject.class), "JsonMapper.parseObject(Class) result has to be equals of POJO object");
-    }
-
-    @Test
-    void testParseObjectTypeRef() throws IOException {
-        JsonMapperTestObjectTypeRef typeRef = new JsonMapperTestObjectTypeRef();
-        String msisdn = "abc";
-        long objectId = 123L;
-        final String json = "{\"msisdn\":\""+msisdn+"\", \"objectId\":"+objectId+"}";
-        JsonMapperTestObject msg = new JsonMapperTestObject(msisdn, objectId);
-        assertEquals(msg, JsonMapper.parseObject(json, typeRef), "JsonMapper.parseObject(TypeRef) result has to be equals of POJO object");
-        assertEquals(msg, JsonMapper.parseObject(json.getBytes(), typeRef), "JsonMapper.parseObject(TypeRef) result has to be equals of POJO object");
-
-    }
-
-    @Test
-    void testSerializeObject() throws IOException {
-        String msisdn = "def";
-        long objectId = 456L;
-        final String json = "{\"msisdn\":\""+msisdn+"\", \"objectId\":"+objectId+"}";
-        JsonMapperTestObject obj = new JsonMapperTestObject(msisdn, objectId);
-        String msg = JsonMapper.serializeObject(obj);
-        assertEquals(obj, JsonMapper.parseObject(msg, JsonMapperTestObject.class), "JsonMapper.parseObject(serializedObject(POJO)) result has to be equals of original POJO object");
-    }
-    
-    @Test
-    void testGetObjectMapper() throws InterruptedException {
-        ObjectMapper mapper = JsonMapper.getObjectMapper();
-        assertNotNull(JsonMapper.getObjectMapper(), "JsonMapper.getObjectMapper result has to be not null");
-        assertSame(mapper, JsonMapper.getObjectMapper(), "JsonMapper.getObjectMapper result in one thread has to be the same");
-        AtomicReference<ObjectMapper> ref = new AtomicReference<>();
-        synchronized (ref) {
-            new Thread(() -> {
-                synchronized (ref) {
-                    ref.set(JsonMapper.getObjectMapper());
-                    ref.notify();
-                }
-            }).start();
-            ref.wait(100);
+    void testClearConstruct() {
+        TimeZone[] timeZones = new TimeZone[] { TimeZone.getTimeZone("Asia/Novosibirsk"), TimeZone.getTimeZone("Europe/Moscow") };
+        ObjectMapper[] oms = new ObjectMapper[timeZones.length];
+        for (int i=0; i<timeZones.length; i++) {
+            ObjectMapper objectMapper = JsonMapper.getObjectMapper(timeZones[i]);
+            assertNotNull(objectMapper, "JsonMapperTZ.getObjectMapper(TimeZone) has not got to be null");
+            assertSame(objectMapper, JsonMapper.getObjectMapper(timeZones[i]), "JsonMapperTZ.getObjectMapper(TimeZone) has return same value evey time");
+            JsonMapper.remove(timeZones[i]);
+            assertNotSame(objectMapper, JsonMapper.getObjectMapper(timeZones[i]), "JsonMapperTZ.getObjectMapper(TimeZone) has return other value after delete(TimeZone)");
+            oms[i] = JsonMapper.getObjectMapper(timeZones[i]);
         }
-        assertNotNull(ref.get(), "JsonMapper.getObjectMapper result in other thread has to be not null");
-        assertNotSame(mapper, ref.get(), "JsonMapper.getObjectMapper result in other thread has not to be the same");
+        JsonMapper.clear();
+        for (int i=0; i<timeZones.length; i++) {
+            assertNotSame(oms[i], JsonMapper.getObjectMapper(timeZones[i]), "JsonMapperTZ.getObjectMapper(TimeZone) has return other value after clear()");
+        }
+        JsonMapper.clear();
+    }
+
+    @Test
+    void testParseObjectTZ() throws IOException, ParseException {
+        TimeZone mskZone = TimeZone.getTimeZone("Europe/Moscow");
+        TimeZone prsZone = TimeZone.getTimeZone("Asia/Novosibirsk");
+        String dateTime = "2020-03-04T13:05:06";
+        Instant mskDate = DateSerializeUtility.getDateSerializeUtility(mskZone, "yyyy-MM-dd'T'HH:mm:ss").deserialize(dateTime).toInstant();
+        Instant prsDate = DateSerializeUtility.getDateSerializeUtility(prsZone, "yyyy-MM-dd'T'HH:mm:ss").deserialize(dateTime).toInstant();
+        assertNotEquals(mskDate, prsDate,"Unable to process testParseObjectTZ() because DateSerializeUtility.getDateSerializeUtility result is wrong");
+        JsonMapperTZTestDataObject prsDataObject = JsonMapper.parseObject( prsZone, "{\"instant\":\""+dateTime+"\"}", JsonMapperTZTestDataObject.class);
+        assertEquals(prsDate, prsDataObject.getInstant(), "Checked instant and parsed object instant has to be equals for the timeZone: "+prsZone.getID());
+        JsonMapperTZTestDataObject mskDataObject = JsonMapper.parseObject( mskZone, "{\"instant\":\""+dateTime+"\"}", JsonMapperTZTestDataObject.class);
+        assertEquals(mskDate, mskDataObject.getInstant(), "Checked instant and parsed object instant has to be equals for the timeZone: "+mskZone.getID());
     }
 
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    static class JsonMapperTestObject {
-        private String msisdn;
-        private Long objectId;
+    static class JsonMapperTZTestDataObject {
+        @JsonSerialize(using=JsonInstantSerializer.class)
+        @JsonDeserialize(using=JsonInstantDeserializer.class)
+        private Instant instant;
     }
 
-    static class JsonMapperTestObjectTypeRef extends TypeReference<JsonMapperTestObject> {
-        public JsonMapperTestObjectTypeRef() {
-            super();
-        }
-    }
-
+*/
 }
