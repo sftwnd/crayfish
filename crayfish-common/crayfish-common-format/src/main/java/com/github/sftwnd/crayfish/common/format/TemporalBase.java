@@ -5,7 +5,6 @@ import com.github.sftwnd.crayfish.common.state.DefaultsHolder.ValueLevel;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
-import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
