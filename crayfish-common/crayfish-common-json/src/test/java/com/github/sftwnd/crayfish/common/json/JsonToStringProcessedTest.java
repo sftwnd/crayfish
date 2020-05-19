@@ -1,3 +1,7 @@
+/*
+ * Copyright (c) 2017-20xx Andrey D. Shindarev (ashindarev@gmail.com)
+ * This program is made available under the terms of the BSD 3-Clause License.
+ */
 package com.github.sftwnd.crayfish.common.json;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
@@ -9,11 +13,13 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.Optional;
 import java.util.Random;
 import java.util.function.Function;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class JsonToStringProcessedTest {
 
@@ -26,9 +32,13 @@ class JsonToStringProcessedTest {
     }
 
     @SneakyThrows
+    @SuppressWarnings("unchecked")
     private void check(String process, Function<JsonToStringProcessed, String> serializer) {
         JsonToStringProcessed obj = new JsonToStringProcessedTestObject(new Random().nextLong());
-        assertEquals(JsonMapper.serializeObject(obj), serializer.apply(obj), "Wrong value for "+process);
+        Field field = JsonToStringProcessed.class.getDeclaredField("jsonMapper");
+        field.setAccessible(true);
+        IJsonMapper mapper = (IJsonMapper) field.get(null);
+        assertEquals(mapper.formatObject(obj), serializer.apply(obj), "Wrong value for "+process);
         assertEquals(null, serializer.apply(null), "Wrong value for "+process+" with null");
     }
 
@@ -56,8 +66,7 @@ class JsonToStringProcessedTest {
     @AllArgsConstructor
     @NoArgsConstructor
     static class JsonToStringProcessedTestObject extends JsonToStringProcessed {
-        @Getter
-        @Setter
-        Long value;
+        @Getter @Setter Long value;
     }
+
 }
