@@ -4,10 +4,13 @@
  */
 package com.github.sftwnd.crayfish.common.concurrent;
 
+import lombok.Generated;
+
 public class RevokedException extends RuntimeException {
 
     private static final long serialVersionUID = -8140155950354692609L;
 
+    @Generated
     public RevokedException() {
         super();
     }

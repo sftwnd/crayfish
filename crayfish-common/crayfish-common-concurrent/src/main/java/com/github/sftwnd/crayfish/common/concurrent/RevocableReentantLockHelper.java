@@ -4,6 +4,7 @@
  */
 package com.github.sftwnd.crayfish.common.concurrent;
 
+import lombok.Generated;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
@@ -11,6 +12,7 @@ import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.time.Instant;
 import java.util.Objects;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
@@ -34,6 +36,7 @@ public class RevocableReentantLockHelper implements Lock, Revocable {
     @SuppressWarnings("squid:S5164")
     private final ThreadLocal<Long>        checkedAt = ThreadLocal.withInitial(() -> 0L);
 
+    @Generated
     public RevocableReentantLockHelper(@Nonnull Lock lockHelper) {
         this(lockHelper, null);
     }
@@ -42,19 +45,17 @@ public class RevocableReentantLockHelper implements Lock, Revocable {
         Objects.requireNonNull(lockHelper);
         logName = String.format("%s@%s", this.getClass().getSimpleName(), Integer.toHexString(this.hashCode()));
         this.lockHelper = lockHelper;
-        this.statusMonitor = statusMonitor == null ? () -> Instant.MIN : () -> Objects.requireNonNullElse(statusMonitor.get(), Instant.MIN);
+        this.statusMonitor = statusMonitor == null ? () -> Instant.MIN
+                           : () -> Optional.of(statusMonitor).map(Supplier::get).orElse(Instant.MIN);
     }
 
     private void preacquire() {
         synchronized (revokedAt) {
             if (acquires.get().intValue() == 0) {
+                revokedAt.set(Instant.MIN);
                 initAt.set(Instant.now());
-                if (!revokedAt.get().equals(statusMonitor.get())) {
-                    revokedAt.set(statusMonitor.get());
-                    logger.trace("{} revokedAt flag changed to: {}", logName, revokedAt.get());
-                }
-                return;
             }
+            revokeUntil(statusMonitor.get());
             checkRevoked("::preacquire", false);
         }
     }
@@ -92,21 +93,22 @@ public class RevocableReentantLockHelper implements Lock, Revocable {
     public void revokeUntil(@Nonnull Instant limit) {
         Objects.requireNonNull(limit);
         synchronized (revokedAt) {
-            try {
-                if (acquires.get().intValue() > 0) {
-                    if (this.revokedAt.get().isBefore(initAt.get())) {
-                        logger.trace("{}::revokeUntil(): lock has been revoked and unable until {}", logName, limit);
+            if (acquires.get().intValue() > 0) {
+                Instant inited = this.initAt.get();
+                if (!limit.isBefore(inited)) {
+                    Instant revoked = this.revokedAt.get();
+                    if (!revoked.isAfter(limit) && !revoked.isBefore(inited)) {
+                        logger.trace("{}::revokeUntil(): lock has been already revoked at {}", logName, revoked);
                     } else {
-                        logger.trace("{}::revokeUntil(): lock is already revoked. Lock is unable until {}", logName, limit);
+                        this.revokedAt.set(limit);
+                        this.revokedAt.notifyAll();
+                        logger.trace("{}::revokeUntil(): lock has been revoked at {}", logName, limit);
                     }
                 } else {
-                    logger.trace("{}::revokeUntil(): lock is not acquired. Lock is unable until {}", logName, limit);
+                    logger.trace("{}::revokeUntil(): unable to revoke at the moment before lock is acquire {}", logName, limit);
                 }
-            } finally {
-                if (!revokedAt.get().equals(limit)) {
-                    revokedAt.set(limit);
-                    revokedAt.notifyAll();
-                }
+            } else {
+                logger.trace("{}::revokeUntil(): lock is not acquired. Lock is unable until {}", logName, limit);
             }
         }
     }
@@ -114,13 +116,15 @@ public class RevocableReentantLockHelper implements Lock, Revocable {
     @SuppressWarnings("squid:S1181")
     private void checkRevoked(final String callerName, final boolean acquired) {
         synchronized (revokedAt) {
-            if (revokedAt.get().isAfter(initAt.get())) {
+            final Instant revoked = revokedAt.get();
+            if (!revoked.isBefore(initAt.get()) && !revoked.isAfter(Instant.now())) {
                 if (acquires.get().intValue() == 0) {
-                    logger.trace("{} is checked as revoked by {} at {}. Lock is not possible", this.logName, callerName, revokedAt.get());
+                    logger.trace("{} is checked as revoked by {} at {}. Lock is not possible", this.logName, callerName, revoked);
                 } else {
-                    logger.trace("{} is checked as revoked by {} at {}", this.logName, callerName, revokedAt.get());
+                    logger.trace("{} is checked as revoked by {} at {}", this.logName, callerName, revoked);
                 }
-                throw new RevokedException(String.format("Lock [%s] has been revoked at %s", logName, revokedAt.get()));
+                acquires.get().set(0);
+                throw new RevokedException(String.format("Lock [%s] has been revoked at %s", logName, revoked));
             }
             checkedAt.set(System.currentTimeMillis());
         }
@@ -148,12 +152,20 @@ public class RevocableReentantLockHelper implements Lock, Revocable {
     }
 
     @Override
-    @SuppressWarnings("squid:S1181")
+    @SuppressWarnings({
+            // Throwable and Error should not be caught
+            "squid:S1181",
+            // Nested blocks of code should not be left empty
+            "squid:S108"
+    })
     public boolean tryLock() {
-        preacquire();
-        if (lockHelper.tryLock()) {
-            acquired();
-            return true;
+        try {
+            preacquire();
+            if (lockHelper.tryLock()) {
+                acquired();
+                return true;
+            }
+        } catch (RevokedException rex) {
         }
         return false;
     }
@@ -167,6 +179,8 @@ public class RevocableReentantLockHelper implements Lock, Revocable {
                 acquired();
                 return true;
             }
+        } catch (RevokedException rex) {
+            return false;
         } catch (InterruptedException itex) {
             Thread.currentThread().interrupt();
             throw itex;
