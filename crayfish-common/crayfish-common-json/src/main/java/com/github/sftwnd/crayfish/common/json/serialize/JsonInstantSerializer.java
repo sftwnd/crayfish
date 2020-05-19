@@ -4,10 +4,10 @@
  */
 package com.github.sftwnd.crayfish.common.json.serialize;
 
-import java.time.ZonedDateTime;
+import java.time.Instant;
 
 /**
- * <p>Json ZoneDateTime Serializer</p>
+ * <p>Json Instant Serializer</p>
  *
  * Created 2016-02-08
  *
@@ -15,6 +15,6 @@ import java.time.ZonedDateTime;
  * @version 1.1.1
  * @since 1.0.0
  */
-public class JsonZonedDateTimeSerializer extends JsonZonedSerializer<ZonedDateTime> {
+public class JsonInstantSerializer extends JsonZonedSerializer<Instant> {
 
 }

@@ -13,15 +13,16 @@ import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.Optional;
 import java.util.Random;
 import java.util.function.Function;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 
 class JsonToStringProcessedTest {
 
-    /*
     private static String apply(JsonToStringProcessed obj) {
         return Optional.ofNullable(obj).map(Object::toString).orElse(null);
     }
@@ -31,9 +32,13 @@ class JsonToStringProcessedTest {
     }
 
     @SneakyThrows
+    @SuppressWarnings("unchecked")
     private void check(String process, Function<JsonToStringProcessed, String> serializer) {
         JsonToStringProcessed obj = new JsonToStringProcessedTestObject(new Random().nextLong());
-        assertEquals(JsonZonedMapper.serializeObject(obj), serializer.apply(obj), "Wrong value for "+process);
+        Field field = JsonToStringProcessed.class.getDeclaredField("jsonMapper");
+        field.setAccessible(true);
+        IJsonMapper mapper = (IJsonMapper) field.get(null);
+        assertEquals(mapper.formatObject(obj), serializer.apply(obj), "Wrong value for "+process);
         assertEquals(null, serializer.apply(null), "Wrong value for "+process+" with null");
     }
 
@@ -61,9 +66,7 @@ class JsonToStringProcessedTest {
     @AllArgsConstructor
     @NoArgsConstructor
     static class JsonToStringProcessedTestObject extends JsonToStringProcessed {
-        @Getter
-        @Setter
-        Long value;
+        @Getter @Setter Long value;
     }
-     */
+
 }

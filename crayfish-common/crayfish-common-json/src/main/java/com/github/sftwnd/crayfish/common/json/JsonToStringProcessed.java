@@ -20,7 +20,7 @@ public class JsonToStringProcessed {
 
     @SneakyThrows
     public static final String toString(Object obj) {
-        return obj == null ? null : jsonMapper.serializeObject(obj);
+        return obj == null ? null : jsonMapper.formatObject(obj);
     }
 
 }

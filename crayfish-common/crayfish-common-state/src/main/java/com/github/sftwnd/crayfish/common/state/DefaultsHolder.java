@@ -8,6 +8,13 @@ import java.util.Optional;
 import java.util.WeakHashMap;
 import java.util.function.Supplier;
 
+@SuppressWarnings({
+        /*
+            Generic wildcard types should not be used in return parameters
+            Usage of <?> is more usefull in our case
+        */
+        "squid:S1452"
+})
 public class DefaultsHolder<T> {
 
     /**
@@ -33,6 +40,15 @@ public class DefaultsHolder<T> {
     // Changeable global default value
     private Supplier<T> defaultValue = null;
     // Current thread value
+    @SuppressWarnings({
+            /*
+                "ThreadLocal" variables should be cleaned up  when no longer used
+                So, it's normal case to use DefaultsHolder without clear of state
+                You are able co control currentValue clearance by himself  or  by
+                StateHelper helper
+             */
+            "squid:S5164"
+    })
     private ThreadLocal<Supplier<T>> currentValue = new ThreadLocal<>();
 
     // Constructor

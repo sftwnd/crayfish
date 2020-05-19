@@ -1,8 +1,11 @@
 package com.github.sftwnd.crayfish.common.format.parser;
 
+import com.github.sftwnd.crayfish.common.format.formatter.TemporalFormatter;
 import org.junit.jupiter.api.Test;
 
+import javax.annotation.Nonnull;
 import java.lang.reflect.Method;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
@@ -22,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertSame;
 
+@SuppressWarnings("common-java:DuplicatedBlocks")
 class TemporalParserTest {
 
     private static final String dateTimeStr = "2020-01-02T10:11:11";
@@ -100,6 +104,26 @@ class TemporalParserTest {
                 ZonedDateTime.from(ISO_LOCAL_DATE_TIME.withZone(ZoneId.of("Europe/Kaliningrad")).parse(dateTimeStr)),
                 parser.parse(dateTimeStr), "TemporalParser::parse(dateStr) has to be equals dateTimeFormatter.parse(dateStr)"
         );
+    }
+
+    @Test
+    void testInstantParserRegister() {
+        TemporalParserTestTemporalParser parser = new TemporalParserTestTemporalParser();
+        assertNull(TemporalParser.register(TemporalParserTestNoConstructorObject.class, null),
+                "TemporalParser.register has check call of default null-constructor when parametrized constructor is not defined (=null)");
+    }
+
+    static class TemporalParserTestTemporalParser extends TemporalParser<TemporalAccessor> {
+        public TemporalParserTestTemporalParser() {
+            super(Function.identity());
+        }
+    }
+
+
+    static class TemporalParserTestNoConstructorObject {
+        TemporalParserTestNoConstructorObject(TemporalFormatter obj) {
+            TemporalFormatter.register(this.getClass(), () -> obj);
+        }
     }
 
     @Test

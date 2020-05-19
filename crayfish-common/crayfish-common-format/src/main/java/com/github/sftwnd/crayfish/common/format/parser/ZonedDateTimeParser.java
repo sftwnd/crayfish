@@ -1,7 +1,5 @@
 package com.github.sftwnd.crayfish.common.format.parser;
 
-import lombok.Generated;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.time.ZoneId;

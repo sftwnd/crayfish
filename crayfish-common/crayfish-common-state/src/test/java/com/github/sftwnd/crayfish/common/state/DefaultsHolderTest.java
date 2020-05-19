@@ -10,6 +10,10 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Supplier;
 
+import static com.github.sftwnd.crayfish.common.state.DefaultsHolder.ValueLevel.CURRENT;
+import static com.github.sftwnd.crayfish.common.state.DefaultsHolder.ValueLevel.DEFAULT;
+import static com.github.sftwnd.crayfish.common.state.DefaultsHolder.ValueLevel.SYSTEM;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNotSame;
@@ -132,6 +136,20 @@ class DefaultsHolderTest {
     }
 
     @Test
+    void testGetValueLevel() {
+        DefaultsHolder<Object> holder = new DefaultsHolder<>(() -> new Object());
+        assertEquals(SYSTEM, holder.getValueLevel(), "New DefaultsHolder level has to be SYSTEM");
+        holder.setDefaultValue(new Object());
+        assertEquals(DEFAULT, holder.getValueLevel(), "DefaultsHolder level has to be DEFAULT after setDefault call");
+        holder.clearDefaultValue();
+        assertEquals(SYSTEM, holder.getValueLevel(), "DefaultsHolder level has to be restored after clearDefaultValue call");
+        holder.setCurrentValue(new Object());
+        assertEquals(CURRENT, holder.getValueLevel(), "DefaultsHolder level has to be CURRENT after setCurrentValue call");
+        holder.clearCurrentValue();
+        assertEquals(SYSTEM, holder.getValueLevel(), "DefaultsHolder level has to be restored after clearCurrentValue call");
+    }
+
+    @Test
     void testSetGetCurrentValue() throws Exception {
         final Object systemObj = new Object();
         final Object currentObj = new Object();
@@ -153,9 +171,15 @@ class DefaultsHolderTest {
     }
 
     @Test
-    void testRegisterNullParam() {
-        assertThrows(NullPointerException.class, () -> DefaultsHolder.register(null, new DefaultsHolder<>()), "DefaultsHolder.register(obj=null) has to throw NullPointerException");
-        assertThrows(NullPointerException.class, () -> DefaultsHolder.register(new Object(), null), "DefaultsHolder.register(holder=null) has to throw NullPointerException");
+    void testRegisterNullObjectParam() {
+        DefaultsHolder<?> defaultHolder = new DefaultsHolder<>();
+        assertThrows(NullPointerException.class, () -> DefaultsHolder.register(null, defaultHolder), "DefaultsHolder.register(obj=null) has to throw NullPointerException");
+    }
+
+    @Test
+    void testRegisterNullHolderParam() {
+        Object obj = new Object();
+        assertThrows(NullPointerException.class, () -> DefaultsHolder.register(obj, null), "DefaultsHolder.register(holder=null) has to throw NullPointerException");
     }
 
     @Test

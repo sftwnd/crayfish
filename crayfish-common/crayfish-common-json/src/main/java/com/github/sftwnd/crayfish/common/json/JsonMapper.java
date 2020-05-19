@@ -5,6 +5,7 @@
 package com.github.sftwnd.crayfish.common.json;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -23,7 +24,7 @@ import java.util.Optional;
  */
 public class JsonMapper implements IJsonMapper {
 
-    public static final ZoneId DEFAULT_ZONE_ID = ZoneId.of("UTC");
+    public static final ZoneId DEFAULT_ZONE_ID = JsonZonedMapper.DEFAULT_ZONE_ID;
 
     private final JsonZonedMapper mapper = new JsonZonedMapper();
     private final ZoneId zoneId;
@@ -36,7 +37,6 @@ public class JsonMapper implements IJsonMapper {
         this.zoneId = Optional.ofNullable(zoneId).orElse(DEFAULT_ZONE_ID);
     }
 
-
     @Override
     public <T> T parseObject(@Nullable byte[] json, @Nonnull Class<T> clazz) throws IOException {
         return mapper.parseObject(zoneId, json, clazz);
@@ -48,8 +48,12 @@ public class JsonMapper implements IJsonMapper {
     }
 
     @Override
-    public String serializeObject(@Nullable Object object) throws IOException {
-        return mapper.serializeObject(zoneId, object);
+    public String formatObject(@Nullable Object object) throws IOException {
+        return mapper.formatObject(zoneId, object);
+    }
+
+    public ObjectMapper getObjectMapper() {
+        return mapper.getObjectMapper();
     }
 
 }

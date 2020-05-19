@@ -11,11 +11,11 @@ import javax.annotation.Nullable;
 import java.util.Objects;
 import java.util.Optional;
 import java.util.concurrent.Callable;
-import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
 import static com.github.sftwnd.crayfish.common.exception.ExceptionUtils.wrapUncheckedExceptions;
+import static java.lang.Boolean.FALSE;
 
 /**
  * <p>Class helper to temporaty change state of object</p>
@@ -26,19 +26,19 @@ import static com.github.sftwnd.crayfish.common.exception.ExceptionUtils.wrapUnc
  * @since 1.1.1
  *
  */
-public final class StateHolder<S> implements AutoCloseable {
+public final class StateHelper<S> implements AutoCloseable {
 
     private Runnable stateRestorer;
 
-    public StateHolder(@Nullable S state, @Nonnull Supplier<S> stateGetter, @Nonnull Consumer<S> stateSetter) {
+    public StateHelper(@Nullable S state, @Nonnull Supplier<S> stateGetter, @Nonnull Consumer<S> stateSetter) {
         this(state, stateGetter, stateSetter, stateSetter);
     }
 
-    public StateHolder(@Nullable S state, @Nonnull Supplier<S> stateGetter, @Nonnull Consumer<S> stateSetter, @Nonnull Consumer<S> stateResotorer) {
-        final S currentState = Objects.requireNonNull(stateGetter, "StateHolder::new - stateGetter is null").get();
-        if (!Optional.ofNullable(currentState).map(cs -> cs.equals(state)).orElseGet(() -> state == null)) {
-            this.stateRestorer = () -> Objects.requireNonNull(stateResotorer, "StateHolder::new - stateResotorer is null").accept(currentState);
-            Objects.requireNonNull(stateSetter, "StateHolder::new - stateSetter is null").accept(state);
+    public StateHelper(@Nullable S state, @Nonnull Supplier<S> stateGetter, @Nonnull Consumer<S> stateSetter, @Nonnull Consumer<S> stateResotorer) {
+        final S currentState = Objects.requireNonNull(stateGetter, "StateHelper::new - stateGetter is null").get();
+        if (FALSE.equals(Optional.ofNullable(currentState).map(cs -> cs.equals(state)).orElseGet(() -> state == null))) {
+            this.stateRestorer = () -> Objects.requireNonNull(stateResotorer, "StateHelper::new - stateResotorer is null").accept(currentState);
+            Objects.requireNonNull(stateSetter, "StateHelper::new - stateSetter is null").accept(state);
         }
     }
 
@@ -61,7 +61,7 @@ public final class StateHolder<S> implements AutoCloseable {
     }
 
     public static <S> AutoCloseable construct(@Nullable S state, @Nonnull Supplier<S> stateGetter, @Nonnull Consumer<S> stateSetter, @Nonnull Consumer<S> stateRestorer) {
-        return new StateHolder<>(state, stateGetter, stateSetter, stateRestorer)::close;
+        return new StateHelper<>(state, stateGetter, stateSetter, stateRestorer)::close;
     }
 
     @SuppressWarnings("try")
@@ -83,8 +83,15 @@ public final class StateHolder<S> implements AutoCloseable {
         return supply(state, stateGetter, stateSetter, stateSetter, supplier);
     }
 
+    @SuppressWarnings({
+            /*
+                Try-with-resources should be used
+                AutoClosable variant is not very usefull because we need to catch more Exceptions
+             */
+            "squid:S2093"
+    })
     public static <S, E extends Exception> void process(@Nullable S state, @Nonnull Supplier<S> stateGetter, @Nonnull Consumer<S> stateSetter, @Nonnull Consumer<S> stateRestorer, @Nonnull Processor<E> processor) throws E {
-        StateHolder<S> stt = new StateHolder<>(state, stateGetter, stateSetter, stateRestorer);
+        StateHelper<S> stt = new StateHelper<>(state, stateGetter, stateSetter, stateRestorer);
         try {
             processor.process();
         } finally {
@@ -96,11 +103,11 @@ public final class StateHolder<S> implements AutoCloseable {
         process(state, stateGetter, stateSetter, stateSetter, processor);
     }
 
-    public static <S, E extends Exception> void run(@Nullable S state, @Nonnull Supplier<S> stateGetter, @Nonnull Consumer<S> stateSetter, @Nonnull Consumer<S> stateRestorer, @Nonnull Runnable runnable) {
+    public static <S> void run(@Nullable S state, @Nonnull Supplier<S> stateGetter, @Nonnull Consumer<S> stateSetter, @Nonnull Consumer<S> stateRestorer, @Nonnull Runnable runnable) {
         wrapUncheckedExceptions(() -> process(state, stateGetter, stateSetter, stateRestorer, runnable::run));
     }
 
-    public static <S, E extends Exception> void run(@Nullable S state, @Nonnull Supplier<S> stateGetter, @Nonnull Consumer<S> stateSetter, @Nonnull Runnable runnable) {
+    public static <S> void run(@Nullable S state, @Nonnull Supplier<S> stateGetter, @Nonnull Consumer<S> stateSetter, @Nonnull Runnable runnable) {
        run(state, stateGetter, stateSetter, stateSetter, runnable);
     }
 

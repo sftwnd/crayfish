@@ -1,7 +1,5 @@
 package com.github.sftwnd.crayfish.common.format.parser;
 
-import lombok.Generated;
-
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import java.util.Date;
@@ -27,7 +25,7 @@ public class DateParser extends TemporalParser<Date> {
     }
 
     public DateParser(@Nullable DateTimeFormatter coreFormatter, @Nullable DateTimeFormatter baseFormatter) {
-        super(temporalAccessor -> temporalAccessor == null ? null : Date.from(Instant.from(temporalAccessor)),
+        super(temporalAccessor -> Date.from(Instant.from(temporalAccessor)),
               coreFormatter,
               baseFormatter);
     }

@@ -1,9 +1,9 @@
 package com.github.sftwnd.crayfish.common.format.parser;
 
 import com.github.sftwnd.crayfish.common.exception.ExceptionUtils;
-import com.github.sftwnd.crayfish.common.state.DefaultsHolder;
+import com.github.sftwnd.crayfish.common.format.TemporalBase;
 import com.github.sftwnd.crayfish.common.state.DefaultsHolder.ValueLevel;
-import com.github.sftwnd.crayfish.common.state.StateHolder;
+import com.github.sftwnd.crayfish.common.state.StateHelper;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -20,12 +20,16 @@ import java.util.function.Supplier;
 import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 import static java.time.format.DateTimeFormatter.ISO_ZONED_DATE_TIME;
 
-public class TemporalParser<T> {
-
-    public static final ZoneId DEFAUT_ZONE_ID = ZoneId.of("UTC");
+@SuppressWarnings({
+        /*
+            Generic wildcard types should not be used in return parameters
+            Usage of <?> is more usefull in our case
+        */
+        "squid:S1452"
+})
+public class TemporalParser<T> extends TemporalBase {
 
     private DateTimeFormatter coreFormatter;
-    private DefaultsHolder<DateTimeFormatter> defaults;
     @Nonnull Function<TemporalAccessor, T> converter;
 
     public TemporalParser(@Nonnull Function<TemporalAccessor, T> converter) {
@@ -41,33 +45,9 @@ public class TemporalParser<T> {
     }
 
     public TemporalParser(@Nonnull Function<TemporalAccessor, T> converter, @Nullable DateTimeFormatter coreFormatter, @Nullable DateTimeFormatter baseFormatter) {
+        super(dateTimeFormatter(baseFormatter));
         this.converter = Objects.requireNonNull(converter, "TemporalParser::new - converter is null");
         this.coreFormatter = Optional.ofNullable(coreFormatter).orElse(ISO_ZONED_DATE_TIME);
-        this.defaults = new DefaultsHolder<>(() -> dateTimeFormatter(baseFormatter));
-    }
-
-    public void clearDefaultZoneId() {
-        defaults.clearDefaultValue();
-    }
-
-    public void setDefaultZoneId(@Nonnull final ZoneId zoneId) {
-        defaults.setDefaultValue(defaults.getDefaultValue().withZone(Objects.requireNonNull(zoneId, "TemporalParser::setDefaultZoneId - zoneId is null")));
-    }
-
-    public void clearCurrentZoneId() {
-        defaults.clearCurrentValue();
-    }
-
-    public void setCurrentZoneId(@Nonnull final ZoneId zoneId) {
-        defaults.setCurrentValue(defaults.getCurrentValue().withZone(Objects.requireNonNull(zoneId, "TemporalParser::setDefaultZoneId - zoneId is null")));
-    }
-
-    public ZoneId getZoneId() {
-        return defaults.getCurrentValue().getZone();
-    }
-
-    public ValueLevel getValueLevel() {
-        return defaults.getValueLevel();
     }
 
     private @Nullable T parse(@Nullable String text, @Nonnull Function<TemporalAccessor, T> converter) {
@@ -88,7 +68,7 @@ public class TemporalParser<T> {
     }
 
     public @Nullable T parse(@Nullable String text, @Nonnull ZoneId zoneId) {
-        return StateHolder.supply(
+        return StateHelper.supply(
                 Objects.requireNonNull(zoneId, "TemporalParser::parse(String, ZoneId) - zoneId is null"),
                 this::getZoneId,
                 this::setCurrentZoneId,
@@ -106,24 +86,15 @@ public class TemporalParser<T> {
     private static final Map<Object, TemporalParser<?>> parserMap = new WeakHashMap<>();
 
     public static TemporalParser<?> register(@Nonnull Object obj, @Nonnull Supplier<TemporalParser<?>> constructor) {
-        synchronized (parserMap) {
-            return parserMap.computeIfAbsent(
-                    Objects.requireNonNull(obj, "TemporalParser::register - obj is null"),
-                    o -> Objects.requireNonNull(constructor, "TemporalParser::register - constructor is null").get()
-            );
-        }
+        return register(parserMap, () -> null, obj, constructor);
     }
 
     public static TemporalParser<?> unregister(@Nonnull Object obj) {
-        synchronized (parserMap) {
-            return parserMap.remove(obj);
-        }
+        return unregister(parserMap, obj);
     }
 
     public static TemporalParser<?> parser(@Nonnull Object obj) {
-        synchronized (parserMap) {
-            return parserMap.get(obj);
-        }
+        return base(parserMap, obj);
     }
 
 }

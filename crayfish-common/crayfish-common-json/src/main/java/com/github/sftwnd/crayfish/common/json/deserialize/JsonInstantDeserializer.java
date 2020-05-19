@@ -5,12 +5,12 @@
 package com.github.sftwnd.crayfish.common.json.deserialize;
 
 import com.github.sftwnd.crayfish.common.format.parser.TemporalParser;
-import com.github.sftwnd.crayfish.common.format.parser.ZonedDateTimeParser;
+import com.github.sftwnd.crayfish.common.format.parser.InstantParser;
 
-import java.time.ZonedDateTime;
+import java.time.Instant;
 
 /**
- * <p>Json ZonedDateTime Deserializer using {@link ZonedDateTimeParser} with ability to control timeZone</p>
+ * <p>Json Instant Deserializer using {@link InstantParser} with ability to control timeZone</p>
  *
  * Created 2016-02-08
  *
@@ -18,11 +18,11 @@ import java.time.ZonedDateTime;
  * @version 1.1.1
  * @since 1.0.0
  */
-public final class JsonZonedDateTimeDeserializer extends JsonZonedDeserializer<ZonedDateTime> {
+public final class JsonInstantDeserializer extends JsonZonedDeserializer<Instant> {
 
     @Override
-    public TemporalParser<ZonedDateTime> constructParser() {
-        return new ZonedDateTimeParser();
+    public TemporalParser<Instant> constructParser() {
+        return new InstantParser();
     }
 
 }

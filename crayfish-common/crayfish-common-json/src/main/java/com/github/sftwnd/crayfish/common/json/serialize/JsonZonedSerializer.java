@@ -4,15 +4,15 @@ import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.github.sftwnd.crayfish.common.format.formatter.TemporalFormatter;
-import com.github.sftwnd.crayfish.common.state.StateHolder;
+import com.github.sftwnd.crayfish.common.state.StateHelper;
 import lombok.extern.slf4j.Slf4j;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.time.temporal.TemporalAccessor;
 import java.util.Optional;
 import java.util.TimeZone;
 
-import static com.github.sftwnd.crayfish.common.exception.ExceptionUtils.uncheckExceptions;
 import static com.github.sftwnd.crayfish.common.state.DefaultsHolder.ValueLevel.CURRENT;
 
 @Slf4j
@@ -20,6 +20,7 @@ public class JsonZonedSerializer<T> extends JsonSerializer<T> {
 
     public JsonZonedSerializer() {
         super();
+        TemporalFormatter.register(this.getClass(), this::constructSerializer);
     }
 
     /**
@@ -39,11 +40,12 @@ public class JsonZonedSerializer<T> extends JsonSerializer<T> {
                     .map(this::temporalValue)
                     .map(temporal -> Optional.ofNullable(provider.getTimeZone())
                                         .map(TimeZone::toZoneId)
-                                        .map(zoneId -> StateHolder.supply(
+                                        .filter(tz -> formatter.getValueLevel() != CURRENT)
+                                        .map(zoneId -> StateHelper.supply(
                                                 zoneId,
                                                 formatter::getZoneId,
                                                 formatter::setCurrentZoneId,
-                                                formatter.getValueLevel() == CURRENT ? formatter::setCurrentZoneId : z -> formatter.clearCurrentZoneId(),
+                                                zid -> formatter.clearCurrentZoneId(),
                                                 () -> formatter.format(temporal)
                                         ))
                                         .orElseGet(() -> formatter.format(temporal))
@@ -52,13 +54,14 @@ public class JsonZonedSerializer<T> extends JsonSerializer<T> {
         );
     }
 
-    protected TemporalAccessor temporalValue(T dateTime) {
-        return dateTime == null ? null
-             : dateTime instanceof TemporalAccessor ? TemporalAccessor.class.cast(dateTime)
-             : uncheckExceptions(new IllegalArgumentException("JsonZonedSerializer::temporalValue(dateTime) - wrong dataTime argument type: "+dateTime.getClass().getCanonicalName()));
+    protected TemporalAccessor temporalValue(@Nonnull T dateTime) {
+        if (dateTime instanceof TemporalAccessor) {
+            return TemporalAccessor.class.cast(dateTime);
+        }
+        throw new IllegalArgumentException("JsonZonedSerializer::temporalValue(dateTime) - wrong dataTime argument type: "+dateTime.getClass().getCanonicalName());
     }
 
-    protected TemporalFormatter constructSerializer() {
+    protected @Nonnull TemporalFormatter constructSerializer() {
         return new TemporalFormatter();
     }
 

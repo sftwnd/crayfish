@@ -13,6 +13,16 @@ import java.util.concurrent.Callable;
 /**
  * Утилиты для работы с исключениями
  */
+@SuppressWarnings({
+        /*
+            Exception types should not be tested using "instanceof" in catch blocks
+
+            We use case with Exception and InterruptedException in catch. The  Java
+            compiler says that catch section of InterruptedException  is  never used
+            when the catch of Exception section is present, but we needed in it.
+         */
+        "squid:S1193"
+})
 public final class ExceptionUtils {
 
     @Generated

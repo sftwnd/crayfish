@@ -39,18 +39,17 @@ public class JsonZonedMapper implements IJsonZonedMapper {
     public JsonZonedMapper(boolean threadLocal) {
         if (threadLocal) {
             final ThreadLocal<Map<ZoneId, ObjectMapper>> threadLocalMap = ThreadLocal.withInitial(HashMap::new);
-            this.objectMappers = () -> threadLocalMap.get();
+            this.objectMappers = threadLocalMap::get;
         } else {
             final Map<ZoneId, ObjectMapper> map = new ConcurrentHashMap<>();
             this.objectMappers = () -> map;
         }
     }
 
-    //private ThreadLocal<Map<ZoneId, ObjectMapper>> objectMappers = ThreadLocal.withInitial(HashMap::new);
     private @Nonnull Supplier<Map<ZoneId, ObjectMapper>> objectMappers;
 
     public ObjectMapper getObjectMapper() {
-        return getObjectMapper(DEFAULT_ZONE_ID);
+        return getObjectMapper(null);
     }
 
     public ObjectMapper getObjectMapper(ZoneId zoneId) {
@@ -75,20 +74,23 @@ public class JsonZonedMapper implements IJsonZonedMapper {
         objectMappers.get().remove(zoneId == null ? DEFAULT_ZONE_ID : zoneId);
     }
 
+    @Override
     public <T>T parseObject(ZoneId zoneId, byte[] json, Class<T> clazz) throws IOException {
         return getObjectMapper(zoneId).readerFor(clazz).readValue(json);
     }
 
+    @Override
     public <T>T parseObject(ZoneId zoneId, byte[] json, TypeReference<T> type) throws IOException {
         return getObjectMapper(zoneId).readerFor(type).readValue(json);
     }
 
-    public String serializeObject(ZoneId zoneId, Object object) throws IOException {
+    public String formatObject(ZoneId zoneId, Object object) throws IOException {
         return getObjectMapper(zoneId).writeValueAsString(object);
     }
 
-    public String serializeObject(Object object) throws IOException {
-        return serializeObject(null, object);
+    @Override
+    public String formatObject(Object object) throws IOException {
+        return formatObject(null, object);
     }
 
 }

@@ -12,6 +12,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static com.github.sftwnd.crayfish.common.exception.ExceptionUtils.uncheckExceptions;
 import static com.github.sftwnd.crayfish.common.exception.ExceptionUtils.wrapUncheckedExceptions;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -59,19 +60,19 @@ class ExceptionUtilsTest {
                 () -> wrapUncheckedExceptions(ExceptionUtilsTest::runUNSOPEX, () -> { cnt.incrementAndGet(); })
                 , "UnsupportedOperationException has to be completle finished without throws in wrapUncheckedExceptions(Process,Process)"
         );
-        assertTrue(cnt.get() == 1,"wrapUncheckedExceptions(processor,processor) - second processor has to be invoked when firs one throws exception");
+        assertEquals(1, cnt.get(),"wrapUncheckedExceptions(processor,processor) - second processor has to be invoked when firs one throws exception");
         cnt.set(0);
         assertDoesNotThrow(
                 () -> wrapUncheckedExceptions(() -> { cnt.incrementAndGet(); })
                 , "UnsupportedOperationException has to be completle finished without throws in wrapUncheckedExceptions(Process)"
         );
-        assertTrue(cnt.get() == 1,"wrapUncheckedExceptions(processor) - processor has to be invoked");
+        assertEquals(1, cnt.get(),"wrapUncheckedExceptions(processor) - processor has to be invoked");
         cnt.set(0);
         assertDoesNotThrow(
                 () -> wrapUncheckedExceptions(() -> { cnt.incrementAndGet(); }, () -> { cnt.incrementAndGet(); })
                 , "UnsupportedOperationException has to be completle finished without throws in wrapUncheckedExceptions(Process)"
         );
-        assertTrue(cnt.get() == 1,"wrapUncheckedExceptions(processor,processor) - just first success processors has to be invoked");
+        assertEquals(1, cnt.get(), "wrapUncheckedExceptions(processor,processor) - just first success processors has to be invoked");
 
     }
 
@@ -92,19 +93,19 @@ class ExceptionUtilsTest {
                 () -> wrapUncheckedExceptions(ExceptionUtilsTest::callUNSOPEX, cnt::incrementAndGet)
                 , "UnsupportedOperationException has to be completle finished without throws in wrapUncheckedExceptions(Callable,Callable)"
         );
-        assertTrue(cnt.get() == 1,"wrapUncheckedExceptions(callable,callable) - second callable has to be invoked when firs one throws exception");
+        assertEquals(1, cnt.get(),"wrapUncheckedExceptions(callable,callable) - second callable has to be invoked when firs one throws exception");
         cnt.set(0);
         assertDoesNotThrow(
                 () -> wrapUncheckedExceptions(cnt::incrementAndGet)
                 , "UnsupportedOperationException has to be completle finished without throws in wrapUncheckedExceptions(Callable)"
         );
-        assertTrue(cnt.get() == 1,"wrapUncheckedExceptions(callable) - callable has to be invoked");
+        assertEquals(1, cnt.get(),"wrapUncheckedExceptions(callable) - callable has to be invoked");
         cnt.set(0);
         assertDoesNotThrow(
                 () -> wrapUncheckedExceptions(() -> { cnt.set(1); return cnt.get(); }, () -> { cnt.set(2); return cnt.get(); })
                 , "UnsupportedOperationException has to be completle finished without throws in wrapUncheckedExceptions(Callable,Callable)"
         );
-        assertTrue(cnt.get() == 1,"wrapUncheckedExceptions(callable,callable) - just first callable has to be invoked");
+        assertEquals(1, cnt.get(),"wrapUncheckedExceptions(callable,callable) - just first callable has to be invoked");
     }
 
     boolean testInterruption(Runnable runnable) throws InterruptedException {

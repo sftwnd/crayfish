@@ -5,8 +5,9 @@
 package com.github.sftwnd.crayfish.common.json.serialize;
 
 import com.github.sftwnd.crayfish.common.format.formatter.TemporalFormatter;
-import lombok.extern.slf4j.Slf4j;
 
+import javax.annotation.Nonnull;
+import javax.annotation.Nullable;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAccessor;
@@ -21,16 +22,15 @@ import java.util.Date;
  * @version 1.1.1
  * @since 1.0.0
  */
+public class JsonNoZoneTrimDateSerializer extends JsonZonedSerializer<Date> {
 
-@Slf4j
-public final class JsonNoZoneDateSerializer extends JsonZonedSerializer<Date> {
-
-    protected TemporalAccessor temporalValue(Date dateTime) {
-        return dateTime == null ? null
-             : dateTime.toInstant().truncatedTo(ChronoUnit.SECONDS);
+    @Override
+    protected @Nullable TemporalAccessor temporalValue(@Nonnull Date dateTime) {
+        return dateTime.toInstant().truncatedTo(ChronoUnit.SECONDS);
     }
 
-    protected TemporalFormatter constructSerializer() {
+    @Override
+    protected @Nonnull TemporalFormatter constructSerializer() {
         return new TemporalFormatter(DateTimeFormatter.ISO_LOCAL_DATE_TIME);
     }
 

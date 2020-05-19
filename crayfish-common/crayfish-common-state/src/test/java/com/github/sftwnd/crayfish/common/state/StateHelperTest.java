@@ -23,7 +23,7 @@ import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class StateHolderTest {
+class StateHelperTest {
 
     @Test
     void testState() {
@@ -35,15 +35,15 @@ class StateHolderTest {
         for(Integer newValue:new Integer[]{value + new Random().nextInt(10000) + 1, null}){
             Mockito.reset(getter, setter);
             when(getter.get()).thenReturn(value);
-            StateHolder<Integer> stateHolder = new StateHolder<>(newValue, getter, setter);
+            StateHelper<Integer> stateHelper = new StateHelper<>(newValue, getter, setter);
             verify(getter, atLeastOnce()).get();
             verify(setter, times(1)).accept(newValue);
         }
-        assertThrows(NullPointerException.class, () -> new StateHolder<>(null, null, setter), "State::new(setter=null) has to throws NullPointerException");
-        assertThrows(NullPointerException.class, () -> new StateHolder<>(null, getter, null), "State::new(getter=null) has to throws NullPointerException");
+        assertThrows(NullPointerException.class, () -> new StateHelper<>(null, null, setter), "State::new(setter=null) has to throws NullPointerException");
+        assertThrows(NullPointerException.class, () -> new StateHelper<>(null, getter, null), "State::new(getter=null) has to throws NullPointerException");
         AtomicReference<Integer> obj = new AtomicReference<>(value);
         Integer newValue = value + 17;
-        StateHolder<Integer> stateHolder = new StateHolder<>(newValue, obj::get, obj::set);
+        StateHelper<Integer> stateHelper = new StateHelper<>(newValue, obj::get, obj::set);
         assertEquals(newValue, obj.get(),"State::new has to change state value on call");
     }
 
@@ -56,7 +56,7 @@ class StateHolderTest {
         @SuppressWarnings("unchecked")
         Consumer<Integer> setter = mock(Consumer.class);
         when(getter.get()).thenReturn(value);
-        StateHolder<Integer> stateHolder = new StateHolder<>(newValue, getter, setter);
+        StateHelper<Integer> stateHelper = new StateHelper<>(newValue, getter, setter);
         verify(getter, atLeastOnce()).get();
         verify(setter, never()).accept(newValue);
         reset(getter, setter);
@@ -71,7 +71,7 @@ class StateHolderTest {
         @SuppressWarnings("unchecked")
         Consumer<Integer> setter = mock(Consumer.class);
         when(getter.get()).thenReturn(Integer.valueOf(value.intValue()));
-        new StateHolder<>(newValue, getter, setter);
+        new StateHelper<>(newValue, getter, setter);
         verify(getter, atLeastOnce()).get();
         verify(setter, never()).accept(newValue);
     }
@@ -82,7 +82,7 @@ class StateHolderTest {
         for (Integer value : new Integer[] {-1, new Random().nextInt(10000), null}) {
             for (Integer newValue : new Integer[] {value == null ? 0 : value + 13, null, value}) {
                 AtomicReference<Integer> obj = new AtomicReference<>(value);
-                try(AutoCloseable x = new StateHolder<>(newValue, obj::get, obj::set)) {
+                try(AutoCloseable x = new StateHelper<>(newValue, obj::get, obj::set)) {
                 }
                 assertEquals(value, obj.get(), "Value has to be restored after autoclose State");
             }
@@ -95,7 +95,7 @@ class StateHolderTest {
         for (Integer value : new Integer[] {-1, new Random().nextInt(10000), null}) {
             for (Integer newValue : new Integer[] {value == null ? 0 : value + 13, null, value}) {
                 AtomicReference<Integer> obj = new AtomicReference<>(value);
-                try(AutoCloseable x = StateHolder.construct(newValue, obj::get, obj::set)) {
+                try(AutoCloseable x = StateHelper.construct(newValue, obj::get, obj::set)) {
                 }
                 assertEquals(value, obj.get(), "Value has to be restored after autoclose State");
             }
@@ -106,8 +106,8 @@ class StateHolderTest {
     void testCall() throws Exception {
         Integer value = new Random().nextInt(10000);
         assertEquals(
-                value, StateHolder.call(null, () -> null, i -> {}, () -> value)
-               ,"StateHolder::call must return right result"
+                value, StateHelper.call(null, () -> null, i -> {}, () -> value)
+               ,"StateHelper::call must return right result"
         );
     }
 
@@ -115,19 +115,19 @@ class StateHolderTest {
     void testSupply() {
         Integer value = new Random().nextInt(10000);
         assertEquals(
-                value, StateHolder.supply(null, () -> null, i -> {}, () -> value)
-                ,"StateHolder::supply must return right result"
+                value, StateHelper.supply(null, () -> null, i -> {}, () -> value)
+                ,"StateHelper::supply must return right result"
         );
     }
 
     @Test
-    void testProcess() throws Exception {
+    void testProcess() {
         Integer value = new Random().nextInt(10000);
         AtomicInteger result = new AtomicInteger(value);
-        StateHolder.run(null, () -> null, i -> {}, () -> result.incrementAndGet());
+        StateHelper.process(null, () -> null, i -> {}, () -> result.incrementAndGet());
         assertEquals(
                 value+1, result.get()
-                ,"StateHolder::process have to increase the result value"
+                ,"StateHelper::process have to increase the result value"
         );
     }
 
@@ -135,12 +135,11 @@ class StateHolderTest {
     void testRun() {
         Integer value = new Random().nextInt(10000);
         AtomicInteger result = new AtomicInteger(value);
-        StateHolder.run(null, () -> null, i -> {}, () -> result.incrementAndGet());
+        StateHelper.run(null, () -> null, i -> {}, () -> result.incrementAndGet());
         assertEquals(
                 value+1, result.get()
-                ,"StateHolder::run have to increase the result value"
+                ,"StateHelper::run have to increase the result value"
         );
     }
-
 
 }

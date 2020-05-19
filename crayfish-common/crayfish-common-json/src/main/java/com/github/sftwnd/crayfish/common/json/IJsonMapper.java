@@ -10,7 +10,7 @@ public interface IJsonMapper {
 
     <T> T parseObject(@Nullable byte[] json, @Nonnull Class<T> clazz) throws IOException;
     <T> T parseObject(@Nullable byte[] json, @Nonnull TypeReference<T> type) throws IOException;
-    String serializeObject(@Nullable Object object) throws IOException;
+    String formatObject(@Nullable Object object) throws IOException;
 
     default <T> T parseObject(@Nullable String json, @Nonnull Class<T> clazz) throws IOException  {
         return json == null ? null : parseObject(json.getBytes(), clazz);
@@ -18,5 +18,5 @@ public interface IJsonMapper {
     default <T> T parseObject(@Nullable String json, @Nonnull TypeReference<T> type) throws IOException {
         return json == null ? null : parseObject(json.getBytes(), type);
     }
-        
+
 }

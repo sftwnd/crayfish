@@ -1,13 +1,17 @@
 package com.github.sftwnd.crayfish.common.format.formatter;
 
+import com.github.sftwnd.crayfish.common.format.TemporalBase;
 import com.github.sftwnd.crayfish.common.state.DefaultsHolder;
 import org.junit.jupiter.api.Test;
 
 import java.lang.reflect.Field;
+import java.time.Instant;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.time.temporal.TemporalAccessor;
+import java.util.Random;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.IntStream;
 
@@ -15,9 +19,13 @@ import static com.github.sftwnd.crayfish.common.format.formatter.TemporalFormatt
 import static com.github.sftwnd.crayfish.common.format.formatter.TemporalFormatter.DEFAUT_ZONE_ID;
 import static com.github.sftwnd.crayfish.common.state.DefaultsHolder.ValueLevel.CURRENT;
 import static com.github.sftwnd.crayfish.common.state.DefaultsHolder.ValueLevel.DEFAULT;
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 import static java.time.format.DateTimeFormatter.ISO_OFFSET_DATE_TIME;
 import static java.time.format.DateTimeFormatter.ISO_ZONED_DATE_TIME;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertSame;
 
 @SuppressWarnings("unchecked")
 class TemporalFormatterTest {
@@ -32,7 +40,7 @@ class TemporalFormatterTest {
     @Test
     void testTemporalFormatter() throws NoSuchFieldException, IllegalAccessException {
         TemporalFormatter formatter = new TemporalFormatter();
-        Field fieldefaults = TemporalFormatter.class.getDeclaredField("defaults");
+        Field fieldefaults = TemporalBase.class.getDeclaredField("defaults");
         fieldefaults.setAccessible(true);
         DefaultsHolder<DateTimeFormatter> defaults = (DefaultsHolder<DateTimeFormatter>)fieldefaults.get(formatter);
         AtomicReference<String> name = new AtomicReference<>("Default");
@@ -48,7 +56,7 @@ class TemporalFormatterTest {
     @Test
     void testTemporalFormatterDateTimeormatter() throws NoSuchFieldException, IllegalAccessException {
         TemporalFormatter formatter = new TemporalFormatter(dateTimeFormatter);
-        Field fieldefaults = TemporalFormatter.class.getDeclaredField("defaults");
+        Field fieldefaults = TemporalBase.class.getDeclaredField("defaults");
         fieldefaults.setAccessible(true);
         DefaultsHolder<DateTimeFormatter> defaults = (DefaultsHolder<DateTimeFormatter>)fieldefaults.get(formatter);
         assertEquals(dateTimeFormatter.format(now), formatter.format(now),
@@ -62,7 +70,7 @@ class TemporalFormatterTest {
     @Test
     void testTemporalFormatterZoneDateTime() throws NoSuchFieldException, IllegalAccessException {
         TemporalFormatter formatter = new TemporalFormatter(zoneIdNovosib);
-        Field fieldefaults = TemporalFormatter.class.getDeclaredField("defaults");
+        Field fieldefaults = TemporalBase.class.getDeclaredField("defaults");
         fieldefaults.setAccessible(true);
         DefaultsHolder<DateTimeFormatter> defaults = (DefaultsHolder<DateTimeFormatter>)fieldefaults.get(formatter);
         assertEquals(DEFAULT_FORMATTER.withZone(zoneIdNovosib).format(now),
@@ -78,7 +86,7 @@ class TemporalFormatterTest {
         DateTimeFormatter baseFormatter = dateTimeFormatter.withZone(zoneIdNovosib);
         DateTimeFormatter defaultFormatter = dateTimeFormatter.withZone(zoneIdNovosib);
         TemporalFormatter formatter = new TemporalFormatter(baseFormatter, defaultFormatter);
-        Field fieldefaults = TemporalFormatter.class.getDeclaredField("defaults");
+        Field fieldefaults = TemporalBase.class.getDeclaredField("defaults");
         fieldefaults.setAccessible(true);
         DefaultsHolder<DateTimeFormatter> defaults = (DefaultsHolder<DateTimeFormatter>)fieldefaults.get(formatter);
         assertEquals(defaultFormatter.format(now),
@@ -101,7 +109,7 @@ class TemporalFormatterTest {
     }
 
     @Test
-    public void testFormat() {
+    void testFormat() {
         DateTimeFormatter dateTimeFormatter = ISO_ZONED_DATE_TIME.withZone(zoneIdKgrad);
         TemporalAccessor temporalAccessor = ZonedDateTime.now();
         TemporalFormatter formatter = new TemporalFormatter(dateTimeFormatter);
@@ -113,7 +121,24 @@ class TemporalFormatterTest {
     }
 
     @Test
-    public void testFormatZoneId() {
+    void testFormatWithTwoParams() {
+        TemporalFormatter formatter = new TemporalFormatter(ISO_ZONED_DATE_TIME, ISO_LOCAL_DATE_TIME);
+        ZoneId zoneId = ZoneId.getAvailableZoneIds().stream().skip(5).skip(new Random().nextInt(100)).findFirst().map(ZoneId::of).orElse(ZoneId.systemDefault());
+        formatter.setDefaultZoneId(zoneId);
+        TemporalAccessor temporalAccessor = Instant.now().truncatedTo(ChronoUnit.SECONDS);
+        assertNull(
+                formatter.format(null, zoneId)
+                ,"TemporalFormatter.format(null, zoneid) has to be equals null"
+        );
+        assertEquals(
+                ISO_LOCAL_DATE_TIME.withZone(zoneId).format(temporalAccessor)
+                ,formatter.format(temporalAccessor, zoneId)
+                ,"TemporalFormatter.format(..., zoneid) has to be equals result of manual iso format without timezone & offset"
+        );
+    }
+
+    @Test
+    void testFormatZoneId() {
         DateTimeFormatter dateTimeFormatter = ISO_ZONED_DATE_TIME.withZone(zoneIdKgrad);
         TemporalAccessor temporalAccessor = ZonedDateTime.now();
         TemporalFormatter formatter = new TemporalFormatter(dateTimeFormatter);
@@ -148,7 +173,7 @@ class TemporalFormatterTest {
     }
 
     @Test
-    public void testClearDefaultZoneId() {
+    void testClearDefaultZoneId() {
         DateTimeFormatter noZoneFormatter = ISO_ZONED_DATE_TIME.withZone(DEFAUT_ZONE_ID);
         DateTimeFormatter defaultFormatter = noZoneFormatter.withZone(zoneIdNovosib);
         TemporalFormatter formatter = new TemporalFormatter(defaultFormatter);
@@ -171,7 +196,7 @@ class TemporalFormatterTest {
     }
 
     @Test
-    public void testSetDefaultZoneId() {
+    void testSetDefaultZoneId() {
         DateTimeFormatter defaultFormatter = ISO_ZONED_DATE_TIME.withZone(zoneIdNovosib);
         TemporalFormatter formatter = new TemporalFormatter(defaultFormatter);
         ZoneId newDefaultZoneId = zoneIdKgrad;
@@ -196,4 +221,5 @@ class TemporalFormatterTest {
         assertNull(TemporalFormatter.formatter(obj), "TemporalFormatter::formatter(obj) has return null after unregister formatter");
 
     }
+
 }

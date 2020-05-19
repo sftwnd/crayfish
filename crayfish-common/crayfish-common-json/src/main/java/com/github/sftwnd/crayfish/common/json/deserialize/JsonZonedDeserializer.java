@@ -4,7 +4,7 @@ import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.DeserializationContext;
 import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.github.sftwnd.crayfish.common.format.parser.TemporalParser;
-import com.github.sftwnd.crayfish.common.state.StateHolder;
+import com.github.sftwnd.crayfish.common.state.StateHelper;
 
 import java.io.IOException;
 import java.util.Optional;
@@ -16,6 +16,7 @@ public abstract class JsonZonedDeserializer<T> extends JsonDeserializer<T> {
 
     public JsonZonedDeserializer() {
         super();
+        TemporalParser.register(this.getClass(), this::constructParser);
     }
 
     public abstract TemporalParser<T> constructParser();
@@ -33,12 +34,13 @@ public abstract class JsonZonedDeserializer<T> extends JsonDeserializer<T> {
         TemporalParser<T> parser = (TemporalParser<T>) TemporalParser.register(this.getClass(), this::constructParser);
         return Optional.ofNullable(jsonParser.getText())
                 .map(txt -> Optional.ofNullable(deserializationContext.getTimeZone())
+                                    .filter(tz -> parser.getValueLevel() != CURRENT)
                                     .map(TimeZone::toZoneId)
-                                    .map(zoneId -> StateHolder.supply(
+                                    .map(zoneId -> StateHelper.supply(
                                             zoneId,
                                             parser::getZoneId,
                                             parser::setCurrentZoneId,
-                                            parser.getValueLevel() == CURRENT ? parser::setCurrentZoneId : z -> parser.clearCurrentZoneId(),
+                                            z -> parser.clearCurrentZoneId(),
                                             () -> parser.parse(txt)
                                     ))
                                     .orElseGet(() -> parser.parse(txt))
