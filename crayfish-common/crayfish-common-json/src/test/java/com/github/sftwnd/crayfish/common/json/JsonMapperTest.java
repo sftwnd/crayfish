@@ -1,92 +1,55 @@
+/*
+ * Copyright (c) 2017-20xx Andrey D. Shindarev (ashindarev@gmail.com)
+ * This program is made available under the terms of the BSD 3-Clause License.
+ */
 package com.github.sftwnd.crayfish.common.json;
 
 import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.github.sftwnd.crayfish.common.json.deserialize.JsonInstantDeserializer;
+import com.github.sftwnd.crayfish.common.json.serialize.JsonInstantSerializer;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
-import java.util.concurrent.atomic.AtomicReference;
+import java.time.Instant;
 
+import static java.time.format.DateTimeFormatter.ISO_LOCAL_DATE_TIME;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNotSame;
-import static org.junit.jupiter.api.Assertions.assertSame;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
-public class JsonMapperTest {
+class JsonMapperTest {
 
     @Test
-    void testClear() {
-        ObjectMapper om = JsonMapper.getObjectMapper();
-        JsonMapper.clear();
-        assertNotSame(om, JsonMapper.getObjectMapper(), "JsonMapper.getObjectMapper() has to be changed after clear()");
+    void testParseObjectClass() throws IOException {
+        JsonMapper mapper = new JsonMapper();
+        String date = "2020-04-05T11:21:31";
+        Instant instant = Instant.from(ISO_LOCAL_DATE_TIME.withZone(JsonMapper.DEFAULT_ZONE_ID).parse(date));
+        assertEquals(instant, mapper.parseObject("{\"instant\":\""+date+"\"}", JsonMapperDataObject.class).instant);
     }
 
     @Test
-    void testParseObject() throws IOException {
-        String msisdn = "abc";
-        long objectId = 123L;
-        final String json = "{\"msisdn\":\""+msisdn+"\", \"objectId\":"+objectId+"}";
-        JsonMapperTestObject msg = new JsonMapperTestObject(msisdn, objectId);
-        assertEquals(msg, JsonMapper.parseObject(json, JsonMapperTestObject.class), "JsonMapper.parseObject(Class) result has to be equals of POJO object");
-        assertEquals(msg, JsonMapper.parseObject(json.getBytes(), JsonMapperTestObject.class), "JsonMapper.parseObject(Class) result has to be equals of POJO object");
-    }
-
-    @Test
-    void testParseObjectTypeRef() throws IOException {
-        JsonMapperTestObjectTypeRef typeRef = new JsonMapperTestObjectTypeRef();
-        String msisdn = "abc";
-        long objectId = 123L;
-        final String json = "{\"msisdn\":\""+msisdn+"\", \"objectId\":"+objectId+"}";
-        JsonMapperTestObject msg = new JsonMapperTestObject(msisdn, objectId);
-        assertEquals(msg, JsonMapper.parseObject(json, typeRef), "JsonMapper.parseObject(TypeRef) result has to be equals of POJO object");
-        assertEquals(msg, JsonMapper.parseObject(json.getBytes(), typeRef), "JsonMapper.parseObject(TypeRef) result has to be equals of POJO object");
-
-    }
-
-    @Test
-    void testSerializeObject() throws IOException {
-        String msisdn = "def";
-        long objectId = 456L;
-        final String json = "{\"msisdn\":\""+msisdn+"\", \"objectId\":"+objectId+"}";
-        JsonMapperTestObject obj = new JsonMapperTestObject(msisdn, objectId);
-        String msg = JsonMapper.serializeObject(obj);
-        assertEquals(obj, JsonMapper.parseObject(msg, JsonMapperTestObject.class), "JsonMapper.parseObject(serializedObject(POJO)) result has to be equals of original POJO object");
-    }
-    
-    @Test
-    void testGetObjectMapper() throws InterruptedException {
-        ObjectMapper mapper = JsonMapper.getObjectMapper();
-        assertNotNull(JsonMapper.getObjectMapper(), "JsonMapper.getObjectMapper result has to be not null");
-        assertSame(mapper, JsonMapper.getObjectMapper(), "JsonMapper.getObjectMapper result in one thread has to be the same");
-        AtomicReference<ObjectMapper> ref = new AtomicReference<>();
-        synchronized (ref) {
-            new Thread(() -> {
-                synchronized (ref) {
-                    ref.set(JsonMapper.getObjectMapper());
-                    ref.notify();
-                }
-            }).start();
-            ref.wait(100);
-        }
-        assertNotNull(ref.get(), "JsonMapper.getObjectMapper result in other thread has to be not null");
-        assertNotSame(mapper, ref.get(), "JsonMapper.getObjectMapper result in other thread has not to be the same");
+    @SuppressWarnings("unchecked")
+    void testParseObjectTypeReference() throws IOException {
+        JsonMapper mapper = new JsonMapper();
+        String date = "2020-03-05T11:22:33";
+        TypeReference<JsonMapperDataObject> typeReference = mock(TypeReference.class);
+        when(typeReference.getType()).thenReturn(JsonMapperDataObject.class);
+        Instant instant = Instant.from(ISO_LOCAL_DATE_TIME.withZone(JsonMapper.DEFAULT_ZONE_ID).parse(date));
+        assertEquals(instant, mapper.parseObject("{\"instant\":\""+date+"\"}", typeReference).instant);
     }
 
     @Data
     @AllArgsConstructor
     @NoArgsConstructor
-    static class JsonMapperTestObject {
-        private String msisdn;
-        private Long objectId;
-    }
-
-    static class JsonMapperTestObjectTypeRef extends TypeReference<JsonMapperTestObject> {
-        public JsonMapperTestObjectTypeRef() {
-            super();
-        }
+    static class JsonMapperDataObject {
+        @JsonDeserialize(using = JsonInstantDeserializer.class)
+        @JsonSerialize(using = JsonInstantSerializer.class)
+        private Instant instant;
     }
 
 }

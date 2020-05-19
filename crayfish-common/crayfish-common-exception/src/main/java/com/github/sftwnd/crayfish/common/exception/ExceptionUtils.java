@@ -1,13 +1,31 @@
+/*
+ * Copyright (c) 2017-20xx Andrey D. Shindarev (ashindarev@gmail.com)
+ * This program is made available under the terms of the BSD 3-Clause License.
+ */
 package com.github.sftwnd.crayfish.common.exception;
 
+import lombok.Generated;
 import lombok.SneakyThrows;
+
+import javax.annotation.Nonnull;
 import java.util.concurrent.Callable;
 
 /**
  * Утилиты для работы с исключениями
  */
+@SuppressWarnings({
+        /*
+            Exception types should not be tested using "instanceof" in catch blocks
+
+            We use case with Exception and InterruptedException in catch. The  Java
+            compiler says that catch section of InterruptedException  is  never used
+            when the catch of Exception section is present, but we needed in it.
+         */
+        "squid:S1193"
+})
 public final class ExceptionUtils {
 
+    @Generated
     private ExceptionUtils() {
         super();
     }
@@ -17,18 +35,40 @@ public final class ExceptionUtils {
         try {
             return callable.call();
         } catch (Exception ex) {
-            // Next line is covered by the JUnit. JaCoCo result is wrong
             return uncheckExceptions(ex);
         }
     }
 
-    @SneakyThrows
-    public static void wrapUncheckedExceptions(Process<? extends Exception> process) {
+    public static <T> T wrapUncheckedExceptions(@Nonnull Callable<T> callable, @Nonnull Callable<T> onThrow) {
         try {
-            process.work();
+            return callable.call();
         } catch (Exception ex) {
-            // Next line is covered by the JUnit. JaCoCo result is wrong
+            if (ex instanceof InterruptedException) {
+                return uncheckExceptions(ex);
+            } else {
+                return wrapUncheckedExceptions(onThrow);
+            }
+        }
+    }
+
+    @SneakyThrows
+    public static void wrapUncheckedExceptions(@Nonnull Processor<? extends Exception> processor) {
+        try {
+            processor.process();
+        } catch (Exception ex) {
             uncheckExceptions(ex);
+        }
+    }
+
+    public static void wrapUncheckedExceptions(@Nonnull Processor<? extends Exception> processor, @Nonnull Processor<? extends Exception> onThrow) {
+        try {
+            processor.process();
+        } catch (Exception ex) {
+            if (ex instanceof InterruptedException) {
+                uncheckExceptions(ex);
+            } else {
+                wrapUncheckedExceptions(onThrow);
+            }
         }
     }
 

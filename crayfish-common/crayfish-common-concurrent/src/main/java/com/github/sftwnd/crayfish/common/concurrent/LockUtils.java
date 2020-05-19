@@ -1,6 +1,10 @@
+/*
+ * Copyright (c) 2017-20xx Andrey D. Shindarev (ashindarev@gmail.com)
+ * This program is made available under the terms of the BSD 3-Clause License.
+ */
 package com.github.sftwnd.crayfish.common.concurrent;
 
-import com.github.sftwnd.crayfish.common.exception.Process;
+import com.github.sftwnd.crayfish.common.exception.Processor;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -149,54 +153,54 @@ public final class LockUtils {
                                        long timeout,
                                        @Nullable TimeUnit timeUnit,
                                        @Nullable final Supplier<RuntimeException> onErrorThrow,
-                                       Process<?> process) throws LockAquireTimeoutException, Exception {
+                                       Processor<?> processor) throws LockAquireTimeoutException, Exception {
         try (AutoCloseable x = acquireLock(lock, timeout, timeUnit, onErrorThrow)) {
-            process.work();
+            processor.process();
         }
     }
 
     public static void runWithLock(final Lock lock,
                                        long timeout,
                                        @Nullable TimeUnit timeUnit,
-                                       Process<?> process) throws LockAquireTimeoutException, Exception {
-        runWithLock(lock, timeout, timeUnit, null, process);
+                                       Processor<?> processor) throws LockAquireTimeoutException, Exception {
+        runWithLock(lock, timeout, timeUnit, null, processor);
     }
 
     public static void runWithLock(final Lock lock,
                                        @Nullable final Supplier<RuntimeException> onErrorThrow,
-                                       Process<?> process) throws LockAquireTimeoutException, Exception {
-        runWithLock(lock, 0L, null, onErrorThrow, process);
+                                       Processor<?> processor) throws LockAquireTimeoutException, Exception {
+        runWithLock(lock, 0L, null, onErrorThrow, processor);
     }
 
     public static void runWithLock(final Lock lock,
-                                       Process<?> process) throws LockAquireTimeoutException, Exception {
-        runWithLock(lock, null, process);
+                                       Processor<?> processor) throws LockAquireTimeoutException, Exception {
+        runWithLock(lock, null, processor);
     }
 
     public static void sneakyRunWithLock(final Lock lock,
                                              long timeout,
                                              @Nullable TimeUnit timeUnit,
                                              @Nullable final Supplier<RuntimeException> onErrorThrow,
-                                             Process<?> process) throws LockAquireTimeoutException {
-        wrapUncheckedExceptions(() -> runWithLock(lock, timeout, timeUnit, onErrorThrow, process));
+                                             Processor<?> processor) throws LockAquireTimeoutException {
+        wrapUncheckedExceptions(() -> runWithLock(lock, timeout, timeUnit, onErrorThrow, processor));
     }
 
     public static void sneakyRunWithLock(final Lock lock,
                                        long timeout,
                                        @Nullable TimeUnit timeUnit,
-                                       Process<?> process) throws LockAquireTimeoutException {
-        sneakyRunWithLock(lock, timeout, timeUnit, null, process);
+                                       Processor<?> processor) throws LockAquireTimeoutException {
+        sneakyRunWithLock(lock, timeout, timeUnit, null, processor);
     }
 
     public static void sneakyRunWithLock(final Lock lock,
                                        @Nullable final Supplier<RuntimeException> onErrorThrow,
-                                       Process<?> process) throws LockAquireTimeoutException {
-        sneakyRunWithLock(lock, 0L, null, onErrorThrow, process);
+                                       Processor<?> processor) throws LockAquireTimeoutException {
+        sneakyRunWithLock(lock, 0L, null, onErrorThrow, processor);
     }
 
     public static void sneakyRunWithLock(final Lock lock,
-                                       Process<?> process) throws LockAquireTimeoutException {
-        sneakyRunWithLock(lock, null, process);
+                                       Processor<?> processor) throws LockAquireTimeoutException {
+        sneakyRunWithLock(lock, null, processor);
     }
 
 }
