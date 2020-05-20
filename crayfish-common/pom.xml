@@ -19,6 +19,7 @@
         <module>crayfish-common-exception</module>
         <module>crayfish-common-format</module>
         <module>crayfish-common-json</module>
+        <module>crayfish-common-resource</module>
         <module>crayfish-common-state</module>
     </modules>
 
