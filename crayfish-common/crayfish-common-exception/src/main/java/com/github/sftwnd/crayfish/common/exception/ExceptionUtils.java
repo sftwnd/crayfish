@@ -32,6 +32,11 @@ public final class ExceptionUtils {
     }
 
     @SneakyThrows
+    @SuppressWarnings({
+            // "InterruptedException" should not be ignored
+            // we have reinterrupt InterruptionException, but in the hidden form
+            "squid:S2142"
+    })
     public static <T> T wrapUncheckedExceptions(Callable<T> callable) {
         try {
             return callable.call();
@@ -41,6 +46,11 @@ public final class ExceptionUtils {
     }
 
     @SneakyThrows
+    @SuppressWarnings({
+            // "InterruptedException" should not be ignored
+            // we have reinterrupt InterruptionException, but in the hidden form
+            "squid:S2142"
+    })
     public static <T> T wrapUncheckedExceptions(@Nonnull Callable<T> callable, @Nonnull Callable<T> onThrow) {
         try {
             return callable.call();
