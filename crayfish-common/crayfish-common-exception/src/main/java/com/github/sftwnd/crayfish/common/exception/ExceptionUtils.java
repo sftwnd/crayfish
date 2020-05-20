@@ -8,6 +8,7 @@ import lombok.Generated;
 import lombok.SneakyThrows;
 
 import javax.annotation.Nonnull;
+import java.util.Optional;
 import java.util.concurrent.Callable;
 
 /**
@@ -31,23 +32,34 @@ public final class ExceptionUtils {
     }
 
     @SneakyThrows
+    @SuppressWarnings({
+            // "InterruptedException" should not be ignored
+            // we have reinterrupt InterruptionException, but in the hidden form
+            "squid:S2142"
+    })
     public static <T> T wrapUncheckedExceptions(Callable<T> callable) {
         try {
             return callable.call();
-        } catch (Exception ex) {
-            return uncheckExceptions(ex);
+        } catch (InterruptedException ex) {
+            throw checkInterruption(ex);
         }
     }
 
+    @SneakyThrows
+    @SuppressWarnings({
+            // "InterruptedException" should not be ignored
+            // we have reinterrupt InterruptionException, but in the hidden form
+            "squid:S2142",
+            //Throwable and Error should not be caught
+            "squid:S1181"
+    })
     public static <T> T wrapUncheckedExceptions(@Nonnull Callable<T> callable, @Nonnull Callable<T> onThrow) {
         try {
             return callable.call();
-        } catch (Exception ex) {
-            if (ex instanceof InterruptedException) {
-                return uncheckExceptions(ex);
-            } else {
-                return wrapUncheckedExceptions(onThrow);
-            }
+        } catch (InterruptedException ex) {
+            throw checkInterruption(ex);
+        } catch (Throwable throwable) {
+            return onThrow.call();
         }
     }
 
@@ -56,28 +68,38 @@ public final class ExceptionUtils {
         try {
             processor.process();
         } catch (Exception ex) {
-            uncheckExceptions(ex);
+            throw checkInterruption(ex);
         }
     }
 
+    @SneakyThrows
+    @SuppressWarnings({
+            //Throwable and Error should not be caught
+            "squid:S1181"
+    })
     public static void wrapUncheckedExceptions(@Nonnull Processor<? extends Exception> processor, @Nonnull Processor<? extends Exception> onThrow) {
         try {
             processor.process();
-        } catch (Exception ex) {
-            if (ex instanceof InterruptedException) {
-                uncheckExceptions(ex);
-            } else {
-                wrapUncheckedExceptions(onThrow);
-            }
+        } catch (Throwable throwable) {
+            Optional.of(throwable)
+                    .filter(InterruptedException.class::isInstance)
+                    .ifPresentOrElse(
+                            ExceptionUtils::uncheckExceptions,
+                            () -> wrapUncheckedExceptions(onThrow::process)
+                    );
         }
     }
 
     @SneakyThrows
     public static final <R>R uncheckExceptions(Throwable throwable) {
+        throw checkInterruption(throwable);
+    }
+
+    public static final Throwable checkInterruption(Throwable throwable){
         if (throwable instanceof InterruptedException) {
             Thread.currentThread().interrupt();
         }
-        throw throwable;
+        return throwable;
     }
 
 }
