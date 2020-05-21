@@ -38,7 +38,8 @@
         <url>https://github.com.github.sftwnd/crayfish</url>
         <connection>scm:git:https://github.com/sftwnd/crayfish.git</connection>
         <developerConnection>scm:git:ssh@github.com:sftwnd/crayfish.git</developerConnection>
-    </scm>
+      <tag>crayfish-1.1.0</tag>
+  </scm>
 
     <properties>
         <java-version>11</java-version>
