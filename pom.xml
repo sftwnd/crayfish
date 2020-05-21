@@ -35,7 +35,7 @@
     </developers>
 
     <scm>
-        <url>https://github.com.github.sftwnd/crayfish</url>
+        <url>https://github.com/sftwnd/crayfish</url>
         <connection>scm:git:https://github.com/sftwnd/crayfish.git</connection>
         <developerConnection>scm:git:ssh@github.com:sftwnd/crayfish.git</developerConnection>
       <tag>crayfish-1.1.0</tag>
