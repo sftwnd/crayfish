@@ -20,11 +20,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.function.Supplier;
 
 /**
- * <p>Json Mapper with ablity to control thread and JVM time zone</p>
+ * Json Mapper with ablity to control thread and JVM time zone
  *
  * Created 2016-02-02
  *
- * @author <ul><li>Andrey D. Shindarev (ashindarev@gmail.com)</li><li>...</li>...</ul>
+ * @author Andrey D. Shindarev (ashindarev@gmail.com)
  * @version 1.1.1
  * @since 1.0.0
  */

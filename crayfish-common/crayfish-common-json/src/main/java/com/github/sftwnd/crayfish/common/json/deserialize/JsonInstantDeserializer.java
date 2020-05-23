@@ -10,11 +10,11 @@ import com.github.sftwnd.crayfish.common.format.parser.InstantParser;
 import java.time.Instant;
 
 /**
- * <p>Json Instant Deserializer using {@link InstantParser} with ability to control timeZone</p>
+ * Json Instant Deserializer using {@link InstantParser} with ability to control timeZone
  *
  * Created 2016-02-08
  *
- * @author <ul><li>Andrey D. Shindarev (ashindarev@gmail.com)</li><li>...</li>...</ul>
+ * @author Andrey D. Shindarev (ashindarev@gmail.com)
  * @version 1.1.1
  * @since 1.0.0
  */

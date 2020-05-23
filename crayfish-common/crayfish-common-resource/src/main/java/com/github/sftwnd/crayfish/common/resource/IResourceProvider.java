@@ -6,7 +6,7 @@ package com.github.sftwnd.crayfish.common.resource;
  *  Описывает провайдер соединения, который оформляет получение ресурса
  *
  *  @author Andrey D. Shindarev
- *  @ 2019.09.25
+ *  2019.09.25
  */
 public interface IResourceProvider<R> {
 

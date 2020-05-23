@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
  *  Реализует провайдер соединения, который предоставляет ресурс по запросу
  *
  *  @author Andrey D. Shindarev
- *  @ 2019.09.25
+ *  2019.09.25
  */
 @Slf4j
 @SuppressWarnings({

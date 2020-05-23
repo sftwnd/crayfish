@@ -22,7 +22,7 @@ public class DefaultsHolder<T> {
      */
     public enum ValueLevel {
         /**
-         * Core value (unchangable value in the case of no default & thread values - same for all threads)
+         * Core value (unchangable value in the case of no default and thread values - same for all threads)
          */
         SYSTEM,
         /**

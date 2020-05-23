@@ -12,11 +12,11 @@ import java.time.temporal.TemporalAccessor;
 import java.util.Date;
 
 /**
- * <p>Json ZoneDateTime Serializer using {@link TemporalFormatter}</p>
+ * Json ZoneDateTime Serializer using {@link TemporalFormatter}
  *
  * Created 2016-02-08
  *
- * @author <ul><li>Andrey D. Shindarev (ashindarev@gmail.com)</li><li>...</li>...</ul>
+ * @author Andrey D. Shindarev (ashindarev@gmail.com)
  * @version 1.1.1
  * @since 1.0.0
  */

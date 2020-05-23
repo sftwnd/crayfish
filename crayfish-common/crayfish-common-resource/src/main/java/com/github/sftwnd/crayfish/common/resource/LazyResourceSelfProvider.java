@@ -11,7 +11,7 @@ import java.util.function.Consumer;
  *  Реализует провайдер, который сам уже является ресурсом
  *
  *  @author Andrey D. Shindarev
- *  @ 2019.09.25
+ *  2019.09.25
  */
 @Generated
 public class LazyResourceSelfProvider<R> extends LazyResourceProvider<R, R> {

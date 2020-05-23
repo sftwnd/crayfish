@@ -10,11 +10,11 @@ import com.github.sftwnd.crayfish.common.format.parser.ZonedDateTimeParser;
 import java.time.ZonedDateTime;
 
 /**
- * <p>Json ZonedDateTime Deserializer using {@link ZonedDateTimeParser} with ability to control timeZone</p>
+ * Json ZonedDateTime Deserializer using {@link ZonedDateTimeParser} with ability to control timeZone
  *
  * Created 2016-02-08
  *
- * @author <ul><li>Andrey D. Shindarev (ashindarev@gmail.com)</li><li>...</li>...</ul>
+ * @author Andrey D. Shindarev (ashindarev@gmail.com)
  * @version 1.1.1
  * @since 1.0.0
  */

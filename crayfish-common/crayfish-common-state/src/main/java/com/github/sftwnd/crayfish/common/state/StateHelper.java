@@ -18,9 +18,9 @@ import static com.github.sftwnd.crayfish.common.exception.ExceptionUtils.wrapUnc
 import static java.lang.Boolean.FALSE;
 
 /**
- * <p>Class helper to temporaty change state of object</p>
+ * Class helper to temporaty change state of object
  *
- * @author <ul><li>Andrey D. Shindarev (ashindarev@gmail.com)</li><li>...</li>...</ul>
+ * @author Andrey D. Shindarev (ashindarev@gmail.com)
  * @param <S> changed state class or holder
  * @version 1.1.1
  * @since 1.1.1
@@ -44,7 +44,7 @@ public final class StateHelper<S> implements AutoCloseable {
 
     /**
      * Restore the saved state at the moment of current object creation if needed
-     * P.S.> works only once
+     * P.S. works only once
      */
     public void close() {
         Optional.ofNullable(this.stateRestorer).ifPresent(restorer -> {

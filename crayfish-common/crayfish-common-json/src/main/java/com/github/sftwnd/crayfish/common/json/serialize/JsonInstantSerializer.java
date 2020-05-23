@@ -7,11 +7,11 @@ package com.github.sftwnd.crayfish.common.json.serialize;
 import java.time.Instant;
 
 /**
- * <p>Json Instant Serializer</p>
+ * Json Instant Serializer
  *
  * Created 2016-02-08
  *
- * @author <ul><li>Andrey D. Shindarev (ashindarev@gmail.com)</li><li>...</li>...</ul>
+ * @author Andrey D. Shindarev (ashindarev@gmail.com)
  * @version 1.1.1
  * @since 1.0.0
  */
