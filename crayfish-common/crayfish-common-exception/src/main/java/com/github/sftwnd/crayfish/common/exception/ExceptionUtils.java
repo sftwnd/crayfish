@@ -106,12 +106,8 @@ public final class ExceptionUtils {
         try {
             processor.process();
         } catch (Throwable throwable) {
-            Optional.of(throwable)
-                    .filter(InterruptedException.class::isInstance)
-                    .ifPresentOrElse(
-                            ExceptionUtils::uncheckExceptions,
-                            () -> wrapUncheckedExceptions(onThrow::process)
-                    );
+            Optional.of(throwable).filter(InterruptedException.class::isInstance).ifPresent(ExceptionUtils::uncheckExceptions);
+            wrapUncheckedExceptions(onThrow::process);
         }
     }
 

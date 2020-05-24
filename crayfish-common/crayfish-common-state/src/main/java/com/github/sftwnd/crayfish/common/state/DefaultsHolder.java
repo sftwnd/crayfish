@@ -94,7 +94,12 @@ public class DefaultsHolder<T> {
     // Current
 
     public DefaultsHolder<T> setCurrentValue(Supplier<T> value) {
-        Optional.ofNullable(value).ifPresentOrElse(currentValue::set, currentValue::remove);
+        // In Java 11 change to Optional and ifPresentOrElse
+        if (value == null) {
+            currentValue.remove();
+        } else {
+            currentValue.set(value);
+        }
         return this;
     }
 

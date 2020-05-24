@@ -148,7 +148,8 @@ public class LazyResourceProvider<P,R> implements ICloseableResourceProvider<R> 
 
     public Set<Class<? extends Throwable>> getAbsorbedThrows() {
         synchronized (absorbedThrows) {
-            return absorbedThrows.stream().collect(Collectors.toUnmodifiableSet());
+            // In Java 11 change to .toUnmodifiableSet
+            return absorbedThrows.stream().collect(Collectors.toSet());
         }
     }
     
@@ -221,7 +222,8 @@ public class LazyResourceProvider<P,R> implements ICloseableResourceProvider<R> 
     }
 
     private void processError(String text, @Nullable Throwable throwable) {
-        String str = Optional.ofNullable(throwable).map(Throwable::getLocalizedMessage).filter(s -> !s.isBlank()).orElse("");
+        // In Java 11 change to isBlank
+        String str = Optional.ofNullable(throwable).map(Throwable::getLocalizedMessage).filter(s -> !s.trim().isEmpty()).orElse("");
         if (throwable == null) {
             logger.warn(text, str);
         } else {

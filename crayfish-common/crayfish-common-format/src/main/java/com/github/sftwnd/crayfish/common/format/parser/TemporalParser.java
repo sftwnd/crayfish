@@ -53,7 +53,7 @@ public class TemporalParser<T> extends TemporalBase {
     private @Nullable T parse(@Nullable String text, @Nonnull Function<TemporalAccessor, T> converter) {
         Objects.requireNonNull(converter, "TemporalParser::parse(text, converter) - converter is null");
         return Optional.ofNullable(text)
-                .filter(txt -> !txt.isBlank())
+                .filter(txt -> !txt.trim().isEmpty())
                 .map(str -> ExceptionUtils.wrapUncheckedExceptions(
                                 () -> coreFormatter.parse(text),
                                 () -> defaults.getCurrentValue().parse(text)
