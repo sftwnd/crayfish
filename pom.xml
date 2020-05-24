@@ -39,7 +39,7 @@
     <scm>
         <url>https://github.com/sftwnd/crayfish</url>
         <connection>scm:git:https://github.com/sftwnd/crayfish.git</connection>
-        <developerConnection>scm:git:ssh@github.com:sftwnd/crayfish.git</developerConnection>
+        <developerConnection>scm:git:git@github.com:sftwnd/crayfish.git</developerConnection>
     </scm>
 
     <properties>
