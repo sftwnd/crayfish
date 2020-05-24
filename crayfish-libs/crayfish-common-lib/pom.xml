@@ -1,22 +1,31 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
-        <groupId>com.github.sftwnd.crayfish</groupId>
-        <artifactId>crayfish-libs</artifactId>
+        <groupId>com.github.sftwnd.crayfish.common</groupId>
+        <artifactId>crayfish-common</artifactId>
+        <relativePath>../../crayfish-common</relativePath>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>crayfish-common-lib</artifactId>
     <groupId>com.github.sftwnd.crayfish.common</groupId>
+    <artifactId>crayfish-common-lib</artifactId>
     <name>CrayFish :: LIBS :: COMMON-LIB</name>
+    <version>0.0.1-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <!-- -->
     <dependencies>
         <dependency>
             <groupId>com.github.sftwnd.crayfish.common</groupId>
             <artifactId>crayfish-common-concurrent</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.sftwnd.crayfish.common</groupId>
+            <artifactId>crayfish-common-crc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.sftwnd.crayfish.common</groupId>
+            <artifactId>crayfish-common-exception</artifactId>
         </dependency>
         <dependency>
             <groupId>com.github.sftwnd.crayfish.common</groupId>
@@ -25,6 +34,14 @@
         <dependency>
             <groupId>com.github.sftwnd.crayfish.common</groupId>
             <artifactId>crayfish-common-json</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.sftwnd.crayfish.common</groupId>
+            <artifactId>crayfish-common-resource</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.github.sftwnd.crayfish.common</groupId>
+            <artifactId>crayfish-common-state</artifactId>
         </dependency>
     </dependencies>
     <!-- -->
@@ -52,6 +69,13 @@
                             <goal>shade</goal>
                         </goals>
                         <configuration>
+                            <createSourcesJar>true</createSourcesJar>
+                            <createDependencyReducedPom>true</createDependencyReducedPom>
+                            <dependencyReducedPomLocation>
+                                ${project.build.directory}/dependency-reduced-pom.xml
+                            </dependencyReducedPomLocation>
+                            <shadedArtifactAttached>false</shadedArtifactAttached>
+                            <shadeSourcesContent>true</shadeSourcesContent>
                             <filters>
                                 <filter>
                                     <artifact>*:*</artifact>
@@ -62,10 +86,37 @@
                             </filters>
                             <artifactSet>
                                 <includes>
-                                    <include>com.github.sftwnd.crayfish.common:crayfish-common-*</include>
+                                    <include>com.github.sftwnd.crayfish.common:crayfish-common-concurrent</include>
+                                    <include>com.github.sftwnd.crayfish.common:crayfish-common-crc</include>
+                                    <include>com.github.sftwnd.crayfish.common:crayfish-common-exception</include>
+                                    <include>com.github.sftwnd.crayfish.common:crayfish-common-format</include>
+                                    <include>com.github.sftwnd.crayfish.common:crayfish-common-json</include>
+                                    <include>com.github.sftwnd.crayfish.common:crayfish-common-resource</include>
+                                    <include>com.github.sftwnd.crayfish.common:crayfish-common-state</include>
                                 </includes>
+                                <excludes>
+                                    <exclude>com.github.sftwnd.crayfish.libs:crayfish-common-lib</exclude>
+                                </excludes>
                             </artifactSet>
                         </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven-javadoc-plugin.version}</version>
+                <configuration>
+                    <includeDependencySources>true</includeDependencySources>
+                    <dependencySourceIncludes>com.github.sftwnd.crayfish.common:crayfish-common-*</dependencySourceIncludes>
+                    <detectOfflineLinks>false</detectOfflineLinks>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
                     </execution>
                 </executions>
             </plugin>

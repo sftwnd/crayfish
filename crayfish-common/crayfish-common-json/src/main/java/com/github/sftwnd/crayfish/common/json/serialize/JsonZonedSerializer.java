@@ -29,7 +29,7 @@ public class JsonZonedSerializer<T> extends JsonSerializer<T> {
      * @param dateTime Serialized data with timezone
      * @param gen Json Generator
      * @param provider Serializer Provider
-     * @throws IOException
+     * @throws IOException throwed exception
      */
     @Override
     public void serialize(T dateTime, JsonGenerator gen, SerializerProvider provider) throws IOException {

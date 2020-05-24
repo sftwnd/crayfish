@@ -22,11 +22,12 @@ public abstract class JsonZonedDeserializer<T> extends JsonDeserializer<T> {
     public abstract TemporalParser<T> constructParser();
 
     /**
-     * Deserialize T from String
-     * @param jsonParser
-     * @param deserializationContext
-     * @return T
-     * @throws IOException
+     * Deserialize JSON content into the value type this serializer handles.
+     * Returned instance is to be constructed by method.
+     * @param jsonParser Parsed used for reading JSON content
+     * @param deserializationContext Context that can be used to access information about this deserialization activity.
+     * @return Deserialized value
+     * @throws IOException generated exception
      */
     @Override
     public T deserialize(JsonParser jsonParser, DeserializationContext deserializationContext) throws IOException {
