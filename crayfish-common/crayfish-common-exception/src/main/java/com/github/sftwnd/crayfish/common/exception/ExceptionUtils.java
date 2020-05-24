@@ -108,9 +108,12 @@ public final class ExceptionUtils {
         } catch (Throwable throwable) {
             Optional.of(throwable)
                     .filter(InterruptedException.class::isInstance)
-                    .ifPresentOrElse(
-                            ExceptionUtils::uncheckExceptions,
-                            () -> wrapUncheckedExceptions(onThrow::process)
+                    // In Java 11 change to ifPresentOrElse
+                    .map(ExceptionUtils::uncheckExceptions)
+                    .orElseGet(() -> {
+                                wrapUncheckedExceptions(onThrow::process);
+                                return null;
+                            }
                     );
         }
     }

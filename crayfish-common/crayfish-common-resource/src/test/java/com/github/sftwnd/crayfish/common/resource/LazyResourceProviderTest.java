@@ -6,11 +6,14 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.BiConsumer;
+import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 import static com.github.sftwnd.crayfish.common.exception.ExceptionUtils.uncheckExceptions;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
@@ -50,7 +53,7 @@ class LazyResourceProviderTest {
     @SuppressWarnings("unchecked")
     void testLazyResourceProviderWithThrowSet() throws IOException {
         lazy = new LazyResourceProvider<>(
-                constructor, provider, Set.of(IOException.class)
+                constructor, provider, Stream.of(IOException.class).collect(Collectors.toSet())
         );
         when(constructor.construct()).thenReturn(obj);
         when(provider.provide(any())).thenThrow(new IOException());
@@ -58,7 +61,7 @@ class LazyResourceProviderTest {
         lazy.clearAbsorbedThrows();
         assertThrows(IOException.class, () -> lazy.provide(), "Undeclared throw has to be raised");
         LazyResourceProvider<Object, Object> lazy1 = new LazyResourceProvider<>(
-                constructor, provider, Set.of()
+                constructor, provider, Collections.emptySet()
         );
         assertEquals(0, Optional.ofNullable(lazy1.getAbsorbedThrows()).map(Set::size).orElse(0), "LazyResourceProvider::new with empty throws set returns set with 0 elements");
     }
