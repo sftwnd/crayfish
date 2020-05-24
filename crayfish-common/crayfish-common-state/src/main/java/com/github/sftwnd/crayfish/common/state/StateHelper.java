@@ -21,10 +21,8 @@ import static java.lang.Boolean.FALSE;
  * Class helper to temporaty change state of object
  *
  * @author Andrey D. Shindarev (ashindarev@gmail.com)
+ * @since 0.0.1
  * @param <S> changed state class or holder
- * @version 1.1.1
- * @since 1.1.1
- *
  */
 public final class StateHelper<S> implements AutoCloseable {
 

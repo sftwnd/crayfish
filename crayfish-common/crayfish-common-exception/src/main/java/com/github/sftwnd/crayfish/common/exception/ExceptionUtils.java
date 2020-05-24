@@ -31,6 +31,13 @@ public final class ExceptionUtils {
         super();
     }
 
+    /**
+     * Call the callable, in the case of Exception rethrow it sneaky
+     * If callable throws InterruptedException - rethrow it without onThrow call
+     * @param callable base processor
+     * @param <T> the type of the result
+     * @return result of call operation
+     */
     @SneakyThrows
     @SuppressWarnings({
             // "InterruptedException" should not be ignored
@@ -45,6 +52,15 @@ public final class ExceptionUtils {
         }
     }
 
+    /**
+     * Call the callable, in the case of Exception try to call onThrow
+     * If callable throws InterruptedException - rethrow it without onThrow call
+     *
+     * @param callable base processor
+     * @param onThrow processor for the cas of throw on first call
+     * @param <T> the type of the result
+     * @return result of call operation
+     */
     @SneakyThrows
     @SuppressWarnings({
             // "InterruptedException" should not be ignored
@@ -63,6 +79,10 @@ public final class ExceptionUtils {
         }
     }
 
+    /**
+     * Process the processor, in the case of Exception rethrow it sneaky
+     * @param processor base processor
+     */
     @SneakyThrows
     public static void wrapUncheckedExceptions(@Nonnull Processor<? extends Exception> processor) {
         try {
@@ -72,7 +92,12 @@ public final class ExceptionUtils {
         }
     }
 
-    @SneakyThrows
+    /**
+     * Process the processor, in the case of Exception try to process onThrow
+     * If processor throws InterruptedException - rethrow it without onThrow call
+     * @param processor base processor
+     * @param onThrow processor for the cas of throw on first call
+     */
     @SuppressWarnings({
             //Throwable and Error should not be caught
             "squid:S1181"
@@ -90,11 +115,23 @@ public final class ExceptionUtils {
         }
     }
 
+    /**
+     * Throw exception without definition in throw section (just sneak it)
+     * @param throwable Throwable
+     * @param <R> the type of the result
+     * @return nothing - just throw defined Throwable
+     */
     @SneakyThrows
-    public static final <R>R uncheckExceptions(Throwable throwable) {
+    public static final <R> R uncheckExceptions(Throwable throwable) {
         throw checkInterruption(throwable);
     }
 
+    /**
+     * If Throwable is InterruptedException then interrup current thread
+     *
+     * @param throwable Throwable
+     * @return same as throwable parameter
+     */
     public static final Throwable checkInterruption(Throwable throwable){
         if (throwable instanceof InterruptedException) {
             Thread.currentThread().interrupt();

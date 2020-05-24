@@ -23,10 +23,8 @@ import java.util.function.Supplier;
  * Json Mapper with ablity to control thread and JVM time zone
  *
  * Created 2016-02-02
- *
- * @author Andrey D. Shindarev (ashindarev@gmail.com)
- * @version 1.1.1
- * @since 1.0.0
+ * @since 0.0.1
+ * @author Andrey D. Shindarev
  */
 public class JsonZonedMapper implements IJsonZonedMapper {
 

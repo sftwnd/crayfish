@@ -10,10 +10,8 @@ import java.time.ZonedDateTime;
  * Json ZoneDateTime Serializer
  *
  * Created 2016-02-08
- *
- * @author Andrey D. Shindarev (ashindarev@gmail.com)
- * @version 1.1.1
- * @since 1.0.0
+ * @since 0.0.1
+ * @author Andrey D. Shindarev
  */
 public class JsonZonedDateTimeSerializer extends JsonZonedSerializer<ZonedDateTime> {
 
