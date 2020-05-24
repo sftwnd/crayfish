@@ -8,6 +8,9 @@
     <packaging>pom</packaging>
 
     <name>CrayFish</name>
+    <description>
+        A set of libraries to simplify the creation of code covering the most common primitives
+    </description>
     <url>https://github.com/sftwnd/crayfish</url>
 
     <licenses>
