@@ -51,9 +51,6 @@ public final class StateHelper<S> implements AutoCloseable {
         });
     }
 
-    /**
-     * Create AutoClosable implementation of State cass usage
-     */
     public static <S> AutoCloseable construct(@Nullable S state, @Nonnull Supplier<S> stateGetter, @Nonnull Consumer<S> stateSetter) {
         return construct(state, stateGetter, stateSetter, stateSetter);
     }

@@ -99,6 +99,7 @@
                         <fileset>
                             <directory>.</directory>
                             <includes>
+                                <include>**/apidocs</include>
                                 <include>**/*.log</include>
                                 <include>**/dependency-reduced-pom.xml</include>
                             </includes>
