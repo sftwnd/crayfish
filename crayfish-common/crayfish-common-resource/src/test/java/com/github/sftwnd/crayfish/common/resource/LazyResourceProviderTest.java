@@ -1,11 +1,15 @@
 package com.github.sftwnd.crayfish.common.resource;
 
-import com.github.sftwnd.crayfish.common.exception.ExceptionUtils;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
+import java.beans.PropertyVetoException;
 import java.io.IOException;
+import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.Optional;
 import java.util.Set;
@@ -27,6 +31,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.reset;
+import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -148,6 +153,47 @@ class LazyResourceProviderTest {
         assertThrows(IOException.class, lazy::provide, "LazyResourceProvider::provide has to throws when checkResource throws an exception");
     }
 
+    @Test
+    void testClose() throws IOException {
+        when(constructor.construct()).thenReturn(obj);
+        when(provider.provide(any())).thenReturn(obj);
+        lazy.setCheckResource(r -> true);
+        assertSame(obj, lazy.provide());
+        assertTrue(lazy.isProvided(), "Unabcle to check close() operation - Provider is not provided");
+        lazy.close();
+        assertFalse(lazy.isProvided(), "Closed provider hasn't got to be provided");
+        lazy.destroy();
+        assertDoesNotThrow(() -> lazy.close(), "Closed resource unable to throw exception on destroy call");
+    }
+
+    @Test
+    void testSetVetoableProvider() throws IOException, PropertyVetoException {
+        when(constructor.construct()).thenReturn(obj);
+        when(provider.provide(any())).thenReturn(obj);
+        LazyVetoableResourceProvider<Object, Object> lazy = spy(new LazyVetoableResourceProvider<>(constructor, provider, VETO_ON_CONSTRUCT));
+        assertThrows(PropertyVetoException.class, () -> lazy.construct(), "LazyVetoableResourceProvider(VETO_ON_CONSTRUCT)::construct has to throw exception ");
+        assertThrows(PropertyVetoException.class, () -> lazy.provide(), "LazyVetoableResourceProvider(VETO_ON_CONSTRUCT)::provide has to throw exception ");
+        verify(lazy, times(2)).providerChange(any(), any());
+        verify(lazy, times(0)).resourceChange(any(), any());
+    }
+
+    @Test
+    @SuppressWarnings("unchecked")
+    void testSetVetoableReource() throws IOException, PropertyVetoException {
+        when(constructor.construct()).thenReturn(obj);
+        when(provider.provide(any())).thenReturn(obj);
+        LazyVetoableResourceProvider<Object, Object> lazy = spy(new LazyVetoableResourceProvider<>(constructor, provider, VETO_ON_PROVIDE));
+        assertDoesNotThrow(() -> lazy.construct(), "LazyVetoableResourceProvider(VETO_ON_PROVIDE)::construct has to be called successfully");
+        assertThrows(PropertyVetoException.class, () -> lazy.provide(), "LazyVetoableResourceProvider(VETO_ON_PROVIDE)::provide has to throw exception ");
+        verify(lazy, times(1)).providerChange(any(), any());
+        verify(lazy, times(1)).resourceChange(any(), any());
+        lazy.close();
+        reset(lazy);
+        setResourceValue(lazy, obj);
+        assertDoesNotThrow(() -> lazy.provide(), "LazyVetoableResourceProvider(VETO_ON_PROVIDE)::provide hasn't got to throw exception if resource value is the same");
+        verify(lazy, times(0)).resourceChange(any(), any());
+    }
+
     @BeforeEach
     @SuppressWarnings("unchecked")
     void init() {
@@ -165,9 +211,42 @@ class LazyResourceProviderTest {
         obj = null;
     }
 
+    @SneakyThrows
+    @SuppressWarnings("unchecked")
+    private <R> void setResourceValue(LazyResourceProvider<?, R> provider, R resource) {
+        Field resourceField = LazyResourceProvider.class.getDeclaredField("resource");
+        resourceField.setAccessible(true);
+        resourceField.set(provider, resource);
+    }
+
     private LazyResourceProvider.Constructor<Object> constructor;
     private LazyResourceProvider.Provider<Object, Object> provider;
     private LazyResourceProvider<Object, Object> lazy;
     private Object obj;
+
+    private static final int VETO_ON_CONSTRUCT = 1;
+    private static final int VETO_ON_PROVIDE = 2;
+
+    private static class LazyVetoableResourceProvider<P, R> extends LazyResourceProvider<P, R> {
+
+        @Getter @Setter private int veto;
+        public LazyVetoableResourceProvider(LazyResourceProvider.Constructor<P> providerConstructor, LazyResourceProvider.Provider<P,R> resourceProvider, int veto) {
+            super(providerConstructor, resourceProvider);
+            this.veto = veto;
+        }
+
+        public void providerChange(P oldValue, P newValue) throws PropertyVetoException {
+            if ( (this.veto & VETO_ON_CONSTRUCT) != 0) {
+                throw new PropertyVetoException("Unable to call providerChange", null);
+            }
+        }
+
+        public void resourceChange(R oldValue, R newValue) throws PropertyVetoException {
+            if ( (this.veto & VETO_ON_PROVIDE) != 0) {
+                throw new PropertyVetoException("Unable to call resourceChange", null);
+            }
+        }
+
+    }
 
 }
