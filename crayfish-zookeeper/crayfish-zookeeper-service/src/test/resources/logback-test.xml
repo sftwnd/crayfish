@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+        <withJansi>true</withJansi>
+        <encoder>
+            <pattern>%green(%date{ISO8601}) [%42thread] %highlight(%-5level)               %cyan(%logger{36}) - %msg%n</pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.apache.curator.framework.imps.CuratorFrameworkImpl" level="OFF" />
+    <logger name="com.github.sftwnd.crayfish.zookeeper.service" level="ERROR" />
+    <logger name="org.apache.zookeeper" level="ERROR" />
+    <logger name="org.apache.curator" level="ERROR" />
+
+    <root level="WARN">
+        <appender-ref ref="STDOUT"/>
+    </root>
+
+</configuration>

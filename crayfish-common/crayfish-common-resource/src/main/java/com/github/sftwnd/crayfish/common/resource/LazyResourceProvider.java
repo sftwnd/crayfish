@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
+import java.beans.PropertyVetoException;
 import java.io.Closeable;
 import java.io.IOException;
 import java.util.Collections;
@@ -67,6 +68,42 @@ public class LazyResourceProvider<P,R> implements ICloseableResourceProvider<R> 
     private volatile Throwable error;
     private Function<R, Boolean> checkResource;
 
+    private void setResource(final R resource) {
+        boolean changeFlag = Optional.ofNullable(this.resource)
+                .map(currentValue -> !currentValue.equals(resource))
+                .orElseGet(() -> this.resource != resource);
+        R oldResource = this.resource;
+        try {
+            if (changeFlag) {
+                resourceChange(oldResource, resource);
+            }
+            this.resource = resource;
+            if (changeFlag) {
+                resourceChanged(oldResource, resource);
+            }
+        } catch (PropertyVetoException pvex) {
+            this.error = pvex;
+        }
+    }
+
+    private void setProvider(final P provider) {
+        boolean changeFlag = Optional.ofNullable(this.provider)
+                .map(currentValue -> !currentValue.equals(provider))
+                .orElseGet(() -> this.provider != provider);
+        P oldProvider = this.provider;
+        try {
+            if (changeFlag) {
+                providerChange(oldProvider, provider);
+            }
+            this.provider = provider;
+            if (changeFlag) {
+                providerChanged(oldProvider, provider);
+            }
+        } catch (PropertyVetoException pvex) {
+            this.error = pvex;
+        }
+    }
+
     public LazyResourceProvider(@Nonnull Constructor<P> providerConstructor,
                                 @Nonnull Provider<P,R> resourceProvider,
                                 @Nullable Set<Class<? extends Throwable>> baseAbsorbedThrows,
@@ -117,19 +154,18 @@ public class LazyResourceProvider<P,R> implements ICloseableResourceProvider<R> 
         }  catch (Throwable throwable) {
             processError("Unable to check client connection: {}", throwable);
         }
-        this.resource = null;
         this.provided = false;
+        setResource(null);
         rethrow();
         return null;
     }
 
     @Override
-    @Generated
     public synchronized void close() {
         if (!isDestroyed()) {
-            this.resource = null;
-            this.error = null;
+            setResource(null);
             this.provided = false;
+            this.error = null;
         }
     }
 
@@ -214,8 +250,8 @@ public class LazyResourceProvider<P,R> implements ICloseableResourceProvider<R> 
         } catch (Throwable ioex) {
             processError("Exception on destroy of "+this.getClass().getSimpleName()+ ".destroy(): {}", ioex);
         } finally {
-            this.resource = null;
-            this.provider = null;
+            setResource(null);
+            setProvider(null);
             this.provided = true;
         }
         rethrow();
@@ -255,14 +291,14 @@ public class LazyResourceProvider<P,R> implements ICloseableResourceProvider<R> 
     @SuppressWarnings("squid:S1181")
     private synchronized R provide(@Nullable P provider) {
         try {
-            this.resource = Optional.ofNullable( Optional.ofNullable(provider).orElse(doConstruct()) )
+            setResource(Optional.ofNullable( Optional.ofNullable(provider).orElse(doConstruct()) )
                                .map(this::doProvide)
-                               .orElse(null);
+                               .orElse(null));
             if (this.resource == null) {
                 processError("Unable to provide resource", null);
             }
         } catch (Throwable throwable) {
-            this.resource = null;
+            setResource(null);
         } finally {
             this.provided = this.resource != null;
         }
@@ -284,13 +320,34 @@ public class LazyResourceProvider<P,R> implements ICloseableResourceProvider<R> 
     @SuppressWarnings("squid:S1181")
     private final synchronized P doConstruct() {
         try {
-            this.provider = providerConstructor.construct();
+            setProvider(providerConstructor.construct());
         } catch (Throwable throwable) {
             processError("Unable to construct provider: {}", throwable);
-            this.provider = null;
+            setProvider(null);
         }
         rethrow();
         return this.provider;
+    }
+
+    @SuppressWarnings({
+            /* Methods should not be empty
+               Empty methots are defined for overriding in childs
+             */
+            "squid:S1186"
+    })
+    protected void providerChange(P oldValue, P newValue) throws PropertyVetoException {
+    }
+
+    @SuppressWarnings("squid:S1186")
+    protected void providerChanged(P oldValue, P newValue) {
+    }
+
+    @SuppressWarnings("squid:S1186")
+    protected void resourceChange(R oldValue, R newValue) throws PropertyVetoException {
+    }
+
+    @SuppressWarnings("squid:S1186")
+    protected void resourceChanged(R oldValue, R newValue) {
     }
 
 }

@@ -3,7 +3,6 @@ package com.github.sftwnd.crayfish.common.format.formatter;
 import com.github.sftwnd.crayfish.common.format.TemporalBase;
 import com.github.sftwnd.crayfish.common.state.DefaultsHolder.ValueLevel;
 import com.github.sftwnd.crayfish.common.state.StateHelper;
-import lombok.NonNull;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
