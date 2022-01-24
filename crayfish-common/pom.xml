@@ -3,9 +3,8 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.github.sftwnd.crayfish</groupId>
-        <artifactId>crayfish-core</artifactId>
+        <artifactId>crayfish</artifactId>
         <version>1.0.0-SNAPSHOT</version>
-        <relativePath>../crayfish-core</relativePath>
     </parent>
     <packaging>pom</packaging>
 
