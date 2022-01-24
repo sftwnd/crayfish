@@ -15,6 +15,9 @@
     <name>CrayFish :: COMMON</name>
 
     <modules>
+        <module>crayfish-common-crc</module>
+        <module>crayfish-common-expectation</module>
+        <module>crayfish-common-required</module>
     </modules>
 
 </project>

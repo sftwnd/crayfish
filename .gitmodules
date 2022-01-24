@@ -1,0 +1,12 @@
+[submodule "crayfish-common/crayfish-common-required"]
+	path = crayfish-common/crayfish-common-required
+	url = git@github.com:sftwnd/crayfish-common-required.git
+	branch = release/1.0.0
+[submodule "crayfish-common/crayfish-common-crc"]
+	path = crayfish-common/crayfish-common-crc
+	url = git@github.com:sftwnd/crayfish-common-crc.git
+	branch = release/1.0.0
+[submodule "crayfish-common/crayfish-common-expectation"]
+	path = crayfish-common/crayfish-common-expectation
+	url = git@github.com:sftwnd/crayfish-common-expectation.git
+	branch = release/1.0.0
