@@ -4,7 +4,7 @@
     <parent>
         <groupId>com.github.sftwnd.crayfish</groupId>
         <artifactId>crayfish</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0.1</version>
     </parent>
     <packaging>pom</packaging>
 
@@ -14,7 +14,6 @@
     <name>CrayFish :: COMMON</name>
 
     <modules>
-        <module>crayfish-common-crc</module>
         <module>crayfish-common-expectation</module>
     </modules>
 
