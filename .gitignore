@@ -33,7 +33,6 @@ hs_err_pid*
 #
 .scannerwork
 release.properties
-**/dependency-reduced-pom.xml
 **/*.releaseBackup
 **/*.swp
 **/apidocs
