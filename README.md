@@ -2,6 +2,11 @@
 
 _This is the main project for child module publication on Maven Central._
 
+## Version: 1.0.1
+
+### CrayFish :: COMMON
+* [_crayfish-common-expectation *1.0.1*_](https://github.com/sftwnd/crayfish-common-expectation/blob/crayfish-common-expectation-1.0.1/README.md)
+
 ## Version: 1.0.0
 
 ### CrayFish :: COMMON
